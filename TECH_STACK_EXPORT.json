@@ -1,0 +1,300 @@
+{
+  "metadata": {
+    "project": "ASKYAN EXPEDITIONS",
+    "created": "December 2024",
+    "purpose": "Blaze AI Development Kit - Approved Libraries Reference",
+    "quality_level": "Premium Website Standard"
+  },
+  "frontend": {
+    "framework": {
+      "react": {
+        "version": "18.3.1",
+        "purpose": "Core UI framework",
+        "notes": "JSX transformer auto-imports React, no need for explicit import"
+      },
+      "react-dom": {
+        "version": "18.3.1",
+        "purpose": "React DOM rendering"
+      }
+    },
+    "routing": {
+      "wouter": {
+        "version": "3.3.5",
+        "purpose": "Lightweight client-side routing",
+        "notes": "Preferred over react-router for smaller bundle size"
+      }
+    },
+    "data_fetching": {
+      "@tanstack/react-query": {
+        "version": "5.60.5",
+        "purpose": "Server state management, caching, mutations",
+        "notes": "v5 requires object form for queries: useQuery({ queryKey: ['key'] })"
+      }
+    },
+    "animations": {
+      "framer-motion": {
+        "version": "11.13.1",
+        "purpose": "Declarative animations, scroll effects",
+        "key_patterns": ["whileInView", "staggerChildren", "spring transitions"]
+      }
+    },
+    "forms": {
+      "react-hook-form": {
+        "version": "7.55.0",
+        "purpose": "Form state management"
+      },
+      "@hookform/resolvers": {
+        "version": "3.10.0",
+        "purpose": "Zod integration for form validation"
+      },
+      "zod": {
+        "version": "3.24.2",
+        "purpose": "Schema validation (shared between frontend/backend)"
+      }
+    },
+    "ui_components": {
+      "carousel": {
+        "package": "embla-carousel-react",
+        "version": "8.6.0",
+        "notes": "Swipe gestures, no dots on mobile for clean UI"
+      },
+      "icons": {
+        "primary": "lucide-react@0.453.0",
+        "secondary": "react-icons@5.4.0",
+        "usage": "lucide for UI icons, react-icons/si for brand logos"
+      },
+      "dates": {
+        "package": "date-fns",
+        "version": "3.6.0"
+      },
+      "charts": {
+        "package": "recharts",
+        "version": "2.15.2"
+      },
+      "themes": {
+        "package": "next-themes",
+        "version": "0.4.6"
+      }
+    }
+  },
+  "ui_library": {
+    "base": "Radix UI + Shadcn patterns",
+    "styling": {
+      "class-variance-authority": {
+        "version": "0.7.1",
+        "purpose": "Component variant definitions"
+      },
+      "clsx": {
+        "version": "2.1.1",
+        "purpose": "Conditional class names"
+      },
+      "tailwind-merge": {
+        "version": "2.6.0",
+        "purpose": "Merge Tailwind classes without conflicts"
+      }
+    },
+    "radix_components": {
+      "@radix-ui/react-dialog": "Modals and dialogs",
+      "@radix-ui/react-dropdown-menu": "Dropdown menus",
+      "@radix-ui/react-accordion": "Collapsible sections",
+      "@radix-ui/react-tabs": "Tab navigation",
+      "@radix-ui/react-toast": "Toast notifications",
+      "@radix-ui/react-tooltip": "Tooltips",
+      "@radix-ui/react-select": "Select dropdowns",
+      "@radix-ui/react-checkbox": "Checkboxes",
+      "@radix-ui/react-avatar": "User avatars",
+      "@radix-ui/react-scroll-area": "Custom scrollbars",
+      "@radix-ui/react-popover": "Popovers",
+      "@radix-ui/react-progress": "Progress bars",
+      "@radix-ui/react-switch": "Toggle switches",
+      "@radix-ui/react-slider": "Range sliders"
+    },
+    "additional": {
+      "cmdk": {
+        "version": "1.1.1",
+        "purpose": "Command palette component"
+      },
+      "vaul": {
+        "version": "1.1.2",
+        "purpose": "Drawer component"
+      },
+      "input-otp": {
+        "version": "1.4.2",
+        "purpose": "OTP input fields"
+      },
+      "react-day-picker": {
+        "version": "8.10.1",
+        "purpose": "Date picker"
+      },
+      "react-resizable-panels": {
+        "version": "2.1.7",
+        "purpose": "Resizable panel layouts"
+      }
+    }
+  },
+  "styling": {
+    "tailwindcss": {
+      "version": "3.4.17",
+      "purpose": "Utility-first CSS framework",
+      "config_notes": "darkMode: ['class'], HSL color format"
+    },
+    "tailwindcss-animate": {
+      "version": "1.0.7",
+      "purpose": "Animation utilities"
+    },
+    "@tailwindcss/typography": {
+      "version": "0.5.15",
+      "purpose": "Prose styling for content"
+    },
+    "autoprefixer": {
+      "version": "10.4.20",
+      "purpose": "Vendor prefix automation"
+    },
+    "postcss": {
+      "version": "8.4.47",
+      "purpose": "CSS processing"
+    },
+    "tw-animate-css": {
+      "version": "1.2.5",
+      "purpose": "Additional animation utilities"
+    }
+  },
+  "backend": {
+    "server": {
+      "express": {
+        "version": "4.21.2",
+        "purpose": "HTTP server framework"
+      }
+    },
+    "authentication": {
+      "express-session": {
+        "version": "1.18.1",
+        "purpose": "Session management"
+      },
+      "passport": {
+        "version": "0.7.0",
+        "purpose": "Authentication middleware"
+      },
+      "passport-local": {
+        "version": "1.0.0",
+        "purpose": "Username/password authentication"
+      }
+    },
+    "database": {
+      "drizzle-orm": {
+        "version": "0.39.3",
+        "purpose": "TypeScript ORM",
+        "notes": "Type-safe queries, schema-first design"
+      },
+      "drizzle-zod": {
+        "version": "0.7.0",
+        "purpose": "Generate Zod schemas from Drizzle schemas"
+      },
+      "pg": {
+        "version": "8.16.3",
+        "purpose": "PostgreSQL client"
+      },
+      "connect-pg-simple": {
+        "version": "10.0.0",
+        "purpose": "PostgreSQL session store"
+      },
+      "memorystore": {
+        "version": "1.6.7",
+        "purpose": "In-memory session store (development)"
+      }
+    },
+    "realtime": {
+      "ws": {
+        "version": "8.18.0",
+        "purpose": "WebSocket support"
+      }
+    },
+    "ai": {
+      "openai": {
+        "version": "6.10.0",
+        "purpose": "OpenAI API client for chatbot"
+      }
+    },
+    "validation": {
+      "zod": {
+        "version": "3.24.2",
+        "purpose": "Request body validation"
+      },
+      "zod-validation-error": {
+        "version": "3.4.0",
+        "purpose": "Better error messages"
+      }
+    }
+  },
+  "development": {
+    "language": {
+      "typescript": {
+        "version": "5.6.3",
+        "purpose": "Type safety"
+      }
+    },
+    "build": {
+      "vite": {
+        "version": "5.4.20",
+        "purpose": "Build tool and dev server"
+      },
+      "@vitejs/plugin-react": {
+        "version": "4.7.0",
+        "purpose": "React support for Vite"
+      },
+      "esbuild": {
+        "version": "0.25.0",
+        "purpose": "Fast JavaScript bundling"
+      },
+      "tsx": {
+        "version": "4.20.5",
+        "purpose": "TypeScript execution"
+      }
+    },
+    "database_tooling": {
+      "drizzle-kit": {
+        "version": "0.31.4",
+        "purpose": "Database migrations and schema push"
+      }
+    },
+    "replit_plugins": {
+      "@replit/vite-plugin-cartographer": "0.4.4",
+      "@replit/vite-plugin-dev-banner": "0.1.1",
+      "@replit/vite-plugin-runtime-error-modal": "0.0.3"
+    },
+    "types": {
+      "@types/express": "4.17.21",
+      "@types/express-session": "1.18.0",
+      "@types/node": "20.16.11",
+      "@types/passport": "1.0.16",
+      "@types/passport-local": "1.0.38",
+      "@types/react": "18.3.11",
+      "@types/react-dom": "18.3.1",
+      "@types/ws": "8.5.13",
+      "@types/connect-pg-simple": "7.0.3"
+    }
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development tsx server/index.ts",
+    "build": "tsx script/build.ts",
+    "start": "NODE_ENV=production node dist/index.cjs",
+    "check": "tsc",
+    "db:push": "drizzle-kit push"
+  },
+  "recommendations": {
+    "always_use": [
+      "react-hook-form with zod for forms",
+      "framer-motion for animations",
+      "lucide-react for icons",
+      "@tanstack/react-query for data fetching",
+      "Radix UI primitives for accessible components"
+    ],
+    "avoid": [
+      "React Router (use wouter instead)",
+      "Axios (use native fetch)",
+      "Moment.js (use date-fns instead)",
+      "Custom hover states on buttons",
+      "Manual button sizing"
+    ]
+  }
+}

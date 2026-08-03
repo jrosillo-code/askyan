@@ -1,0 +1,261 @@
+{
+  "metadata": {
+    "project": "ASKYAN EXPEDITIONS",
+    "theme": "Rugged Luxury",
+    "created": "December 2024",
+    "purpose": "Portable design system for Blaze AI Codex",
+    "format_note": "HSL values are space-separated without hsl() wrapper for Tailwind compatibility"
+  },
+  "colors": {
+    "dark_theme": {
+      "background": {
+        "hsl": "0 0% 7%",
+        "hex": "#111111",
+        "usage": "Main page background"
+      },
+      "foreground": {
+        "hsl": "30 4% 92%",
+        "hex": "#EAEAEA",
+        "usage": "Primary text color"
+      },
+      "primary": {
+        "hsl": "30 52% 64%",
+        "hex": "#D4A373",
+        "usage": "Accent color, CTAs, links"
+      },
+      "primary_foreground": {
+        "hsl": "0 0% 7%",
+        "hex": "#111111",
+        "usage": "Text on primary backgrounds"
+      },
+      "card": {
+        "hsl": "0 0% 9%",
+        "hex": "#171717",
+        "usage": "Card backgrounds, elevated surfaces"
+      },
+      "card_foreground": {
+        "hsl": "30 4% 92%",
+        "hex": "#EAEAEA",
+        "usage": "Text on cards"
+      },
+      "border": {
+        "hsl": "30 2% 16%",
+        "hex": "#292929",
+        "usage": "Subtle borders"
+      },
+      "muted": {
+        "hsl": "30 4% 15%",
+        "hex": "#262626",
+        "usage": "Muted backgrounds"
+      },
+      "muted_foreground": {
+        "hsl": "0 0% 63%",
+        "hex": "#A1A1A1",
+        "usage": "Secondary text, labels"
+      },
+      "accent": {
+        "hsl": "30 6% 13%",
+        "hex": "#222222",
+        "usage": "Accent backgrounds"
+      },
+      "accent_foreground": {
+        "hsl": "30 4% 92%",
+        "hex": "#EAEAEA",
+        "usage": "Text on accent backgrounds"
+      },
+      "destructive": {
+        "hsl": "0 72% 42%",
+        "hex": "#B91C1C",
+        "usage": "Error states, destructive actions"
+      },
+      "destructive_foreground": {
+        "hsl": "0 8% 98%",
+        "hex": "#FAFAFA",
+        "usage": "Text on destructive backgrounds"
+      },
+      "input": {
+        "hsl": "30 2% 25%",
+        "hex": "#404040",
+        "usage": "Input field backgrounds"
+      },
+      "ring": {
+        "hsl": "30 52% 64%",
+        "hex": "#D4A373",
+        "usage": "Focus ring color"
+      }
+    },
+    "charts": {
+      "chart_1": { "hsl": "30 65% 62%" },
+      "chart_2": { "hsl": "20 60% 65%" },
+      "chart_3": { "hsl": "10 58% 68%" },
+      "chart_4": { "hsl": "35 62% 64%" },
+      "chart_5": { "hsl": "25 58% 66%" }
+    },
+    "sidebar": {
+      "background": { "hsl": "30 2% 11%" },
+      "foreground": { "hsl": "30 4% 92%" },
+      "border": { "hsl": "30 2% 14%" },
+      "primary": { "hsl": "30 52% 64%" },
+      "primary_foreground": { "hsl": "0 0% 7%" },
+      "accent": { "hsl": "30 4% 14%" },
+      "accent_foreground": { "hsl": "30 4% 92%" },
+      "ring": { "hsl": "30 52% 64%" }
+    },
+    "popover": {
+      "background": { "hsl": "30 2% 10%" },
+      "foreground": { "hsl": "30 4% 92%" },
+      "border": { "hsl": "30 2% 16%" }
+    },
+    "secondary": {
+      "background": { "hsl": "30 4% 16%" },
+      "foreground": { "hsl": "30 4% 92%" }
+    },
+    "status": {
+      "online": "rgb(34 197 94)",
+      "away": "rgb(245 158 11)",
+      "busy": "rgb(239 68 68)",
+      "offline": "rgb(156 163 175)"
+    }
+  },
+  "elevation": {
+    "dark_mode": {
+      "button_outline": "rgba(255,255,255, 0.10)",
+      "badge_outline": "rgba(255,255,255, 0.05)",
+      "elevate_1": "rgba(255,255,255, 0.04)",
+      "elevate_2": "rgba(255,255,255, 0.09)"
+    },
+    "light_mode": {
+      "button_outline": "rgba(0,0,0, 0.10)",
+      "badge_outline": "rgba(0,0,0, 0.05)",
+      "elevate_1": "rgba(0,0,0, 0.03)",
+      "elevate_2": "rgba(0,0,0, 0.08)"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "sans": "'Inter', sans-serif",
+      "serif": "'Lora', Georgia, serif",
+      "mono": "Menlo, monospace"
+    },
+    "usage": {
+      "display": {
+        "font": "sans (Inter)",
+        "weight": "bold",
+        "usage": "Headings, hero text, navigation"
+      },
+      "body": {
+        "font": "serif (Lora)",
+        "weight": "normal",
+        "line_height": "1.7",
+        "usage": "Paragraph text, descriptions"
+      }
+    },
+    "scale": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "3.75rem",
+      "7xl": "4.5rem",
+      "8xl": "6rem",
+      "9xl": "8rem"
+    },
+    "tracking": {
+      "uppercase_labels": "0.3em",
+      "headings": "-0.01em",
+      "body": "normal"
+    }
+  },
+  "spacing": {
+    "base": "0.25rem",
+    "scale": {
+      "0": "0",
+      "1": "0.25rem",
+      "2": "0.5rem",
+      "3": "0.75rem",
+      "4": "1rem",
+      "5": "1.25rem",
+      "6": "1.5rem",
+      "8": "2rem",
+      "10": "2.5rem",
+      "12": "3rem",
+      "16": "4rem",
+      "20": "5rem",
+      "24": "6rem",
+      "32": "8rem"
+    },
+    "usage": {
+      "small": "4-8px (p-1, p-2)",
+      "medium": "16-24px (p-4, p-6)",
+      "large": "32-48px (p-8, p-12)",
+      "section_padding": "64-96px (py-16, py-24)"
+    }
+  },
+  "border_radius": {
+    "none": "0",
+    "sm": "0.1875rem",
+    "md": "0.375rem",
+    "lg": "0.5625rem",
+    "xl": "0.75rem",
+    "2xl": "1rem",
+    "3xl": "1.5rem",
+    "full": "9999px",
+    "default": "0.5rem",
+    "note": "Always use rounded-md for most elements, rounded-full only for circles/pills"
+  },
+  "shadows": {
+    "2xs": "0px 2px 0px 0px hsl(0 0% 0% / 0.3)",
+    "xs": "0px 1px 2px 0px hsl(0 0% 0% / 0.4)",
+    "sm": "0px 1px 2px 0px hsl(0 0% 0% / 0.4), 0px 1px 3px 0px hsl(0 0% 0% / 0.5)",
+    "default": "0px 1px 3px 0px hsl(0 0% 0% / 0.5), 0px 1px 2px -1px hsl(0 0% 0% / 0.5)",
+    "md": "0px 4px 6px -1px hsl(0 0% 0% / 0.5), 0px 2px 4px -2px hsl(0 0% 0% / 0.5)",
+    "lg": "0px 10px 15px -3px hsl(0 0% 0% / 0.5), 0px 4px 6px -4px hsl(0 0% 0% / 0.5)",
+    "xl": "0px 20px 25px -5px hsl(0 0% 0% / 0.5), 0px 8px 10px -6px hsl(0 0% 0% / 0.5)",
+    "2xl": "0px 25px 50px -12px hsl(0 0% 0% / 0.6)",
+    "usage_note": "Use shadows sparingly - only for floating elements or modals"
+  },
+  "effects": {
+    "hero_text_glow": {
+      "css": "text-shadow: 0 0 40px rgba(212, 163, 115, 0.3), 0 0 80px rgba(212, 163, 115, 0.15), 0 2px 4px rgba(0, 0, 0, 0.5)",
+      "animation": "hero-shimmer 4s ease-in-out infinite"
+    },
+    "hero_subtitle_glow": {
+      "css": "text-shadow: 0 0 30px rgba(255, 255, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.5)"
+    },
+    "video_overlay_gradient": "bg-gradient-to-b from-black/40 via-black/50 to-black/80"
+  },
+  "transitions": {
+    "fast": "150ms",
+    "default": "300ms",
+    "slow": "500ms",
+    "very_slow": "700ms",
+    "easing": {
+      "default": "ease-out",
+      "spring": "cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+    }
+  },
+  "breakpoints": {
+    "sm": "640px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1280px",
+    "2xl": "1536px"
+  },
+  "z_index": {
+    "behind": "-1",
+    "base": "0",
+    "elevated": "10",
+    "dropdown": "50",
+    "sticky": "100",
+    "modal": "200",
+    "popover": "300",
+    "tooltip": "400",
+    "toast": "500",
+    "max": "999"
+  }
+}
