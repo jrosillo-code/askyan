@@ -11,6 +11,7 @@ const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
 const mongoliaVideo = MEDIA["mongolia-web.mp4"];
 const nepalVideo = MEDIA["14862479-hd_1920_1080_60fps_1765009387935.mp4"];
 const indonesiaVideo = MEDIA["12004059_1920_1080_30fps_1765009552268.mp4"];
+const bhutanVideo = MEDIA["bhutan-web.mp4"];
 
 interface ItineraryDay {
   day: number;
@@ -410,6 +411,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     category: "Sacred & Spiritual",
     groupSize: "4-8 travelers",
     startingFrom: "By application",
+    videoUrl: bhutanVideo,
     imageUrl: "https://images.unsplash.com/photo-1553856622-d1b352e9a211?w=1920&q=80",
     galleryImages: [
       "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=800&q=80",
@@ -581,7 +583,7 @@ export default function ExpeditionDetail() {
         >
           <Link
             href="/expeditions"
-            className="inline-flex items-center gap-2 font-display text-sm text-white/70 hover:text-white transition-colors mb-6"
+            className="mb-6 flex w-fit items-center gap-2 font-display text-sm text-white/70 hover:text-white transition-colors"
             data-testid="link-back-to-expeditions"
           >
             <ArrowLeft className="w-4 h-4" />

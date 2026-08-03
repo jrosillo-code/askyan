@@ -203,6 +203,10 @@ function HeroSection() {
     }
   };
 
+  // The upcoming clip is mounted invisibly (buffering AND playing) so the
+  // switch is a genuine crossfade between two live streams — mounting it at
+  // switch time produced a loading stutter instead of a fade.
+  const nextVideo = (currentVideo + 1) % heroVideos.length;
   const getVideoOpacity = (index: number) => {
     if (index === currentVideo) return "opacity-100";
     if (index === previousVideo) return "opacity-100";
@@ -232,9 +236,9 @@ function HeroSection() {
           className="absolute inset-0 w-full h-full object-cover scale-105"
         />
         {!staticHero && heroVideos.map((video, index) => {
-          // Mount only the video on screen and its crossfade partner —
-          // mounting all five streamed ~5 concurrent UHD downloads on load.
-          if (index !== currentVideo && index !== previousVideo) return null;
+          // Mount the live clip, its fade-out partner, and the upcoming clip
+          // (invisible, pre-buffering) — never all five at once.
+          if (index !== currentVideo && index !== previousVideo && index !== nextVideo) return null;
           return (
           <video
             key={video}
@@ -1379,23 +1383,11 @@ function ContactInfoSection() {
   return (
     <section id="contact-info" className="py-8 md:py-10 px-6 border-t border-border/50" data-testid="section-contact-info">
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 text-center md:text-left">
-          <div className="flex items-center gap-2" data-testid="contact-address">
-            <span className="font-body text-sm text-muted-foreground">
-              123 Explorer Way, Los Angeles, CA 90210
-            </span>
-          </div>
-          <div className="flex items-center gap-2" data-testid="contact-phone">
-            <a href="tel:+15551234567" className="font-body text-sm text-muted-foreground hover:text-primary transition-colors" data-testid="link-phone">
-              +1 (555) 123-4567
-            </a>
-          </div>
-          <div className="flex items-center gap-2" data-testid="contact-email">
-            <a href="mailto:hello@askyan.com" className="font-body text-sm text-muted-foreground hover:text-primary transition-colors" data-testid="link-email">
-              hello@askyan.com
-            </a>
-          </div>
-        </div>
+        <p className="text-center font-body text-sm text-muted-foreground">
+          Every message goes to a founder —{" "}
+          <a href="/contact" className="text-primary transition-colors hover:underline">request access</a>{" "}
+          and we&apos;ll reply personally.
+        </p>
       </div>
     </section>
   );
