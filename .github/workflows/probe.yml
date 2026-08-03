@@ -1,0 +1,20 @@
+name: probe
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe live chat API
+        run: |
+          echo "=== POST /api/chat ==="
+          curl -sS -o /tmp/chat.json -w "HTTP %{http_code}\n" \
+            -X POST https://askyan.vercel.app/api/chat \
+            -H "Content-Type: application/json" \
+            -d '{"messages":[{"role":"user","content":"Which expeditions do you run?"}]}' || true
+          cat /tmp/chat.json; echo
+          echo "=== POST /api/chat (assistant-first history, mirrors widget) ==="
+          curl -sS -o /tmp/chat2.json -w "HTTP %{http_code}\n" \
+            -X POST https://askyan.vercel.app/api/chat \
+            -H "Content-Type: application/json" \
+            -d '{"messages":[{"role":"assistant","content":"Welcome to ASKYAN."},{"role":"user","content":"Tell me about the Gobi expedition"}]}' || true
+          cat /tmp/chat2.json; echo
