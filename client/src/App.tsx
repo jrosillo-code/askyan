@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { Switch, Route, Redirect, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -36,11 +36,108 @@ function RouteFallback() {
   );
 }
 
-function useScrollToTop() {
+// One scroll policy for the whole app:
+// - back/forward returns you to the exact spot you left (each history entry
+//   is stamped with a key; scroll is saved per entry and restored instantly
+//   once the lazy chunk has rendered enough height)
+// - links with a #hash land smoothly on that section, even across pages
+// - ordinary forward navigation starts at the top
+const scrollPositions = new Map<string, number>();
+
+function entryKey(): string | undefined {
+  return (window.history.state as { __scrollKey?: string } | null)?.__scrollKey;
+}
+
+function useScrollManager() {
   const [location] = useLocation();
-  
+  const prevKey = useRef<string | undefined>(undefined);
+  const lastNav = useRef(0);
+
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.history.scrollRestoration = "manual";
+    // Two recorders cover both navigation kinds:
+    // - pushState (link clicks) saves the exact offset synchronously, before
+    //   the lazy route's Suspense fallback collapses the page and clamps
+    //   scrollY to 0.
+    // - a continuous passive scroll listener keeps each entry's last real
+    //   position current, which is what back/forward restores (popstate
+    //   listener order can't be relied on — wouter's runs first and flushes
+    //   the route change before ours would fire).
+    // The ignore-window after any navigation keeps the fallback's clamp and
+    // our own restoration scrolls from polluting the saved values.
+    const origPush = window.history.pushState.bind(window.history);
+    window.history.pushState = ((...args: Parameters<History["pushState"]>) => {
+      if (prevKey.current) scrollPositions.set(prevKey.current, window.scrollY);
+      lastNav.current = Date.now();
+      origPush(...args);
+    }) as History["pushState"];
+    const onPop = () => {
+      lastNav.current = Date.now();
+    };
+    const onScroll = () => {
+      if (Date.now() - lastNav.current < 400) return;
+      if (prevKey.current) scrollPositions.set(prevKey.current, window.scrollY);
+    };
+    window.addEventListener("popstate", onPop);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.history.pushState = origPush;
+      window.removeEventListener("popstate", onPop);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    lastNav.current = Date.now();
+    // A key already on this history entry means we've been here before —
+    // i.e. the browser is traversing (back/forward), not pushing.
+    let key = entryKey();
+    const isTraversal = key !== undefined;
+    if (!key) {
+      key = Math.random().toString(36).slice(2);
+      window.history.replaceState(
+        { ...((window.history.state as object | null) ?? {}), __scrollKey: key },
+        ""
+      );
+    }
+    prevKey.current = key;
+
+    const hash = window.location.hash.slice(1);
+    let cancelled = false;
+    let tries = 90; // ~1.5s of frames for lazy chunks and images to land
+
+    const attempt = (fn: () => boolean) => {
+      const step = () => {
+        if (cancelled) return;
+        if (!fn() && tries-- > 0) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    if (isTraversal) {
+      const y = scrollPositions.get(key) ?? 0;
+      attempt(() => {
+        if (y === 0 || document.documentElement.scrollHeight >= y + window.innerHeight) {
+          window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior });
+          return true;
+        }
+        return false;
+      });
+    } else if (hash) {
+      attempt(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          return true;
+        }
+        return false;
+      });
+    } else {
+      window.scrollTo(0, 0);
+    }
+    return () => {
+      cancelled = true;
+    };
   }, [location]);
 }
 
@@ -66,7 +163,7 @@ function usePageTitle() {
 
 function Router() {
   usePageTracking();
-  useScrollToTop();
+  useScrollManager();
   usePageTitle();
 
 

@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { useLanguage } from "@/contexts/language-context";
 import logoImage from "@assets/download-Picsart-BackgroundRemover_1764993972814.png";
 
@@ -22,24 +23,24 @@ export function SiteFooter() {
             <div>
               <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">{t("footer.journeys")}</div>
               <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><a href="/expeditions" className="hover:text-foreground">{t("nav.expeditions")}</a></li>
-                <li><a href="/films" className="hover:text-foreground">{t("nav.films")}</a></li>
-                <li><a href="/chronicles" className="hover:text-foreground">{t("nav.chronicles")}</a></li>
+                <li><Link href="/expeditions" className="hover:text-foreground">{t("nav.expeditions")}</Link></li>
+                <li><Link href="/films" className="hover:text-foreground">{t("nav.films")}</Link></li>
+                <li><Link href="/chronicles" className="hover:text-foreground">{t("nav.chronicles")}</Link></li>
               </ul>
             </div>
             <div>
               <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">{t("footer.collective")}</div>
               <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><a href="/about" className="hover:text-foreground">{t("nav.about")}</a></li>
-                <li><a href="/how-we-travel" className="hover:text-foreground">{t("nav.howWeTravel")}</a></li>
-                <li><a href="/ledger" className="hover:text-foreground">{t("nav.ledger")}</a></li>
+                <li><Link href="/about" className="hover:text-foreground">{t("nav.about")}</Link></li>
+                <li><Link href="/how-we-travel" className="hover:text-foreground">{t("nav.howWeTravel")}</Link></li>
+                <li><Link href="/ledger" className="hover:text-foreground">{t("nav.ledger")}</Link></li>
               </ul>
             </div>
             <div>
               <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">{t("footer.join")}</div>
               <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><a href="/contact" className="hover:text-foreground">{t("nav.requestAccess")}</a></li>
-                <li><a href="/#waitlist" className="hover:text-foreground">{t("footer.waitlist")}</a></li>
+                <li><Link href="/contact" className="hover:text-foreground">{t("nav.requestAccess")}</Link></li>
+                <li><Link href="/#waitlist" className="hover:text-foreground">{t("footer.waitlist")}</Link></li>
               </ul>
             </div>
           </div>
@@ -49,9 +50,9 @@ export function SiteFooter() {
             &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
           </p>
           <p className="font-display text-xs tracking-[0.15em] text-muted-foreground/70">
-            <a href="/privacy" className="transition-colors hover:text-foreground">PRIVACY</a>
+            <Link href="/privacy" className="transition-colors hover:text-foreground">PRIVACY</Link>
             <span className="mx-3">&middot;</span>
-            <a href="/terms" className="transition-colors hover:text-foreground">TERMS</a>
+            <Link href="/terms" className="transition-colors hover:text-foreground">TERMS</Link>
           </p>
         </div>
       </div>

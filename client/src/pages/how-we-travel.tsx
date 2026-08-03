@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
@@ -18,17 +17,6 @@ const SECTIONS = [
 export default function HowWeTravel() {
   const { t } = useLanguage();
 
-  // The home-page impact cards deep-link to #conservation/#community/
-  // #sustainability. The router scrolls to top on navigation, so land on
-  // the requested section just after.
-  useEffect(() => {
-    const anchor = window.location.hash.slice(1);
-    if (!anchor) return;
-    const timer = setTimeout(() => {
-      document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <div className="min-h-screen bg-background">
       <SharedHeader variant="solid" />

@@ -16,6 +16,7 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { Chatbot } from "@/components/chatbot";
 import { useLanguage } from "@/contexts/language-context";
+import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA } from "@/lib/media";
 import { RoadPath } from "@/components/road-path";
 import { SiteFooter } from "@/components/site-footer";
@@ -237,14 +238,14 @@ function HeroSection() {
         <span className="font-display text-xs tracking-[0.3em] text-white/40 uppercase">{t("hero.featuredIn")}</span>
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
           {pressLogos.map((logo) => (
-            <a
+            <Link
               key={logo.name}
               href={logo.url}
               className="font-display text-[10px] md:text-xs tracking-[0.15em] text-white/40 hover:text-white/70 transition-colors"
               data-testid={`link-press-${logo.name.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {logo.textKey ? t(logo.textKey) : logo.text}
-            </a>
+            </Link>
           ))}
         </div>
       </motion.div>
@@ -629,6 +630,7 @@ function SpotlightSection() {
                     <div className="relative h-64 md:h-80 overflow-hidden rounded-t-md md:rounded-l-md md:rounded-tr-none">
                       {'video' in currentAdventure && currentAdventure.video ? (
                         <video
+                          data-ambient=""
                           autoPlay
                           loop
                           muted
@@ -940,6 +942,7 @@ function AdventureFeatureSection() {
     <section className="relative py-0" data-testid="section-adventure-feature">
       <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
         <video
+          data-ambient=""
           autoPlay
           loop
           muted
@@ -1220,6 +1223,7 @@ function ContactInfoSection() {
 }
 
 export default function Home() {
+  useAmbientVideos();
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {

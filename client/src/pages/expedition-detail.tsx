@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, Clock, MapPin, Mountain, Users, Flame, Star, Check
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
+import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA } from "@/lib/media";
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
@@ -563,6 +564,7 @@ function ItineraryDay({ day, isLast }: { day: ItineraryDay; isLast: boolean }) {
 }
 
 export default function ExpeditionDetail() {
+  useAmbientVideos();
   const { id } = useParams<{ id: string }>();
   const expedition = id ? expeditionDetails[id] : null;
 
@@ -590,13 +592,14 @@ export default function ExpeditionDetail() {
         <div className="absolute inset-0 z-0">
           {expedition.videoUrl ? (
             <video
+              data-ambient=""
               autoPlay
               loop
               muted
               playsInline
               preload="auto"
               src={expedition.videoUrl}
-              className="w-full h-full object-cover"
+              className="hero-video w-full h-full object-cover"
               onTimeUpdate={(e) => {
                 const video = e.currentTarget;
                 if (video.currentTime >= 10) {

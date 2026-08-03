@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
+import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 
 interface VideoItem {
   id: string;
@@ -236,6 +237,7 @@ function PremiereNotify() {
 }
 
 export default function Films() {
+  useAmbientVideos();
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const searchString = useSearch();
   const { t } = useLanguage();
@@ -258,6 +260,7 @@ export default function Films() {
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
           <video
+          data-ambient=""
             src="/films-hero-video.mp4"
             autoPlay
             muted

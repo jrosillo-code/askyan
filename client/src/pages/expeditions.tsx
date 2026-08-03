@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
+import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA } from "@/lib/media";
 const expeditionsHeroVideo = MEDIA["expeditions-hero-web.mp4"];
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
@@ -144,6 +145,7 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
         <div className="relative h-64 md:h-80 overflow-hidden rounded-t-md">
           {expedition.videoUrl ? (
             <video
+              data-ambient=""
               autoPlay
               loop
               muted
@@ -219,6 +221,7 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
 }
 
 export default function Expeditions() {
+  useAmbientVideos();
   const { t } = useLanguage();
   
   const translatedCategories = [
@@ -251,12 +254,13 @@ export default function Expeditions() {
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
           <video
+            data-ambient=""
             autoPlay
             loop
             muted
             playsInline
             preload="auto"
-            className="w-full h-full object-cover"
+            className="hero-video w-full h-full object-cover"
             onTimeUpdate={(e) => {
               const video = e.currentTarget;
               if (video.currentTime >= 10) {
