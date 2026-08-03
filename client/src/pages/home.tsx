@@ -101,10 +101,10 @@ function AnimatedText({ text, className, delay = 0 }: { text: string; className?
 // fabricated press logos are a credibility liability for a trust-first brand —
 // real features can be added here if and when they exist.)
 const pressLogos: { name: string; text: string; url: string; textKey?: string }[] = [
-  { name: "Kazakhstan", text: "KAZAKHSTAN", url: "/expeditions" },
-  { name: "Kyrgyzstan", text: "KYRGYZSTAN", url: "/expeditions" },
-  { name: "Mongolia", text: "MONGOLIA", url: "/expeditions" },
-  { name: "Bhutan", text: "BHUTAN", url: "/expeditions" },
+  { name: "Kazakhstan", text: "KAZAKHSTAN", url: "/expedition/kazakhstan-steppe" },
+  { name: "Kyrgyzstan", text: "KYRGYZSTAN", url: "/expedition/kyrgyzstan-heights" },
+  { name: "Mongolia", text: "MONGOLIA", url: "/expedition/mongolia-gobi" },
+  { name: "Bhutan", text: "BHUTAN", url: "/expedition/bhutan-sacred" },
   { name: "Founding Cohort", text: "FOUNDING COHORT — NOW FORMING", textKey: "hero.cohortForming", url: "/contact" },
 ];
 
@@ -446,21 +446,21 @@ function PositiveImpactSection() {
       titleKey: "impact.conservation.title",
       descKey: "impact.conservation.desc",
       image: conservationImage,
-      link: "/how-we-travel",
+      link: "/how-we-travel#conservation",
     },
     {
       id: "community",
       titleKey: "impact.community.title",
       descKey: "impact.community.desc",
       image: communityImage,
-      link: "/how-we-travel",
+      link: "/how-we-travel#community",
     },
     {
       id: "sustainable",
       titleKey: "impact.sustainable.title",
       descKey: "impact.sustainable.desc",
       image: sustainableImage,
-      link: "/how-we-travel",
+      link: "/how-we-travel#sustainability",
     },
   ];
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
@@ -9,13 +10,25 @@ import { useLanguage } from "@/contexts/language-context";
 // A brand-new collective has commitments, not achievements — so that is
 // exactly what this page states.
 const SECTIONS = [
-  { num: "01", titleKey: "hwt.conservation.title", p1: "hwt.conservation.p1", p2: "hwt.conservation.p2" },
-  { num: "02", titleKey: "hwt.community.title", p1: "hwt.community.p1", p2: "hwt.community.p2" },
-  { num: "03", titleKey: "hwt.sustain.title", p1: "hwt.sustain.p1", p2: "hwt.sustain.p2" },
+  { num: "01", anchor: "conservation", titleKey: "hwt.conservation.title", p1: "hwt.conservation.p1", p2: "hwt.conservation.p2" },
+  { num: "02", anchor: "community", titleKey: "hwt.community.title", p1: "hwt.community.p1", p2: "hwt.community.p2" },
+  { num: "03", anchor: "sustainability", titleKey: "hwt.sustain.title", p1: "hwt.sustain.p1", p2: "hwt.sustain.p2" },
 ];
 
 export default function HowWeTravel() {
   const { t } = useLanguage();
+
+  // The home-page impact cards deep-link to #conservation/#community/
+  // #sustainability. The router scrolls to top on navigation, so land on
+  // the requested section just after.
+  useEffect(() => {
+    const anchor = window.location.hash.slice(1);
+    if (!anchor) return;
+    const timer = setTimeout(() => {
+      document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <SharedHeader variant="solid" />
@@ -36,6 +49,8 @@ export default function HowWeTravel() {
             {SECTIONS.map((section, i) => (
               <motion.section
                 key={section.num}
+                id={section.anchor}
+                className="scroll-mt-28"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
