@@ -1,7 +1,6 @@
 {
   "buildCommand": "vite build && node scripts/prerender-meta.mjs",
   "outputDirectory": "dist/public",
-  "cleanUrls": true,
   "headers": [
     {
       "source": "/videos/(.*)",

@@ -41,7 +41,7 @@ export const MEDIA: Record<string, string> = {
   "stock_images/tuscany_vineyard_win_ab92a196.jpg": img(27659795), // cypress hills
 
   // ── mission pages ──
-  "stock_images/conservation_wildlif_d0bedb1b.jpg": img(17820390),
+  "stock_images/conservation_wildlif_d0bedb1b.jpg": img(20839121), // Everest — the wild places we commit to protect
   "stock_images/local_community_cult_d6accc8e.jpg": img(5275480),  // eagle hunters on horseback
   "stock_images/sustainable_eco-frie_cb0317fc.jpg": img(23515065), // lush rainforest
 
@@ -55,7 +55,7 @@ export const MEDIA: Record<string, string> = {
   "mongolia-web.mp4": "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4", // dune drone — Gobi mood, no people
   "adventure-web.mp4": "/videos/adventure-web.mp4", // real brand footage
   "bhutan-web.mp4": "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4", // Ladakh Himalaya drone — Thunder Dragon mood
-  "expeditions-hero-web.mp4": "https://videos.pexels.com/video-files/3121327/3121327-hd_1920_1080_24fps.mp4",
+  "expeditions-hero-web.mp4": "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4", // Himalaya ridge drone — transformation, 60fps
   "12004059_1920_1080_30fps_1765009552268.mp4": "/videos/12004059.mp4", // real brand footage
   "14862479-hd_1920_1080_60fps_1765009387935.mp4": "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4",
 };

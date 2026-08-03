@@ -376,6 +376,10 @@ const translations: Record<Language, Record<string, string>> = {
     "header.expedition.mongolia.desc": "The Gobi Crossing",
     "header.expedition.nepal": "Nepal",
     "header.expedition.nepal.desc": "Forbidden Kingdom",
+    "header.expedition.bhutan": "Bhutan",
+    "header.expedition.bhutan.desc": "Thunder Dragon Path",
+    "header.expedition.indonesia": "Indonesia",
+    "header.expedition.indonesia.desc": "The Ring of Fire",
     
     "header.film.mongolia": "The Last Nomads of Mongolia",
     "header.film.mongolia.location": "Gobi Desert, Mongolia",
@@ -877,6 +881,10 @@ const translations: Record<Language, Record<string, string>> = {
     "header.expedition.mongolia.desc": "La Travesía del Gobi",
     "header.expedition.nepal": "Nepal",
     "header.expedition.nepal.desc": "Reino Prohibido",
+    "header.expedition.bhutan": "Bután",
+    "header.expedition.bhutan.desc": "La Senda del Dragón del Trueno",
+    "header.expedition.indonesia": "Indonesia",
+    "header.expedition.indonesia.desc": "El Anillo de Fuego",
     
     "header.film.mongolia": "Los Últimos Nómadas de Mongolia",
     "header.film.mongolia.location": "Desierto del Gobi, Mongolia",

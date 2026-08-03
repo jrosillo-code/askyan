@@ -3,9 +3,10 @@
 // (most link unfurlers) otherwise see only the site-wide defaults, which
 // wastes the per-expedition dossier share cards in /og.
 //
-// With "cleanUrls": true, Vercel serves dist/public/expedition/<id>.html for
-// /expedition/<id> before the SPA rewrite kicks in; the file still loads the
-// normal bundle, so hydration and routing behave exactly as before.
+// Each page is written as expedition/<id>/index.html — Vercel serves
+// directory indexes from the filesystem before the SPA rewrite kicks in,
+// and the file still loads the normal bundle so routing behaves as before.
+// (cleanUrls was tried first and redirect-looped the SPA fallback.)
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,7 +32,6 @@ const setMeta = (html, attr, name, content) =>
     `$1${content}$2`
   );
 
-mkdirSync(join(outDir, "expedition"), { recursive: true });
 
 for (const e of EXPEDITIONS) {
   const title = `${e.title} — Expedition ${e.code}, ${e.country} — ASKYAN`;
@@ -52,6 +52,7 @@ for (const e of EXPEDITIONS) {
   ]) {
     html = setMeta(html, "name", name, content);
   }
-  writeFileSync(join(outDir, "expedition", `${e.id}.html`), html);
-  console.log(`prerendered expedition/${e.id}.html`);
+  mkdirSync(join(outDir, "expedition", e.id), { recursive: true });
+  writeFileSync(join(outDir, "expedition", e.id, "index.html"), html);
+  console.log(`prerendered expedition/${e.id}/index.html`);
 }
