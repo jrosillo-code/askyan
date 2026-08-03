@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -577,6 +578,28 @@ export default function ExpeditionDetail() {
       ? { ...base, ...expeditionDetailsEs[base.id] }
       : base
     : null;
+  const [shareCopied, setShareCopied] = useState(false);
+  // The prerendered OG dossier card makes these links unfurl beautifully —
+  // native share sheet where available, copy-link everywhere else.
+  const shareJourney = async () => {
+    if (!expedition) return;
+    const url = `https://askyan.vercel.app/expedition/${expedition.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `${expedition.title} — ASKYAN`, url });
+        return;
+      }
+    } catch {
+      return; // share sheet dismissed
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    } catch {
+      // clipboard blocked
+    }
+  };
 
   if (!expedition) {
     return (
@@ -795,6 +818,13 @@ export default function ExpeditionDetail() {
                       {t("detail.apply")}
                     </Button>
                   </Link>
+                  <button
+                    onClick={shareJourney}
+                    className="mt-3 w-full rounded-sm border border-primary/40 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/10"
+                    data-testid="button-share-journey"
+                  >
+                    {shareCopied ? t("common.copied") : t("detail.share")}
+                  </button>
                 </Card>
 
                 <Card className="p-6 bg-card border-border" data-testid="card-included">

@@ -1,5 +1,10 @@
 name: self-host-media
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Encode only one target (all|gobi|kaz|kyr|him|nep|films)"
+        default: "all"
 permissions:
   contents: write
 jobs:
@@ -12,28 +17,41 @@ jobs:
       - name: Fetch and recompress videos
         run: |
           set -e
+          ONLY="${{ inputs.only }}"
+          want() { [ "$ONLY" = "all" ] || [ "$ONLY" = "$1" ]; }
           mkdir -p /tmp/src client/public/videos client/public/images
           dl() { curl -sSL --retry 3 -o "$1" "$2"; ls -la "$1"; }
-          dl /tmp/src/kaz.mp4   "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4"
-          dl /tmp/src/kyr.mp4   "https://videos.pexels.com/video-files/8761030/8761030-hd_1920_1080_30fps.mp4"
-          dl /tmp/src/gobi.mp4  "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4"
-          dl /tmp/src/him.mp4   "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4"
-          dl /tmp/src/nep.mp4   "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4"
           enc() { ffmpeg -y -i "$1" -c:v libx264 -preset slow -crf "$3" -vf "$4" -an -movflags +faststart "$2"; ls -la "$2"; }
-          # The hero deserves the most bits; the 4K source gets downscaled + 30fps.
-          enc /tmp/src/gobi.mp4 client/public/videos/gobi-web.mp4      23 "scale=1920:-2"
-          # Poster straight from the clip's first frames — always matches.
-          ffmpeg -y -ss 0.5 -i client/public/videos/gobi-web.mp4 -frames:v 1 -q:v 3 client/public/images/gobi-poster.jpg
-          ls -la client/public/images/gobi-poster.jpg
-          enc /tmp/src/kaz.mp4  client/public/videos/kazakhstan-web.mp4 25 "scale=1920:-2,fps=30"
-          enc /tmp/src/kyr.mp4  client/public/videos/kyrgyzstan-web.mp4 25 "scale=1920:-2"
-          enc /tmp/src/him.mp4  client/public/videos/himalaya-web.mp4   26 "scale=1920:-2"
-          enc /tmp/src/nep.mp4  client/public/videos/nepal-web.mp4      26 "scale=1920:-2"
-          # Recompress the two heavy local films (18MB popup, 8MB hero)
-          enc client/public/films-popup-video.mp4 /tmp/popup.mp4 25 "scale=1600:-2"
-          mv /tmp/popup.mp4 client/public/films-popup-video.mp4
-          enc client/public/films-hero-video.mp4 /tmp/fhero.mp4 26 "scale=1600:-2"
-          mv /tmp/fhero.mp4 client/public/films-hero-video.mp4
+          if want gobi; then
+            dl /tmp/src/gobi.mp4 "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4"
+            # The hero deserves the most bits.
+            enc /tmp/src/gobi.mp4 client/public/videos/gobi-web.mp4 23 "scale=1920:-2"
+            # Poster straight from the clip's first frames — always matches.
+            ffmpeg -y -ss 0.5 -i client/public/videos/gobi-web.mp4 -frames:v 1 -q:v 3 client/public/images/gobi-poster.jpg
+          fi
+          if want kaz; then
+            dl /tmp/src/kaz.mp4 "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4"
+            enc /tmp/src/kaz.mp4 client/public/videos/kazakhstan-web.mp4 25 "scale=1920:-2,fps=30"
+          fi
+          if want kyr; then
+            dl /tmp/src/kyr.mp4 "https://videos.pexels.com/video-files/8761030/8761030-hd_1920_1080_30fps.mp4"
+            enc /tmp/src/kyr.mp4 client/public/videos/kyrgyzstan-web.mp4 25 "scale=1920:-2"
+          fi
+          if want him; then
+            dl /tmp/src/him.mp4 "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4"
+            # 30fps halves the weight; drone glides read identically.
+            enc /tmp/src/him.mp4 client/public/videos/himalaya-web.mp4 26 "scale=1920:-2,fps=30"
+          fi
+          if want nep; then
+            dl /tmp/src/nep.mp4 "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4"
+            enc /tmp/src/nep.mp4 client/public/videos/nepal-web.mp4 26 "scale=1920:-2"
+          fi
+          if want films; then
+            enc client/public/films-popup-video.mp4 /tmp/popup.mp4 25 "scale=1600:-2"
+            mv /tmp/popup.mp4 client/public/films-popup-video.mp4
+            enc client/public/films-hero-video.mp4 /tmp/fhero.mp4 26 "scale=1600:-2"
+            mv /tmp/fhero.mp4 client/public/films-hero-video.mp4
+          fi
           du -sh client/public/videos client/public/*.mp4
       - name: Commit media
         run: |

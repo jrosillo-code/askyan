@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { useLanguage } from "@/contexts/language-context";
+import { attributionLine } from "@/lib/attribution";
 
 // Request Access as an application, not a signup form. Three quiet steps —
 // who you are, which journey calls, why — ending in a boarding-pass-style
@@ -31,6 +32,34 @@ interface Applied {
 function BoardingPass({ applied }: { applied: Applied }) {
   const { t } = useLanguage();
   const isUndecided = applied.expedition.id === "undecided";
+  const [copied, setCopied] = useState(false);
+  const shareUrl = isUndecided
+    ? "https://askyan.vercel.app"
+    : `https://askyan.vercel.app/expedition/${applied.expedition.id}`;
+  const share = async () => {
+    const data = {
+      title: "ASKYAN EXPEDITIONS",
+      text: isUndecided
+        ? "I've applied to the ASKYAN founding cohort."
+        : `I've applied to ASKYAN — Expedition ${applied.expedition.code}, ${applied.expedition.title}.`,
+      url: shareUrl,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+        return;
+      }
+    } catch {
+      return; // user dismissed the share sheet
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // clipboard blocked — nothing sensible left to do
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, rotate: -1 }}
@@ -82,6 +111,14 @@ function BoardingPass({ applied }: { applied: Applied }) {
           <p className="font-body text-sm italic leading-relaxed text-muted-foreground">
             {t("app.pass.note")}
           </p>
+
+          <button
+            onClick={share}
+            className="mt-6 w-full rounded-sm border border-primary/50 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/10"
+            data-testid="button-share-pass"
+          >
+            {copied ? t("common.copied") : t("app.pass.share")}
+          </button>
         </div>
       </div>
     </motion.div>
@@ -143,7 +180,8 @@ export function ApplicationFlow() {
       const message =
         `[APPLICATION — EXPEDITION ${exp.code} · ${exp.title.toUpperCase()}]\n\n` +
         `Why: ${why.trim()}\n\n` +
-        (referral.trim() ? `Heard about ASKYAN via: ${referral.trim()}` : "Referral: not given");
+        (referral.trim() ? `Heard about ASKYAN via: ${referral.trim()}` : "Referral: not given") +
+        (attributionLine() ? `\n\n[${attributionLine()}]` : "");
       const res = await apiRequest("POST", "/api/contact", {
         name: name.trim(),
         email: email.trim(),

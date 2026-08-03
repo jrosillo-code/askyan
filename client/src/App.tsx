@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { usePageTracking } from "@/hooks/use-analytics";
 import { LanguageProvider } from "@/contexts/language-context";
+import { captureAttribution } from "@/lib/attribution";
 
 import Home from "@/pages/home";
 
@@ -162,6 +163,9 @@ function usePageTitle() {
 }
 
 function Router() {
+  useEffect(() => {
+    captureAttribution();
+  }, []);
   usePageTracking();
   useScrollManager();
   usePageTitle();

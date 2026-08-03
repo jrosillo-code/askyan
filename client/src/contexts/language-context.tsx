@@ -190,6 +190,9 @@ const translations: Record<Language, Record<string, string>> = {
     "detail.back": "All Expeditions",
     "detail.stamp1": "FOUNDING",
     "detail.stamp2": "SEASON",
+    "detail.share": "Share this journey",
+    "app.pass.share": "Share your boarding pass",
+    "common.copied": "Link copied",
 
     // Films notify
     "films.notify.kicker": "First Light",
@@ -720,6 +723,9 @@ const translations: Record<Language, Record<string, string>> = {
     "detail.back": "Todas las Expediciones",
     "detail.stamp1": "TEMPORADA",
     "detail.stamp2": "FUNDACIONAL",
+    "detail.share": "Comparte este viaje",
+    "app.pass.share": "Comparte tu tarjeta de embarque",
+    "common.copied": "Enlace copiado",
 
     // Films notify
     "films.notify.kicker": "Primera Luz",
