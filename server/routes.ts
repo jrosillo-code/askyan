@@ -1,25 +1,37 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertSubscriberSchema, insertContactSchema, insertPageViewSchema, insertAnalyticsEventSchema } from "@shared/schema";
+import { insertSubscriberSchema, insertContactSchema, insertPageViewSchema, insertAnalyticsEventSchema } from "../shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
 
-// On Replit this pointed at their internal AI proxy (localhost modelfarm with a
-// dummy key) — that only exists on Replit. Off-platform, the chat concierge
-// needs a real key: set OPENAI_API_KEY (the standard variable; base URL then
-// defaults to api.openai.com). Lazy + guarded so the server boots fine and the
-// rest of the site works even before a key is configured.
-let openai: OpenAI | null = null;
-function getOpenAI(): OpenAI | null {
-  if (openai) return openai;
-  const apiKey = process.env.OPENAI_API_KEY ?? process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+// The concierge speaks the OpenAI wire protocol, but the provider is
+// configurable — so it can run on the free tiers of Groq or Google Gemini
+// (no card, no preloaded credits) through their OpenAI-compatible endpoints.
+// Set AI_API_KEY and the provider is auto-detected from the key shape
+// (gsk_… = Groq, AIza… = Gemini); override with AI_BASE_URL/AI_MODEL if
+// needed. Lazy + guarded: with no key the server still boots and /api/chat
+// degrades to a friendly 503.
+let aiClient: OpenAI | null = null;
+let aiModel = "gpt-4o-mini";
+function getAI(): { client: OpenAI; model: string } | null {
+  const apiKey =
+    process.env.AI_API_KEY ?? process.env.OPENAI_API_KEY ?? process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
   if (!apiKey || apiKey === "_DUMMY_API_KEY_") return null;
-  openai = new OpenAI({
-    apiKey,
-    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || undefined,
-  });
-  return openai;
+  if (!aiClient) {
+    let baseURL = process.env.AI_BASE_URL;
+    let model = process.env.AI_MODEL;
+    if (!baseURL && apiKey.startsWith("gsk_")) {
+      baseURL = "https://api.groq.com/openai/v1";
+      model ??= "llama-3.3-70b-versatile";
+    } else if (!baseURL && apiKey.startsWith("AIza")) {
+      baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
+      model ??= "gemini-2.0-flash";
+    }
+    aiClient = new OpenAI({ apiKey, baseURL: baseURL || undefined });
+    aiModel = model ?? "gpt-4o-mini";
+  }
+  return { client: aiClient, model: aiModel };
 }
 
 export async function registerRoutes(
@@ -125,8 +137,8 @@ export async function registerRoutes(
 
   app.post("/api/chat", async (req, res) => {
     try {
-      const client = getOpenAI();
-      if (!client) {
+      const ai = getAI();
+      if (!ai) {
         return res.status(503).json({
           message: "The concierge is offline right now — please use the contact form.",
         });
@@ -141,8 +153,8 @@ export async function registerRoutes(
 - Currently accepting applications for our founding cohort
 Keep responses concise and engaging. Encourage visitors to request access via the form on the site.`;
 
-      const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
+      const completion = await ai.client.chat.completions.create({
+        model: ai.model,
         messages: [
           { role: "system", content: systemPrompt },
           ...messages.slice(-10),

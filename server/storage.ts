@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Subscriber, type InsertSubscriber, type ContactSubmission, type InsertContact, type PageView, type InsertPageView, type AnalyticsEvent, type InsertAnalyticsEvent, users, subscribers, contactSubmissions, pageViews, analyticsEvents } from "@shared/schema";
+import { type User, type InsertUser, type Subscriber, type InsertSubscriber, type ContactSubmission, type InsertContact, type PageView, type InsertPageView, type AnalyticsEvent, type InsertAnalyticsEvent, users, subscribers, contactSubmissions, pageViews, analyticsEvents } from "../shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, gte } from "drizzle-orm";
 
