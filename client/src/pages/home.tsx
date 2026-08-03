@@ -77,7 +77,7 @@ function AnimatedText({ text, className, delay = 0 }: { text: string; className?
 
   return (
     <motion.h1
-      className={`${className} whitespace-nowrap`}
+      className={`${className} whitespace-normal md:whitespace-nowrap`}
       variants={container}
       initial="hidden"
       animate="visible"
@@ -257,7 +257,7 @@ function HeroSection() {
         
         <AnimatedText 
           text={t("hero.title")}
-          className="font-display font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-8 tracking-[-0.02em] leading-[1.05]"
+          className="font-display font-bold text-4xl md:text-7xl lg:text-8xl text-white mb-8 tracking-[-0.02em] leading-[1.05]"
           delay={0.6}
         />
         
