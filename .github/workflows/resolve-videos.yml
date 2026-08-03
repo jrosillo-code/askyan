@@ -12,7 +12,7 @@ jobs:
       - run: |
           set -euo pipefail
           : > resolved-videos.txt
-          for id in 8761030 3059046 28878868 7593088 3121327 14862479; do
+          for id in 8397876 8774553 19376556 8865211; do
             url=$(curl -sIL -o /dev/null --max-time 40 -w '%{url_effective}' -A "Mozilla/5.0" "https://www.pexels.com/download/video/$id/")
             echo "$id $url" >> resolved-videos.txt
           done
