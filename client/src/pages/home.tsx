@@ -226,7 +226,6 @@ function HeroSection() {
             muted
             playsInline
             preload="auto"
-            crossOrigin="anonymous"
             src={video}
             className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-[1500ms] ${getVideoOpacity(index)} ${getVideoZIndex(index)}`}
             onTimeUpdate={(e) => {
@@ -240,25 +239,6 @@ function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 z-20" />
       </div>
 
-      {/* Desktop indicators - bars */}
-      <div className="absolute bottom-24 left-6 z-30 hidden md:flex gap-2">
-        {heroVideos.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              if (index !== currentVideo) {
-                setPreviousVideo(currentVideo);
-                setCurrentVideo(index);
-              }
-            }}
-            className={`w-12 h-1 rounded-full transition-all duration-500 ${
-              index === currentVideo ? "bg-white" : "bg-white/30 hover:bg-white/50"
-            }`}
-            data-testid={`button-video-indicator-${index}`}
-            aria-label={`Go to video ${index + 1}`}
-          />
-        ))}
-      </div>
 
 
       <motion.div
