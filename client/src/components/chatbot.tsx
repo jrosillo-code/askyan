@@ -47,9 +47,11 @@ export function Chatbot() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to get response");
-
-      const data = await response.json();
+      // The server sends a human-readable message on every status (503 when
+      // the concierge is unconfigured, 429 when rate-limited) — show it
+      // instead of a blind apology.
+      const data = await response.json().catch(() => null);
+      if (!data?.message) throw new Error("Failed to get response");
       setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
     } catch (error) {
       setMessages((prev) => [

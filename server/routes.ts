@@ -15,7 +15,8 @@ import OpenAI from "openai";
 // degrades to a friendly 503.
 let aiClient: OpenAI | null = null;
 let aiModel = "gpt-4o-mini";
-function getAI(): { client: OpenAI; model: string } | null {
+let aiFallbacks: string[] = [];
+function getAI(): { client: OpenAI; model: string; fallbacks: string[] } | null {
   const apiKey =
     process.env.AI_API_KEY ?? process.env.OPENAI_API_KEY ?? process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
   if (!apiKey || apiKey === "_DUMMY_API_KEY_") return null;
@@ -25,14 +26,23 @@ function getAI(): { client: OpenAI; model: string } | null {
     if (!baseURL && apiKey.startsWith("gsk_")) {
       baseURL = "https://api.groq.com/openai/v1";
       model ??= "llama-3.3-70b-versatile";
+      // Groq retires models with little notice; these are tried in order
+      // when the configured model comes back model_not_found/decommissioned.
+      aiFallbacks = ["llama-3.1-8b-instant", "openai/gpt-oss-20b"];
     } else if (!baseURL && apiKey.startsWith("AIza")) {
       baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
       model ??= "gemini-2.0-flash";
+      aiFallbacks = ["gemini-2.5-flash", "gemini-1.5-flash"];
     }
     aiClient = new OpenAI({ apiKey, baseURL: baseURL || undefined });
     aiModel = model ?? "gpt-4o-mini";
   }
-  return { client: aiClient, model: aiModel };
+  return { client: aiClient, model: aiModel, fallbacks: aiFallbacks };
+}
+
+function isModelError(err: unknown): boolean {
+  const e = err as { status?: number; message?: string };
+  return (e.status === 400 || e.status === 404 || e.status === 422) && /model/i.test(e.message ?? "");
 }
 
 // Admin-only reads (waitlist, contact messages, analytics) — these hold
@@ -212,19 +222,41 @@ What is real today (never invent beyond this):
 
 Style: concise, warm, quietly confident; never salesy or breathless. Two short paragraphs at most. Guide interested visitors to request access via the form on the site.`;
 
-      const completion = await ai.client.chat.completions.create({
-        model: ai.model,
-        max_tokens: 350,
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages.slice(-10),
-        ],
-      });
+      const chatMessages = [
+        { role: "system" as const, content: systemPrompt },
+        ...messages.slice(-10),
+      ];
 
-      res.json({ message: completion.choices[0].message.content });
+      // Walk the model list: if the configured model has been retired by the
+      // provider, fall through to a known-live one and remember the winner.
+      const candidates = [ai.model, ...ai.fallbacks.filter((m) => m !== ai.model)];
+      let lastError: unknown = null;
+      for (const model of candidates) {
+        try {
+          const completion = await ai.client.chat.completions.create({
+            model,
+            max_tokens: 350,
+            messages: chatMessages,
+          });
+          aiModel = model;
+          return res.json({ message: completion.choices[0].message.content });
+        } catch (err) {
+          lastError = err;
+          const e = err as { status?: number; message?: string };
+          console.error(`Chat error (model=${model}, status=${e.status ?? "?"}):`, e.message ?? err);
+          if (!isModelError(err)) break;
+        }
+      }
+      const status = (lastError as { status?: number })?.status;
+      res.status(status === 429 ? 429 : 500).json({
+        message:
+          status === 429
+            ? "The concierge is at capacity for a moment — try again shortly."
+            : "The concierge hit a snag. Try once more, or reach us through Request Access.",
+      });
     } catch (error) {
       console.error("Chat error:", error);
-      res.status(500).json({ message: "Failed to get response" });
+      res.status(500).json({ message: "The concierge hit a snag. Try once more, or reach us through Request Access." });
     }
   });
 

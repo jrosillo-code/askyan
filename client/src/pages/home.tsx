@@ -132,8 +132,16 @@ function HeroSection() {
     if (i !== active) return;
     const el = playersRef.current[i];
     if (!el || !el.duration || !isFinite(el.duration)) return;
-    if (el.currentTime >= el.duration - LOOP_FADE_S) {
-      const other = playersRef.current[1 - i];
+    const remaining = el.duration - el.currentTime;
+    const other = playersRef.current[1 - i];
+    // The partner starts as preload="none" so its download never competes
+    // with the visible stream (double-buffering both from t=0 dropped frames
+    // on slower connections). Warm it up shortly before the seam.
+    if (remaining <= 10 && other && other.readyState === 0) {
+      other.preload = "auto";
+      other.load();
+    }
+    if (remaining <= LOOP_FADE_S) {
       if (other) {
         try {
           other.currentTime = 0;
@@ -175,10 +183,10 @@ function HeroSection() {
               autoPlay={i === 0}
               muted
               playsInline
-              preload="auto"
+              preload={i === 0 ? "auto" : "none"}
               src={GOBI_VIDEO}
               onTimeUpdate={() => handleTimeUpdate(i)}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ${
+              className={`hero-video absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ${
                 i === active ? "opacity-100 z-10" : "opacity-0 z-0"
               }`}
             />
