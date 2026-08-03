@@ -67,6 +67,8 @@ export default function AdminPage() {
   const [statuses, setStatuses] = useState<Record<string, AppStatus>>(loadStatuses);
   const [statusFilter, setStatusFilter] = useState<AppStatus | "all">("all");
 
+  const [statusHint, setStatusHint] = useState<string | null>(null);
+
   const setStatus = (id: string, status: AppStatus) => {
     setStatuses((prev) => {
       const next = { ...prev, [id]: status };
@@ -77,6 +79,18 @@ export default function AdminPage() {
       }
       return next;
     });
+    void fetch(`/api/contacts/${id}/status`, {
+      method: "PATCH",
+      headers: { "x-admin-key": key, "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    }).then(async (r) => {
+      if (!r.ok) {
+        const body = (await r.json().catch(() => null)) as { message?: string } | null;
+        setStatusHint(body?.message ?? "Status saved on this device only.");
+      } else {
+        setStatusHint(null);
+      }
+    });
   };
 
   useEffect(() => {
@@ -84,12 +98,15 @@ export default function AdminPage() {
     setError(null);
     Promise.all([
       fetchJson<{ subscribers: Subscriber[] }>("/api/subscribers", key),
-      fetchJson<{ contacts: Contact[] }>("/api/contacts", key),
+      fetchJson<{ contacts: Contact[]; statuses?: Record<string, AppStatus> | null }>("/api/contacts", key),
       fetchJson<Summary>("/api/analytics/summary", key),
     ])
       .then(([s, c, a]) => {
         setSubs(s.subscribers);
         setContacts(c.contacts);
+        // Server statuses (once supabase-status.sql has run) win over the
+        // local ones; local remains the fallback store.
+        if (c.statuses) setStatuses((prev) => ({ ...prev, ...c.statuses }));
         setSummary(a);
         sessionStorage.setItem(KEY_STORAGE, key);
       })
@@ -167,6 +184,44 @@ export default function AdminPage() {
           </div>
         )}
 
+        {summary && contacts && (
+          <section className="mt-12">
+            <h2 className="font-display text-xl font-bold text-foreground">Funnel</h2>
+            <div className="mt-4 rounded-md border border-border bg-card">
+              {(() => {
+                const expViews = summary.topPages
+                  .filter((pg) => pg.path.startsWith("/expedition"))
+                  .reduce((acc, pg) => acc + pg.count, 0);
+                const applications = contacts.filter((c) => c.inquiryType === "expedition").length;
+                const accepted = contacts.filter((c) => (statuses[c.id] ?? "new") === "accepted").length;
+                const stages = [
+                  { label: "Page views", value: summary.totalPageViews },
+                  { label: "Expedition pages viewed", value: expViews },
+                  { label: "Applications", value: applications },
+                  { label: "Accepted", value: accepted },
+                ];
+                const max = Math.max(1, ...stages.map((st) => st.value));
+                return stages.map((st, i) => {
+                  const prev = i > 0 ? stages[i - 1].value : 0;
+                  const pct = i > 0 && prev > 0 ? Math.round((st.value / prev) * 100) : null;
+                  return (
+                    <div key={st.label} className="flex items-center gap-4 border-b border-border/50 px-5 py-3 last:border-0">
+                      <span className="w-52 shrink-0 font-body text-sm text-foreground/90">{st.label}</span>
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-border/40">
+                        <div className="h-full rounded-full bg-primary/70" style={{ width: `${Math.max(2, (st.value / max) * 100)}%` }} />
+                      </div>
+                      <span className="w-24 shrink-0 text-right font-display text-sm tabular-nums text-foreground">
+                        {st.value}
+                        {pct !== null && <span className="ml-1 text-muted-foreground">({pct}%)</span>}
+                      </span>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </section>
+        )}
+
         {subs && (
           <section className="mt-12">
             <div className="flex items-center justify-between">
@@ -211,6 +266,7 @@ export default function AdminPage() {
                 ))}
               </div>
             </div>
+            {statusHint && <p className="mt-2 font-body text-xs text-primary/80">{statusHint}</p>}
             <div className="mt-4 space-y-3">
               {contacts.length === 0 && (
                 <p className="rounded-md border border-border bg-card p-6 text-sm text-muted-foreground">Nothing yet.</p>

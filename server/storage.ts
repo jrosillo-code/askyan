@@ -145,4 +145,22 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
+// Application status lives in a column the founder adds by running
+// supabase-status.sql once. Raw SQL keeps these two helpers independent of
+// the drizzle schema, so every other query keeps working before the column
+// exists — reads return null and writes throw a recognizable error instead.
+export async function getContactStatuses(): Promise<Record<string, string> | null> {
+  try {
+    const result = await db.execute(sql`select id, status from contact_submissions`);
+    const rows = result.rows as { id: string; status: string | null }[];
+    return Object.fromEntries(rows.map((r) => [r.id, r.status ?? "new"]));
+  } catch {
+    return null; // column not created yet
+  }
+}
+
+export async function setContactStatus(id: string, status: string): Promise<void> {
+  await db.execute(sql`update contact_submissions set status = ${status} where id = ${id}`);
+}
+
 export const storage = new DatabaseStorage();

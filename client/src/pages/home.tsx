@@ -5,21 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ChevronDown, Map, Flame, ArrowRight, Quote } from "lucide-react";
 import { SharedHeader } from "@/components/shared-header";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { motion, AnimatePresence } from "framer-motion";
-import { Chatbot } from "@/components/chatbot";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA } from "@/lib/media";
 import { RoadPath } from "@/components/road-path";
 import { SiteFooter } from "@/components/site-footer";
+import { lazy, Suspense } from "react";
+
+const Chatbot = lazy(() => import("@/components/chatbot").then((m) => ({ default: m.Chatbot })));
 import logoImage from "@assets/download-Picsart-BackgroundRemover_1764993972814.png";
 const mountainsImage = MEDIA["stock_images/aerial_view_mountain_771f3480.jpg"];
 const desertImage = MEDIA["stock_images/desert_dunes_morocco_5d629ce9.jpg"];
@@ -38,11 +36,7 @@ const mongoliaVideo = MEDIA["mongolia-web.mp4"];
 const nepalVideo = MEDIA["14862479-hd_1920_1080_60fps_1765009387935.mp4"];
 const indonesiaVideo = MEDIA["12004059_1920_1080_30fps_1765009552268.mp4"];
 
-const emailSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
-
-type EmailFormData = z.infer<typeof emailSchema>;
+type EmailFormData = { email: string };
 
 
 function AnimatedText({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
@@ -235,13 +229,13 @@ function HeroSection() {
         transition={{ duration: 1, delay: 2.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4 w-full pl-6 pr-24 md:px-6"
       >
-        <span className="font-display text-xs tracking-[0.3em] text-white/40 uppercase">{t("hero.featuredIn")}</span>
+        <span className="font-display text-xs tracking-[0.3em] text-white/55 uppercase">{t("hero.featuredIn")}</span>
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
           {pressLogos.map((logo) => (
             <Link
               key={logo.name}
               href={logo.url}
-              className="font-display text-[10px] md:text-xs tracking-[0.15em] text-white/40 hover:text-white/70 transition-colors"
+              className="font-display text-[10px] md:text-xs tracking-[0.15em] text-white/60 hover:text-white/90 transition-colors"
               data-testid={`link-press-${logo.name.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {logo.textKey ? t(logo.textKey) : logo.text}
@@ -1089,12 +1083,8 @@ function WaitlistSection() {
   const { toast } = useToast();
   const { trackSubscription } = useAnalytics();
 
-  const form = useForm<EmailFormData>({
-    resolver: zodResolver(emailSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const subscribeMutation = useMutation({
     mutationFn: async (data: EmailFormData) => {
@@ -1104,7 +1094,7 @@ function WaitlistSection() {
     onSuccess: (_, variables) => {
       setIsSuccess(true);
       trackSubscription(variables.email);
-      form.reset();
+      setEmail("");
     },
     onError: (error: Error) => {
       const errorMessage = error.message.includes("400") 
@@ -1118,8 +1108,15 @@ function WaitlistSection() {
     },
   });
 
-  const onSubmit = (data: EmailFormData) => {
-    subscribeMutation.mutate(data);
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = email.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+      setEmailError(t("app.err.email"));
+      return;
+    }
+    setEmailError(null);
+    subscribeMutation.mutate({ email: value });
   };
 
   return (
@@ -1170,36 +1167,30 @@ function WaitlistSection() {
               </p>
             </motion.div>
           ) : (
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="email"
-                          placeholder={t("waitlist.placeholder")}
-                          className="h-12 bg-card border-border font-body text-base"
-                          data-testid="input-email"
-                        />
-                      </FormControl>
-                      <FormMessage className="text-left mt-2" />
-                    </FormItem>
-                  )}
+            <form onSubmit={onSubmit} className="flex flex-col sm:flex-row gap-4" noValidate>
+              <div className="flex-1">
+                <Input
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailError) setEmailError(null);
+                  }}
+                  type="email"
+                  placeholder={t("waitlist.placeholder")}
+                  className="h-12 bg-card border-border font-body text-base"
+                  data-testid="input-email"
                 />
-                <Button
-                  type="submit"
-                  className="h-12 px-8 font-display tracking-wide"
-                  disabled={subscribeMutation.isPending}
-                  data-testid="button-submit-email"
-                >
-                  {subscribeMutation.isPending ? t("common.submitting") : t("waitlist.button")}
-                </Button>
-              </form>
-            </Form>
+                {emailError && <p className="mt-2 text-left font-body text-sm text-red-400">{emailError}</p>}
+              </div>
+              <Button
+                type="submit"
+                className="h-12 px-8 font-display tracking-wide"
+                disabled={subscribeMutation.isPending}
+                data-testid="button-submit-email"
+              >
+                {subscribeMutation.isPending ? t("common.submitting") : t("waitlist.button")}
+              </Button>
+            </form>
           )}
         </motion.div>
       </div>
@@ -1224,6 +1215,14 @@ function ContactInfoSection() {
 
 export default function Home() {
   useAmbientVideos();
+  const [chatReady, setChatReady] = useState(false);
+  useEffect(() => {
+    const idle = (window as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+    const timer = idle ? idle(() => setChatReady(true)) : window.setTimeout(() => setChatReady(true), 2500);
+    return () => {
+      if (!idle) clearTimeout(timer as number);
+    };
+  }, []);
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -1252,7 +1251,11 @@ export default function Home() {
         </div>
       </main>
       <SiteFooter />
-      <Chatbot />
+      {chatReady && (
+        <Suspense fallback={null}>
+          <Chatbot />
+        </Suspense>
+      )}
     </div>
   );
 }

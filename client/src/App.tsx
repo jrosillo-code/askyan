@@ -168,6 +168,14 @@ function Router() {
 
 
   return (
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-foreground focus:outline focus:outline-2 focus:outline-primary"
+      >
+        Skip to content
+      </a>
+      <div id="main-content">
     <Suspense fallback={<RouteFallback />}>
     <Switch>
       <Route path="/" component={Home} />
@@ -192,6 +200,8 @@ function Router() {
       <Route component={NotFound} />
     </Switch>
     </Suspense>
+      </div>
+    </>
   );
 }
 

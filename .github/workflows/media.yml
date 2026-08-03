@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
       - name: Fetch and recompress videos
         run: |
           set -e
@@ -17,10 +19,12 @@ jobs:
           dl /tmp/src/gobi.mp4  "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4"
           dl /tmp/src/him.mp4   "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4"
           dl /tmp/src/nep.mp4   "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4"
-          dl client/public/images/gobi-poster.jpg "https://images.pexels.com/videos/8774553/free-video-8774553.jpg?auto=compress&cs=tinysrgb&w=1920"
           enc() { ffmpeg -y -i "$1" -c:v libx264 -preset slow -crf "$3" -vf "$4" -an -movflags +faststart "$2"; ls -la "$2"; }
           # The hero deserves the most bits; the 4K source gets downscaled + 30fps.
           enc /tmp/src/gobi.mp4 client/public/videos/gobi-web.mp4      23 "scale=1920:-2"
+          # Poster straight from the clip's first frames — always matches.
+          ffmpeg -y -ss 0.5 -i client/public/videos/gobi-web.mp4 -frames:v 1 -q:v 3 client/public/images/gobi-poster.jpg
+          ls -la client/public/images/gobi-poster.jpg
           enc /tmp/src/kaz.mp4  client/public/videos/kazakhstan-web.mp4 25 "scale=1920:-2,fps=30"
           enc /tmp/src/kyr.mp4  client/public/videos/kyrgyzstan-web.mp4 25 "scale=1920:-2"
           enc /tmp/src/him.mp4  client/public/videos/himalaya-web.mp4   26 "scale=1920:-2"

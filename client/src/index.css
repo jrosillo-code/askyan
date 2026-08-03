@@ -433,3 +433,11 @@ a:hover img.object-cover {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+
+/* Visible keyboard focus, site-wide — the gold hairline doubles as the
+   focus language so tabbing reads as part of the design, not a debug ring. */
+:focus-visible {
+  outline: 2px solid #d4a373;
+  outline-offset: 2px;
+  border-radius: 2px;
+}

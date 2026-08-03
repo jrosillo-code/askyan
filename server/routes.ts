@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage, getContactStatuses, setContactStatus } from "./storage";
 import { notifyFounders, confirmApplicant } from "./mail";
 import { insertSubscriberSchema, insertContactSchema, insertPageViewSchema, insertAnalyticsEventSchema } from "../shared/schema";
 import { z } from "zod";
@@ -159,9 +159,25 @@ export async function registerRoutes(
     if (!requireAdmin(req as never, res)) return;
     try {
       const contacts = await storage.getAllContactSubmissions();
-      res.json({ contacts, count: contacts.length });
+      const statuses = await getContactStatuses();
+      res.json({ contacts, count: contacts.length, statuses });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch contact submissions" });
+    }
+  });
+
+  const statusSchema = z.object({ status: z.enum(["new", "reviewed", "accepted", "declined"]) });
+  app.patch("/api/contacts/:id/status", async (req, res) => {
+    if (!requireAdmin(req as never, res)) return;
+    try {
+      const { status } = statusSchema.parse(req.body);
+      await setContactStatus(req.params.id, status);
+      res.json({ ok: true });
+    } catch (error) {
+      if (error instanceof z.ZodError) return res.status(400).json({ message: "Invalid status" });
+      res.status(503).json({
+        message: "Status column missing — run supabase-status.sql in the Supabase SQL editor once.",
+      });
     }
   });
 
