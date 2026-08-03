@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { useLanguage } from "@/contexts/language-context";
 
 // Request Access as an application, not a signup form. Three quiet steps —
 // who you are, which journey calls, why — ending in a boarding-pass-style
@@ -28,6 +29,8 @@ interface Applied {
 }
 
 function BoardingPass({ applied }: { applied: Applied }) {
+  const { t } = useLanguage();
+  const isUndecided = applied.expedition.id === "undecided";
   return (
     <motion.div
       initial={{ opacity: 0, y: 24, rotate: -1 }}
@@ -41,10 +44,10 @@ function BoardingPass({ applied }: { applied: Applied }) {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-mono text-[10px] tracking-[0.3em] text-primary">ASKYAN EXPEDITIONS</p>
-              <p className="mt-1 font-display text-2xl font-bold text-foreground">Application received</p>
+              <p className="mt-1 font-display text-2xl font-bold text-foreground">{t("app.pass.received")}</p>
             </div>
             <span className="rounded-sm border border-primary/50 px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-primary">
-              FOUNDING COHORT
+              {t("app.pass.cohort")}
             </span>
           </div>
 
@@ -52,33 +55,32 @@ function BoardingPass({ applied }: { applied: Applied }) {
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <div>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">APPLICANT</p>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">{t("app.pass.applicant")}</p>
               <p className="mt-0.5 font-display text-lg text-foreground">{applied.name}</p>
             </div>
             <div>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">STATUS</p>
-              <p className="mt-0.5 font-display text-lg text-primary">Under review</p>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">{t("app.pass.status")}</p>
+              <p className="mt-0.5 font-display text-lg text-primary">{t("app.pass.review")}</p>
             </div>
             <div>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">EXPEDITION</p>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">{t("app.pass.expedition")}</p>
               <p className="mt-0.5 font-display text-lg text-foreground">
                 {applied.expedition.code !== "000" && (
                   <span className="mr-2 font-mono text-sm text-primary">{applied.expedition.code}</span>
                 )}
-                {applied.expedition.title}
+                {isUndecided ? t("app.undecided") : applied.expedition.title}
               </p>
             </div>
             <div>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">ANCHOR</p>
-              <p className="mt-0.5 font-mono text-sm text-foreground/80">{applied.expedition.coords || "TO BE CHARTED"}</p>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">{t("app.pass.anchor")}</p>
+              <p className="mt-0.5 font-mono text-sm text-foreground/80">{applied.expedition.coords || t("app.pass.tbc")}</p>
             </div>
           </div>
 
           <div className="my-6 border-t border-dashed border-primary/30" />
 
           <p className="font-body text-sm italic leading-relaxed text-muted-foreground">
-            Applications are read personally by the founders. If your path and ours align,
-            you&apos;ll hear from one of us directly — no automated replies, no mailing blasts.
+            {t("app.pass.note")}
           </p>
         </div>
       </div>
@@ -96,6 +98,7 @@ export function ApplicationFlow() {
   const [error, setError] = useState<string | null>(null);
   const [applied, setApplied] = useState<Applied | null>(null);
   const { trackContactSubmission } = useAnalytics();
+  const { t } = useLanguage();
 
   const expedition = EXPEDITIONS.find((e) => e.id === expeditionId) ?? null;
 
@@ -120,7 +123,7 @@ export function ApplicationFlow() {
       trackContactSubmission("expedition");
       setApplied({ name: name.trim(), expedition: expedition! });
     },
-    onError: (e: Error) => setError(e.message || "Something went wrong — try again."),
+    onError: (e: Error) => setError(e.message || t("app.err.generic")),
   });
 
   if (applied) return <BoardingPass applied={applied} />;
@@ -128,19 +131,19 @@ export function ApplicationFlow() {
   const next = () => {
     setError(null);
     if (step === 0) {
-      if (name.trim().length < 2) return setError("Your name, at least.");
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return setError("A real email — it's how we reply.");
+      if (name.trim().length < 2) return setError(t("app.err.name"));
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return setError(t("app.err.email"));
       setStep(1);
     } else if (step === 1) {
-      if (!expeditionId) return setError("Choose a journey — or 'Undecided'.");
+      if (!expeditionId) return setError(t("app.err.expedition"));
       setStep(2);
     } else {
-      if (why.trim().length < 10) return setError("A sentence or two — why this, why now.");
+      if (why.trim().length < 10) return setError(t("app.err.why"));
       mutation.mutate();
     }
   };
 
-  const stepTitles = ["Who you are", "Which journey calls", "Why you"];
+  const stepTitles = [t("app.step1"), t("app.step2"), t("app.step3")];
 
   return (
     <div className="mx-auto max-w-2xl" data-testid="application-flow">
@@ -169,14 +172,14 @@ export function ApplicationFlow() {
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Full name"
+                placeholder={t("app.name.placeholder")}
                 className="h-12 bg-card"
                 data-testid="input-app-name"
               />
               <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
+                placeholder={t("app.email.placeholder")}
                 type="email"
                 className="h-12 bg-card"
                 data-testid="input-app-email"
@@ -196,9 +199,12 @@ export function ApplicationFlow() {
                   data-testid={`pick-${e.id}`}
                 >
                   <span className="font-mono text-[10px] tracking-[0.2em] text-primary">
-                    {e.code !== "000" ? `EXPEDITION ${e.code}` : "OPEN"} — {e.country.toUpperCase()}
+                    {e.code !== "000" ? `${t("app.expedition")} ${e.code}` : t("app.open")} —{" "}
+                    {(e.id === "undecided" ? t("app.undecided.country") : e.country).toUpperCase()}
                   </span>
-                  <span className="mt-1 block font-display text-lg font-bold text-foreground">{e.title}</span>
+                  <span className="mt-1 block font-display text-lg font-bold text-foreground">
+                    {e.id === "undecided" ? t("app.undecided") : e.title}
+                  </span>
                 </button>
               ))}
             </div>
@@ -209,7 +215,7 @@ export function ApplicationFlow() {
               <Textarea
                 value={why}
                 onChange={(e) => setWhy(e.target.value)}
-                placeholder="What draws you to the unseen world? A few honest sentences beat a polished paragraph."
+                placeholder={t("app.why.placeholder")}
                 rows={5}
                 className="bg-card"
                 data-testid="input-app-why"
@@ -217,7 +223,7 @@ export function ApplicationFlow() {
               <Input
                 value={referral}
                 onChange={(e) => setReferral(e.target.value)}
-                placeholder="How did you hear about ASKYAN? (optional)"
+                placeholder={t("app.referral.placeholder")}
                 className="h-12 bg-card"
                 data-testid="input-app-referral"
               />
@@ -236,7 +242,7 @@ export function ApplicationFlow() {
           }`}
           data-testid="button-app-back"
         >
-          Back
+          {t("app.back")}
         </button>
         <Button
           onClick={next}
@@ -244,7 +250,7 @@ export function ApplicationFlow() {
           className="px-8 font-display tracking-wide"
           data-testid="button-app-next"
         >
-          {mutation.isPending ? "Sending…" : step === 2 ? "Submit application" : "Continue"}
+          {mutation.isPending ? t("app.sending") : step === 2 ? t("app.submit") : t("app.continue")}
         </Button>
       </div>
     </div>

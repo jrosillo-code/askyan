@@ -15,6 +15,7 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { motion } from "framer-motion";
 import { insertContactSchema, type InsertContact } from "@shared/schema";
 import { ApplicationFlow } from "@/components/application-flow";
+import { useLanguage } from "@/contexts/language-context";
 import { useState } from "react";
 
 function ContactForm() {
@@ -244,6 +245,7 @@ function ContactInfo() {
 
 export default function Contact() {
   const [showGeneral, setShowGeneral] = useState(false);
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-background">
       <SharedHeader variant="solid" />
@@ -257,14 +259,13 @@ export default function Contact() {
             className="mb-12 text-center"
           >
             <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
-              The Founding Cohort
+              {t("waitlist.subtitle")}
             </p>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Request Access
+              {t("waitlist.button")}
             </h1>
             <p className="font-body text-lg italic text-muted-foreground max-w-xl mx-auto">
-              The first journeys will be small, slow, and unrepeatable.
-              Tell us who you are — a founder reads every application.
+              {t("app.page.lede")}
             </p>
           </motion.div>
 
@@ -276,7 +277,7 @@ export default function Contact() {
               className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
               data-testid="button-toggle-general"
             >
-              {showGeneral ? "Hide general inquiries" : "Press, partnerships or something else \u2192"}
+              {showGeneral ? t("app.page.hideGeneral") : t("app.page.general")}
             </button>
             {showGeneral && (
               <motion.div
