@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { Link, useSearch } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Play, Film, Clock, MapPin } from "lucide-react";
+import { Play, Film, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { useLanguage } from "@/contexts/language-context";
 
 interface VideoItem {
   id: string;
-  youtubeId: string;
   title: string;
   location: string;
   duration: string;
@@ -21,62 +20,56 @@ interface VideoItem {
 const videos: VideoItem[] = [
   {
     id: "mongolia-nomads",
-    youtubeId: "dQw4w9WgXcQ",
     title: "The Last Nomads of Mongolia",
     location: "Gobi Desert, Mongolia",
-    duration: "12:34",
+    duration: "In production",
     description: "Follow three generations of a nomadic family as they navigate the changing seasons of the Gobi. This documentary captures the ancient rhythms of a life most have forgotten exists.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&q=80",
+    thumbnailUrl: "https://images.pexels.com/photos/33770617/pexels-photo-33770617.jpeg?auto=compress&cs=tinysrgb&w=1200",
     category: "Documentary",
   },
   {
     id: "bhutan-monastery",
-    youtubeId: "dQw4w9WgXcQ",
     title: "Silent Dawn: A Bhutanese Monastery",
     location: "Paro Valley, Bhutan",
-    duration: "8:45",
+    duration: "In production",
     description: "Experience the meditative tranquility of life within one of Bhutan's most remote monasteries, where monks have practiced the same rituals for over 400 years.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1553856622-d1b352e9a211?w=800&q=80",
+    thumbnailUrl: "https://images.pexels.com/photos/17898806/pexels-photo-17898806.jpeg?auto=compress&cs=tinysrgb&w=1200",
     category: "Sacred Journeys",
   },
   {
     id: "kyrgyzstan-eagles",
-    youtubeId: "dQw4w9WgXcQ",
     title: "The Eagle Hunters",
     location: "Tien Shan Mountains, Kyrgyzstan",
-    duration: "15:22",
+    duration: "In production",
     description: "A cinematic portrait of the berkutchi, the last eagle hunters of Central Asia, who train golden eagles to hunt in traditions passed down for millennia.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1571687949921-1306bfb24b72?w=800&q=80",
+    thumbnailUrl: "https://images.pexels.com/photos/5275475/pexels-photo-5275475.jpeg?auto=compress&cs=tinysrgb&w=1200",
     category: "Cultural Heritage",
   },
   {
     id: "nepal-trails",
-    youtubeId: "dQw4w9WgXcQ",
     title: "Paths to the Sky",
     location: "Upper Mustang, Nepal",
-    duration: "18:56",
+    duration: "In production",
     description: "Trek through the hidden kingdom of Lo, where ancient trade routes carved into impossible cliffs connect villages that time forgot.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&q=80",
+    thumbnailUrl: "https://images.pexels.com/photos/20839121/pexels-photo-20839121.jpeg?auto=compress&cs=tinysrgb&w=1200",
     category: "Expedition",
   },
   {
     id: "indonesia-komodo",
-    youtubeId: "dQw4w9WgXcQ",
     title: "Dragons of the Ring of Fire",
     location: "Komodo National Park, Indonesia",
-    duration: "11:18",
+    duration: "In production",
     description: "Dive into the waters of Indonesia's volcanic archipelago and walk among the last dragons on Earth in this visual exploration of nature's extremes.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=800&q=80",
+    thumbnailUrl: "https://images.pexels.com/photos/29464869/pexels-photo-29464869.jpeg?auto=compress&cs=tinysrgb&w=1200",
     category: "Wildlife",
   },
   {
     id: "kazakhstan-steppe",
-    youtubeId: "dQw4w9WgXcQ",
     title: "Endless Horizon",
     location: "Kazakh Steppe, Kazakhstan",
-    duration: "14:07",
+    duration: "In production",
     description: "A meditative journey across the endless grasslands of Central Asia, where the horizon bends and time moves to the rhythm of hooves.",
-    thumbnailUrl: "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?w=800&q=80",
+    thumbnailUrl: "https://images.pexels.com/photos/33433629/pexels-photo-33433629.jpeg?auto=compress&cs=tinysrgb&w=1200",
     category: "Documentary",
   },
 ];
@@ -162,8 +155,7 @@ function VideoCard({ video, onClick, index, t }: { video: VideoItem; onClick: ()
             <span className="font-display text-xs tracking-widest text-primary uppercase">
               {t(`film.${filmKey}.category`) !== `film.${filmKey}.category` ? t(`film.${filmKey}.category`) : video.category}
             </span>
-            <span className="flex items-center gap-1 text-white/80 text-sm font-display">
-              <Clock className="w-3 h-3" />
+            <span className="flex items-center gap-1.5 rounded-full border border-primary/50 bg-black/40 px-2.5 py-0.5 text-[11px] uppercase tracking-widest text-primary font-display">
               {video.duration}
             </span>
           </div>

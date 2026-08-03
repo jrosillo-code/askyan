@@ -20,8 +20,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Hero Section
     "hero.subtitle": "A Private Media Collective",
-    "hero.title": "This Is Not A Tour.",
-    "hero.description": "It's an invitation to the unseen world.",
+    "hero.title": "Where the Map Ends.",
+    "hero.description": "An invitation to the unseen world.",
     "hero.featuredIn": "First Expeditions",
     
     // Featured Titles
@@ -369,8 +369,8 @@ const translations: Record<Language, Record<string, string>> = {
     "common.copyright": "ASKYAN EXPEDITIONS",
     
     // Testimonials
-    "testimonials.subtitle": "Testimonials",
-    "testimonials.title": "What Our Clients Say",
+    "testimonials.subtitle": "The Standard",
+    "testimonials.title": "What We Hold Ourselves To",
     
     // Waitlist extra
     "waitlist.review": "Applications are reviewed personally by the founding team.",
@@ -418,8 +418,8 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Hero Section
     "hero.subtitle": "Un Colectivo de Medios Privado",
-    "hero.title": "Esto No Es Un Tour.",
-    "hero.description": "Es una invitación al mundo desconocido.",
+    "hero.title": "Donde Termina el Mapa.",
+    "hero.description": "Una invitación al mundo desconocido.",
     "hero.featuredIn": "Primeras Expediciones",
     
     // Featured Titles
@@ -767,8 +767,8 @@ const translations: Record<Language, Record<string, string>> = {
     "common.copyright": "ASKYAN EXPEDICIONES",
     
     // Testimonials
-    "testimonials.subtitle": "Testimonios",
-    "testimonials.title": "Lo Que Dicen Nuestros Clientes",
+    "testimonials.subtitle": "El Estándar",
+    "testimonials.title": "Lo Que Nos Exigimos",
     
     // Waitlist extra
     "waitlist.review": "Las solicitudes son revisadas personalmente por el equipo fundador.",

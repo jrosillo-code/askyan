@@ -777,36 +777,39 @@ function SpotlightSection() {
   );
 }
 
+// A brand-new collective has no client stories yet — inventing them would
+// poison the one thing this brand sells: trust. Until the first cohort
+// returns, this section states the standard we hold ourselves to.
 const testimonials = [
   {
-    quote: "Their ability to seamlessly blend luxury with adventure, comfort with excitement, and foster a deep appreciation for remote cultures sets them apart in high-end travel.",
-    trip: "Multi-generational expedition to Patagonia",
-    client: "Askyan Client",
+    quote: "Twelve travelers, never more. Below a certain number, a journey stops being logistics and becomes a story.",
+    trip: "On party size",
+    client: "The Askyan Standard",
   },
   {
-    quote: "The whole journey was meticulously planned from start to finish. We were beautifully looked after, from the contacts who met us to our fabulous guide who was truly exemplary.",
-    trip: "Couples expedition to Morocco",
-    client: "Askyan Client",
+    quote: "Every expedition is built with Cultural Scribes — local storytellers who open doors no itinerary can.",
+    trip: "On access",
+    client: "The Askyan Standard",
   },
   {
-    quote: "Askyan organized for us a truly memorable adventure. The travel arrangements were flawless. We would highly recommend them for their detailed planning and efficient communication.",
-    trip: "Private safari in Tanzania",
-    client: "Askyan Client",
+    quote: "No scripts, no staged moments. If a tour bus can photograph it, it isn't on our route.",
+    trip: "On authenticity",
+    client: "The Askyan Standard",
   },
   {
-    quote: "The sheer amount of options when traveling with Askyan is limitless. They turned our wildest travel dreams into reality with military precision.",
-    trip: "Group expedition to Iceland",
-    client: "Askyan Client",
+    quote: "We film everything and promise nothing — the story is written by the land, not the brochure.",
+    trip: "On the films",
+    client: "The Askyan Standard",
   },
   {
-    quote: "Every detail was considered, from the local guides to the hidden gems. An experience that exceeded every expectation.",
-    trip: "Cultural expedition to Japan",
-    client: "Askyan Client",
+    quote: "A portion of every expedition funds the communities and landscapes that host us.",
+    trip: "On reciprocity",
+    client: "The Askyan Standard",
   },
   {
-    quote: "They opened doors to experiences we didn't know existed. A truly transformative way to see the world.",
-    trip: "Adventure expedition to Nepal",
-    client: "Askyan Client",
+    quote: "The founding cohort shapes the collective — the first members set the culture, the destinations, the bar.",
+    trip: "On the beginning",
+    client: "The Askyan Standard",
   },
 ];
 
