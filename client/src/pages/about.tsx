@@ -2,8 +2,6 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
-import jacoboImage from "@assets/Screen_Shot_2025-12-05_at_6.35.51_PM_1764977755766.png";
-import blazeImage from "@assets/unnamed_1764977969242.jpg";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { useLanguage } from "@/contexts/language-context";
@@ -66,14 +64,12 @@ function FoundersSection({ t }: { t: (key: string) => string }) {
       name: t("about.blaze.name"),
       title: t("about.blaze.title"),
       description: t("about.blaze.desc"),
-      image: blazeImage,
     },
     {
       key: "jacobo",
       name: t("about.jacobo.name"),
       title: t("about.jacobo.title"),
       description: t("about.jacobo.desc"),
-      image: jacoboImage,
     },
   ];
 
@@ -116,12 +112,10 @@ function FoundersSection({ t }: { t: (key: string) => string }) {
                 data-testid={`card-founder-${founder.key}`}
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-full overflow-hidden bg-primary/10 flex-shrink-0">
-                    <img loading="lazy" decoding="async" 
-                      src={founder.image} 
-                      alt={founder.name}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10">
+                    <span className="font-display text-3xl text-primary">
+                      {founder.name.split(" ").map((n: string) => n[0]).join("")}
+                    </span>
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-xl" data-testid={`text-founder-name-${founder.key}`}>

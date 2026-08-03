@@ -13,6 +13,19 @@ const nepalVideo = MEDIA["14862479-hd_1920_1080_60fps_1765009387935.mp4"];
 const indonesiaVideo = MEDIA["12004059_1920_1080_30fps_1765009552268.mp4"];
 const bhutanVideo = MEDIA["bhutan-web.mp4"];
 
+const CODES: Record<string, string> = {
+  "kazakhstan-steppe": "001", "kyrgyzstan-heights": "002", "mongolia-gobi": "003",
+  "nepal-mustang": "004", "bhutan-sacred": "005", "indonesia-flores": "006",
+};
+const COORDS: Record<string, string> = {
+  "kazakhstan-steppe": "43.3510\u00B0 N, 79.0794\u00B0 E",
+  "kyrgyzstan-heights": "41.8397\u00B0 N, 75.1338\u00B0 E",
+  "mongolia-gobi": "43.5000\u00B0 N, 103.5000\u00B0 E",
+  "nepal-mustang": "29.1892\u00B0 N, 83.9531\u00B0 E",
+  "bhutan-sacred": "27.4916\u00B0 N, 89.3639\u00B0 E",
+  "indonesia-flores": "8.5500\u00B0 S, 119.4890\u00B0 E",
+};
+
 interface ItineraryDay {
   day: number;
   title: string;
@@ -489,7 +502,7 @@ function ItineraryDay({ day, isLast }: { day: ItineraryDay; isLast: boolean }) {
         <span className="font-display text-xs font-bold text-primary-foreground" data-testid={`text-day-number-${day.day}`}>{day.day}</span>
       </div>
       {!isLast && (
-        <div className="absolute left-[11px] top-6 bottom-0 w-0.5 bg-border" />
+        <div className="absolute left-[11px] top-6 bottom-0 w-0 border-l-2 border-dashed border-primary/40" />
       )}
       
       <div className="ml-4">
@@ -590,9 +603,12 @@ export default function ExpeditionDetail() {
             All Expeditions
           </Link>
 
-          <Badge className="font-display tracking-wide mb-4" data-testid="badge-country">
-            {expedition.country}
-          </Badge>
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <Badge className="font-mono tracking-[0.15em]" data-testid="badge-country">
+              {`EXPEDITION ${CODES[expedition.id] ?? "000"} — ${expedition.country.toUpperCase()}`}
+            </Badge>
+            <span className="font-mono text-[11px] tracking-[0.15em] text-primary/80">{COORDS[expedition.id]}</span>
+          </div>
 
           <h1
             className="font-display font-black text-4xl md:text-5xl lg:text-6xl text-white mb-4 tracking-tight"

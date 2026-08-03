@@ -27,6 +27,17 @@ interface Expedition {
   videoUrl?: string;
 }
 
+// Anchor coordinates per expedition — cartography details for a brand about
+// where maps end.
+const COORDS: Record<string, string> = {
+  "kazakhstan-steppe": "43.3510\u00B0 N, 79.0794\u00B0 E",
+  "kyrgyzstan-heights": "41.8397\u00B0 N, 75.1338\u00B0 E",
+  "mongolia-gobi": "43.5000\u00B0 N, 103.5000\u00B0 E",
+  "nepal-mustang": "29.1892\u00B0 N, 83.9531\u00B0 E",
+  "bhutan-sacred": "27.4916\u00B0 N, 89.3639\u00B0 E",
+  "indonesia-flores": "8.5500\u00B0 S, 119.4890\u00B0 E",
+};
+
 const expeditions: Expedition[] = [
   {
     id: "kazakhstan-steppe",
@@ -159,13 +170,14 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6">
-            <span className="font-display text-xs tracking-widest text-primary uppercase">
-              {expedition.country}
+            <span className="font-mono text-[11px] tracking-[0.2em] text-primary uppercase">
+              {`EXPEDITION ${String(index + 1).padStart(3, "0")} — ${expedition.country}`}
             </span>
             <h3 className="font-display font-bold text-2xl md:text-3xl text-white mt-1">
               {translatedTitle}
             </h3>
             <p className="font-body text-white/70 italic mt-1">{translatedTagline}</p>
+            <p className="font-mono text-[10px] tracking-[0.15em] text-primary/70 mt-2">{COORDS[expedition.id]}</p>
           </div>
         </div>
 

@@ -48,16 +48,19 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Seasonal Guide
     "seasonal.subtitle": "Seasonal Guide",
+    "seasonal.kicker": "The Calendar",
     "seasonal.title": "When To Go",
     "seasonal.description": "Every month offers unique experiences. Our travel experts have curated the perfect destinations for each season.",
     
     // Adventure Section
     "adventure.subtitle": "Our Areas of Expertise",
+    "adventure.kicker": "In the Field",
     "adventure.title": "What Does Adventure Mean To You?",
     "adventure.description": "From remote mountain peaks to untouched coastlines, we design journeys that push boundaries while maintaining the highest standards of luxury and safety.",
     "adventure.cta": "Find Your Adventure",
     
     // Founders
+    "founders.kicker": "The Founders",
     "founders.title": "The Command Structure",
     "founders.subtitle": "Meet The Team",
     "founders.headline": "The Founders",
@@ -446,16 +449,19 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Seasonal Guide
     "seasonal.subtitle": "Guía Estacional",
+    "seasonal.kicker": "El Calendario",
     "seasonal.title": "Cuándo Ir",
     "seasonal.description": "Cada mes ofrece experiencias únicas. Nuestros expertos en viajes han seleccionado los destinos perfectos para cada temporada.",
     
     // Adventure Section
     "adventure.subtitle": "Nuestras Áreas de Especialización",
+    "adventure.kicker": "En el Terreno",
     "adventure.title": "¿Qué Significa la Aventura Para Ti?",
     "adventure.description": "Desde picos de montañas remotas hasta costas vírgenes, diseñamos viajes que superan límites mientras mantenemos los más altos estándares de lujo y seguridad.",
     "adventure.cta": "Encuentra Tu Aventura",
     
     // Founders
+    "founders.kicker": "Los Fundadores",
     "founders.title": "La Estructura de Comando",
     "founders.subtitle": "Conoce al Equipo",
     "founders.headline": "Los Fundadores",

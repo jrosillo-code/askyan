@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Chatbot } from "@/components/chatbot";
 import { useLanguage } from "@/contexts/language-context";
 import { MEDIA } from "@/lib/media";
+import { RoadPath } from "@/components/road-path";
 import logoImage from "@assets/download-Picsart-BackgroundRemover_1764993972814.png";
 const mountainsImage = MEDIA["stock_images/aerial_view_mountain_771f3480.jpg"];
 const desertImage = MEDIA["stock_images/desert_dunes_morocco_5d629ce9.jpg"];
@@ -279,7 +280,7 @@ function HeroSection() {
         
         <AnimatedText 
           text={t("hero.title")}
-          className="font-display font-black text-4xl md:text-6xl lg:text-7xl xl:text-8xl text-white mb-8 tracking-tight leading-[1.1]"
+          className="font-display font-bold text-5xl md:text-7xl lg:text-8xl text-white mb-8 tracking-[-0.02em] leading-[1.05]"
           delay={0.6}
         />
         
@@ -394,6 +395,9 @@ function DestinationsSection() {
           <p className="font-display text-sm tracking-[0.3em] text-primary uppercase mb-4">
             {t("destinations.subtitle")}
           </p>
+          <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
+            {t("destinations.subtitle")}
+          </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-6">
             {t("destinations.title")}
           </h2>
@@ -457,7 +461,7 @@ function WhyAskyanSection() {
   return (
     <section
       id="why-askyan"
-      className="py-16 md:py-20 px-6"
+      className="py-16 md:py-20 px-6 border-t border-primary/10"
       data-testid="section-why-askyan"
     >
       <div className="max-w-6xl mx-auto">
@@ -836,7 +840,7 @@ function TestimonialsSection() {
   return (
     <section
       id="testimonials"
-      className="py-20 md:py-24 px-6 bg-card"
+      className="bone-section py-20 md:py-24 px-6"
       data-testid="section-testimonials"
     >
       <div className="max-w-6xl mx-auto">
@@ -850,7 +854,7 @@ function TestimonialsSection() {
           <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
             {t("testimonials.subtitle")}
           </p>
-          <h2 className="font-display font-bold text-xl md:text-2xl text-foreground">
+          <h2 className="font-display font-bold text-2xl md:text-3xl">
             {t("testimonials.title")}
           </h2>
         </motion.div>
@@ -863,15 +867,15 @@ function TestimonialsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-background p-6 rounded-md border border-border"
+                className="bone-card p-6 rounded-md"
                 data-testid={`testimonial-${currentIndex * testimonialsPerPage + index}`}
               >
                 <Quote className="w-6 h-6 text-primary/30 mb-4" />
-                <blockquote className="font-body text-sm text-foreground leading-relaxed mb-4 italic">
+                <blockquote className="font-body text-sm leading-relaxed mb-4 italic">
                   "{testimonial.quote}"
                 </blockquote>
                 <div>
-                  <p className="font-display font-bold text-sm text-foreground">
+                  <p className="font-display font-bold text-sm">
                     {testimonial.client}
                   </p>
                   <p className="font-body text-xs text-muted-foreground">
@@ -1095,6 +1099,9 @@ function WhenToGoSection() {
           <p className="font-display text-sm tracking-[0.3em] text-primary uppercase mb-4">
             {t("seasonal.subtitle")}
           </p>
+          <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
+            {t("seasonal.kicker")}
+          </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-foreground mb-6">
             {t("seasonal.title")}
           </h2>
@@ -1150,6 +1157,9 @@ function AdventureFeatureSection() {
             <p className="font-display text-sm tracking-[0.3em] text-primary uppercase mb-4">
               {t("adventure.subtitle")}
             </p>
+            <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
+              {t("adventure.kicker")}
+            </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-white mb-6 leading-tight">
               {t("adventure.title")}
             </h2>
@@ -1202,10 +1212,13 @@ function FoundersSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl text-center mb-16 md:mb-20"
+          className="text-center mb-16 md:mb-20"
           data-testid="text-founders-headline"
         >
-          {t("founders.title")}
+          <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
+            {t("founders.kicker")}
+          </p>
+          <span className="font-display font-bold text-3xl md:text-4xl block">{t("founders.title")}</span>
         </motion.h2>
 
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
@@ -1472,13 +1485,17 @@ export default function Home() {
       />
       <main>
         <HeroSection />
-        <SpotlightSection />
-        <AdventureFeatureSection />
-        <PositiveImpactSection />
-        <WhenToGoSection />
-        <TestimonialsSection />
-        <WaitlistSection />
-        <ContactInfoSection />
+        {/* The Road: the mark's winding path, drawn by your scroll */}
+        <div className="relative">
+          <RoadPath />
+          <SpotlightSection />
+          <AdventureFeatureSection />
+          <PositiveImpactSection />
+          <WhenToGoSection />
+          <TestimonialsSection />
+          <WaitlistSection />
+          <ContactInfoSection />
+        </div>
       </main>
       <Footer />
       <Chatbot />
