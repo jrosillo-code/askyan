@@ -117,7 +117,7 @@ function FoundersSection({ t }: { t: (key: string) => string }) {
               >
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-20 h-20 rounded-full overflow-hidden bg-primary/10 flex-shrink-0">
-                    <img 
+                    <img loading="lazy" decoding="async" 
                       src={founder.image} 
                       alt={founder.name}
                       className="w-full h-full object-cover"

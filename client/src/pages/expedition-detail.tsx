@@ -564,7 +564,7 @@ export default function ExpeditionDetail() {
               }}
             />
           ) : (
-            <img
+            <img loading="lazy" decoding="async"
               src={expedition.imageUrl}
               alt={expedition.title}
               className="w-full h-full object-cover"
@@ -669,7 +669,7 @@ export default function ExpeditionDetail() {
                     className="aspect-square overflow-hidden rounded-md"
                     data-testid={`img-gallery-${index}`}
                   >
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={image}
                       alt={`${expedition.title} gallery ${index + 1}`}
                       className="w-full h-full object-cover"

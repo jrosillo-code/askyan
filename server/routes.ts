@@ -52,12 +52,35 @@ function requireAdmin(req: { headers: Record<string, unknown>; query: Record<str
   return true;
 }
 
+// Tiny in-memory rate limiter (per serverless instance): enough to stop
+// casual abuse of the write endpoints without any external dependency.
+const hits = new Map<string, number[]>();
+function rateLimit(req: { headers: Record<string, unknown> }, key: string, max: number, windowMs = 60_000): boolean {
+  const ip = String(req.headers["x-forwarded-for"] ?? "local").split(",")[0].trim();
+  const k = `${key}:${ip}`;
+  const now = Date.now();
+  const arr = (hits.get(k) ?? []).filter((t) => now - t < windowMs);
+  if (arr.length >= max) return false;
+  arr.push(now);
+  hits.set(k, arr);
+  if (hits.size > 5000) hits.clear(); // bound memory
+  return true;
+}
+
+const chatMessageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().min(1).max(2000),
+});
+const chatBodySchema = z.object({ messages: z.array(chatMessageSchema).min(1).max(20) });
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   app.post("/api/subscribe", async (req, res) => {
     try {
+      if (!rateLimit(req, "sub", 6)) return res.status(429).json({ message: "Too many attempts — try again in a minute." });
+      if (typeof req.body?.email === "string") req.body.email = req.body.email.trim().toLowerCase();
       const validatedData = insertSubscriberSchema.parse(req.body);
       
       const existingSubscriber = await storage.getSubscriberByEmail(validatedData.email);
@@ -94,6 +117,7 @@ export async function registerRoutes(
 
   app.post("/api/contact", async (req, res) => {
     try {
+      if (!rateLimit(req, "contact", 6)) return res.status(429).json({ message: "Too many attempts — try again in a minute." });
       const validatedData = insertContactSchema.parse(req.body);
       const contact = await storage.createContactSubmission(validatedData);
       res.status(201).json({ 
@@ -164,18 +188,22 @@ export async function registerRoutes(
           message: "The concierge is offline right now — please use the contact form.",
         });
       }
-      const { messages } = req.body;
+      if (!rateLimit(req, "chat", 12)) return res.status(429).json({ message: "The concierge needs a moment — try again shortly." });
+      const { messages } = chatBodySchema.parse(req.body);
 
-      const systemPrompt = `You are the ASKYAN Expeditions guide. ASKYAN is a private media collective that provides exclusive, transformative travel experiences. Key points:
-- We are NOT a travel agency - we are a media collective granting access to the unseen world
-- We connect intellectually curious individuals with authentic cultural experiences
-- Our "Cultural Scribes" are local guides who provide deep cultural understanding
-- We focus on emerging destinations and transformative experiences
-- Currently accepting applications for our founding cohort
-Keep responses concise and engaging. Encourage visitors to request access via the form on the site.`;
+      const systemPrompt = `You are the ASKYAN Expeditions concierge. ASKYAN is a private media collective granting curated access to the unseen world — not a travel agency and not a booking site.
+
+What is real today (never invent beyond this):
+- Founding expeditions in development: The Steppe Awakening (Kazakhstan), The Celestial Mountains (Kyrgyzstan), The Gobi Crossing (Mongolia), The Thunder Dragon Path (Bhutan), plus concepts The Forbidden Kingdom and The Ring of Fire.
+- "Cultural Scribes" are local guides who provide deep cultural understanding.
+- The founding cohort is now forming; places are limited and allocated by application.
+- No public prices or dates yet — if asked, say details are shared with accepted applicants.
+
+Style: concise, warm, quietly confident; never salesy or breathless. Two short paragraphs at most. Guide interested visitors to request access via the form on the site.`;
 
       const completion = await ai.client.chat.completions.create({
         model: ai.model,
+        max_tokens: 350,
         messages: [
           { role: "system", content: systemPrompt },
           ...messages.slice(-10),

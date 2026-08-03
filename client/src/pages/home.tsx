@@ -131,11 +131,13 @@ const pressLogos = [
 ];
 
 const heroVideos = [
-  "https://videos.pexels.com/video-files/15420938/15420938-uhd_3840_2160_30fps.mp4",
-  "https://videos.pexels.com/video-files/7592093/7592093-uhd_4096_1974_30fps.mp4",
-  "https://videos.pexels.com/video-files/34941888/14801301_2560_1440_60fps.mp4",
-  "https://videos.pexels.com/video-files/19325697/19325697-uhd_2560_1440_30fps.mp4",
-  "https://videos.pexels.com/video-files/19002092/19002092-uhd_3840_2160_60fps.mp4",
+  // People-free, destination-true rotation: Kyrgyzstan-green mountains, Gobi
+  // dunes, Charyn-like canyon, snowbound Himalaya mood, high peaks.
+  "https://www.pexels.com/download/video/8761030/",
+  "https://www.pexels.com/download/video/3059046/",
+  "https://www.pexels.com/download/video/28878868/",
+  "https://www.pexels.com/download/video/7593088/",
+  "https://www.pexels.com/download/video/3121327/",
 ];
 
 function HeroSection() {
@@ -410,7 +412,7 @@ function DestinationsSection() {
               className="group relative aspect-[3/4] rounded-md overflow-hidden cursor-pointer"
               data-testid={`card-destination-${index}`}
             >
-              <img
+              <img loading="lazy" decoding="async"
                 src={destination.image}
                 alt={t(destination.nameKey)}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -558,7 +560,7 @@ function PositiveImpactSection() {
               data-testid={`impact-${item.id}`}
             >
               <div className="relative h-48 mb-4 rounded-md overflow-hidden">
-                <img
+                <img loading="lazy" decoding="async"
                   src={item.image}
                   alt={t(item.titleKey)}
                   className="w-full h-full object-cover"
@@ -708,7 +710,7 @@ function SpotlightSection() {
                           }}
                         />
                       ) : (
-                        <img
+                        <img loading="lazy" decoding="async"
                           src={'image' in currentAdventure ? currentAdventure.image as string : ''}
                           alt={title}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -1015,7 +1017,7 @@ function MonthFlipCard({ month, index }: { month: typeof monthsData[0]; index: n
             className="absolute inset-0 rounded-md overflow-hidden"
             style={{ backfaceVisibility: "hidden" }}
           >
-            <img
+            <img loading="lazy" decoding="async"
               src={month.image}
               alt={month.name}
               className="absolute inset-0 w-full h-full object-cover"
@@ -1045,7 +1047,7 @@ function MonthFlipCard({ month, index }: { month: typeof monthsData[0]; index: n
               <div className="flex-1 grid grid-rows-3 gap-2">
                 {month.destinationsList.map((dest) => (
                   <div key={dest.name} className="relative rounded overflow-hidden">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={dest.image}
                       alt={dest.name}
                       className="absolute inset-0 w-full h-full object-cover"
@@ -1219,7 +1221,7 @@ function FoundersSection() {
               >
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10 flex-shrink-0">
-                    <img 
+                    <img loading="lazy" decoding="async" 
                       src={founder.image} 
                       alt={founder.name}
                       className="w-full h-full object-cover"

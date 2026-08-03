@@ -145,7 +145,7 @@ function VideoCard({ video, onClick, index, t }: { video: VideoItem; onClick: ()
         data-testid={`card-video-${video.id}`}
       >
         <div className="relative aspect-video overflow-hidden rounded-t-md">
-          <img
+          <img loading="lazy" decoding="async"
             src={video.thumbnailUrl}
             alt={t(`film.${filmKey}.title`)}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

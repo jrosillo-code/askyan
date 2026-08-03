@@ -151,7 +151,7 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
               }}
             />
           ) : (
-            <img
+            <img loading="lazy" decoding="async"
               src={expedition.imageUrl}
               alt={translatedTitle}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

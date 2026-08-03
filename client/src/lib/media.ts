@@ -51,9 +51,9 @@ export const MEDIA: Record<string, string> = {
   "sebastian-boring-8zD7rs8UpxU-unsplash_1764996645593.jpg": img(21533323), // Torres del Paine park
 
   // ── expedition films ──
-  "kazakhstan-web.mp4": vid(28236381),
+  "kazakhstan-web.mp4": vid(28878868), // canyon river aerial — Charyn-like, no people
   "kyrgyzstan-web.mp4": vid(8761030),
-  "mongolia-web.mp4": vid(4763824),
+  "mongolia-web.mp4": vid(3059046), // desert dune drone — Gobi mood, no people
   "adventure-web.mp4": "/videos/adventure-web.mp4", // real brand footage
   "expeditions-hero-web.mp4": vid(3121327),
   "12004059_1920_1080_30fps_1765009552268.mp4": "/videos/12004059.mp4", // real brand footage

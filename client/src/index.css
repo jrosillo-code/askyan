@@ -183,6 +183,17 @@
   }
 
   .font-display {
+    font-family: 'Cormorant Garamond', 'Lora', Georgia, serif;
+  }
+
+  /* Small tracked labels, nav and buttons keep the sans — the serif owns the
+     headlines. (Cormorant's caps get frail below ~16px.) */
+  .font-display.text-xs,
+  .font-display.text-sm,
+  .font-display.text-\[9px\],
+  .font-display.text-\[10px\],
+  .font-display.text-\[11px\],
+  .font-display.text-\[12px\] {
     font-family: 'Inter', sans-serif;
   }
 
@@ -332,3 +343,45 @@
       0 2px 4px rgba(0, 0, 0, 0.5);
   }
 }
+
+
+/* ── Interaction smoothness (deep-dive polish) ─────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+::selection {
+  background: hsl(32 45% 64% / 0.35); /* brand amber */
+}
+
+:focus-visible {
+  outline: 2px solid hsl(32 45% 64% / 0.9);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button, a, [role="button"] {
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+button:active, [role="button"]:active {
+  transform: scale(0.985);
+}
+
+/* Thin dark scrollbar with an amber hover — chrome that matches the brand */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(0 0% 24%) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 24%);
+  border-radius: 5px;
+  border: 2px solid hsl(0 0% 7%);
+}
+*::-webkit-scrollbar-thumb:hover { background: hsl(32 45% 50%); }

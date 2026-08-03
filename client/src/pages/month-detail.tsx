@@ -412,7 +412,7 @@ export default function MonthDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-        <img
+        <img loading="lazy" decoding="async"
           src={monthData.image}
           alt={monthData.name}
           className="absolute inset-0 w-full h-full object-cover"
@@ -495,7 +495,7 @@ export default function MonthDetailPage() {
                 className="grid md:grid-cols-2 gap-8 items-center"
               >
                 <div className={`relative aspect-[4/3] rounded-md overflow-hidden ${index % 2 === 1 ? "md:order-2" : ""}`}>
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={destination.image}
                     alt={destination.name}
                     className="absolute inset-0 w-full h-full object-cover"
