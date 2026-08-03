@@ -25,6 +25,7 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 const PrivacyPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.TermsPage })));
 const MonthDetailPage = lazy(() => import("@/pages/month-detail"));
+const AdminPage = lazy(() => import("@/pages/admin"));
 
 // Quiet, on-brand loading state between chunks.
 function RouteFallback() {
@@ -45,9 +46,31 @@ function useScrollToTop() {
   }, [location]);
 }
 
+const PAGE_TITLES: Record<string, string> = {
+  "/": "ASKYAN EXPEDITIONS — Where the Map Ends",
+  "/expeditions": "Expeditions — ASKYAN",
+  "/films": "Films — ASKYAN",
+  "/chronicles": "Chronicles — ASKYAN",
+  "/about": "About — ASKYAN",
+  "/contact": "Request Access — ASKYAN",
+  "/conservation": "Conservation — ASKYAN",
+  "/community": "Community — ASKYAN",
+  "/sustainable": "Sustainable Travel — ASKYAN",
+  "/privacy": "Privacy — ASKYAN",
+  "/terms": "Terms — ASKYAN",
+  "/admin": "Ops Room — ASKYAN",
+};
+function usePageTitle() {
+  const [location] = useLocation();
+  useEffect(() => {
+    document.title = PAGE_TITLES[location] ?? "ASKYAN EXPEDITIONS — Where the Map Ends";
+  }, [location]);
+}
+
 function Router() {
   usePageTracking();
   useScrollToTop();
+  usePageTitle();
 
 
   return (
@@ -64,6 +87,7 @@ function Router() {
       <Route path="/community" component={Community} />
       <Route path="/sustainable" component={Sustainable} />
       <Route path="/when-to-go/:month" component={MonthDetailPage} />
+      <Route path="/admin" component={AdminPage} />
       <Route path="/privacy" component={PrivacyPage} />
       <Route path="/terms" component={TermsPage} />
       <Route component={NotFound} />

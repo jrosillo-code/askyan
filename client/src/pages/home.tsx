@@ -5,8 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ChevronDown, Map, Flame, ArrowRight, Quote } from "lucide-react";
 import { SharedHeader } from "@/components/shared-header";
-import jacoboImage from "@assets/Screen_Shot_2025-12-05_at_6.35.51_PM_1764977755766.png";
-import blazeImage from "@assets/unnamed_1764977969242.jpg";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -218,7 +216,18 @@ function HeroSection() {
       onTouchEnd={onTouchEnd}
     >
       <div className="absolute inset-0 z-0">
-        {heroVideos.map((video, index) => (
+        {/* Instant paint while the first stream buffers — no black flash */}
+        <img
+          src="https://images.pexels.com/photos/33433629/pexels-photo-33433629.jpeg?auto=compress&cs=tinysrgb&w=1920"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+        />
+        {heroVideos.map((video, index) => {
+          // Mount only the video on screen and its crossfade partner —
+          // mounting all five streamed ~5 concurrent UHD downloads on load.
+          if (index !== currentVideo && index !== previousVideo) return null;
+          return (
           <video
             key={video}
             autoPlay
@@ -235,7 +244,8 @@ function HeroSection() {
               }
             }}
           />
-        ))}
+          );
+        })}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 z-20" />
       </div>
 
@@ -1160,14 +1170,12 @@ function FoundersSection() {
       title: "The Architect",
       description:
         "Architects the brand's soul, systems, and stories from the central hub. His domain is The Art Foundry.",
-      image: blazeImage,
     },
     {
       name: "Jacobo Rosillo",
       title: "The Pathfinder",
       description:
         "Engineers the global network, node by node. His domain is The System Forge, executed in the field.",
-      image: jacoboImage,
     },
   ];
 
@@ -1203,12 +1211,12 @@ function FoundersSection() {
                 data-testid={`card-founder-${founder.name.split(' ')[0].toLowerCase()}`}
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10 flex-shrink-0">
-                    <img loading="lazy" decoding="async" 
-                      src={founder.image} 
-                      alt={founder.name}
-                      className="w-full h-full object-cover"
-                    />
+                  {/* Monogram until real portraits are supplied — a branded
+                      initial beats a placeholder tile on a founders card. */}
+                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10">
+                    <span className="font-display text-2xl text-primary">
+                      {founder.name.split(" ").map((n) => n[0]).join("")}
+                    </span>
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-xl" data-testid={`text-founder-name-${founder.name.split(' ')[0].toLowerCase()}`}>
