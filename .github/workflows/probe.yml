@@ -21,3 +21,11 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"email":"ci-probe@example.com"}' || true
           cat /tmp/r3.json; echo
+      - name: Probe pages
+        run: |
+          echo "=== GET /contact (follow redirects, show chain) ==="
+          curl -sS -o /dev/null -L --max-redirs 5 -w "final=%{url_effective} status=%{http_code} redirects=%{num_redirects}\n" https://askyan.vercel.app/contact || true
+          echo "=== GET /expedition/mongolia-gobi (prerendered title) ==="
+          curl -sSL https://askyan.vercel.app/expedition/mongolia-gobi | grep -o "<title>[^<]*</title>" || true
+          echo "=== GET / ==="
+          curl -sS -o /dev/null -w "status=%{http_code}\n" https://askyan.vercel.app/ || true
