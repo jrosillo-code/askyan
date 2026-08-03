@@ -54,7 +54,7 @@ export const MEDIA: Record<string, string> = {
   "kazakhstan-web.mp4": vid(28236381),
   "kyrgyzstan-web.mp4": vid(8761030),
   "mongolia-web.mp4": vid(4763824),
-  "adventure-web.mp4": vid(8419282),
+  "adventure-web.mp4": "/videos/adventure-web.mp4", // real brand footage
   "expeditions-hero-web.mp4": vid(3121327),
   "12004059_1920_1080_30fps_1765009552268.mp4": vid(12004059),
   "14862479-hd_1920_1080_60fps_1765009387935.mp4": vid(14862479),
