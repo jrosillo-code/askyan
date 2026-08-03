@@ -29709,10 +29709,10 @@ var PgEnumColumn = class extends PgColumn {
 // node_modules/drizzle-orm/subquery.js
 var Subquery = class {
   static [entityKind] = "Subquery";
-  constructor(sql3, selection, alias, isWith = false) {
+  constructor(sql2, selection, alias, isWith = false) {
     this._ = {
       brand: "Subquery",
-      sql: sql3,
+      sql: sql2,
       selectedFields: selection,
       alias,
       isWith
@@ -30102,19 +30102,19 @@ function sql(strings, ...params) {
   }
   return new SQL(queryChunks);
 }
-((sql22) => {
+((sql2) => {
   function empty() {
     return new SQL([]);
   }
-  sql22.empty = empty;
+  sql2.empty = empty;
   function fromList(list) {
     return new SQL(list);
   }
-  sql22.fromList = fromList;
+  sql2.fromList = fromList;
   function raw(str2) {
     return new SQL([new StringChunk(str2)]);
   }
-  sql22.raw = raw;
+  sql2.raw = raw;
   function join(chunks, separator) {
     const result = [];
     for (const [i, chunk] of chunks.entries()) {
@@ -30125,24 +30125,24 @@ function sql(strings, ...params) {
     }
     return new SQL(result);
   }
-  sql22.join = join;
+  sql2.join = join;
   function identifier(value) {
     return new Name(value);
   }
-  sql22.identifier = identifier;
+  sql2.identifier = identifier;
   function placeholder2(name2) {
     return new Placeholder(name2);
   }
-  sql22.placeholder = placeholder2;
+  sql2.placeholder = placeholder2;
   function param2(value, encoder) {
     return new Param(value, encoder);
   }
-  sql22.param = param2;
+  sql2.param = param2;
 })(sql || (sql = {}));
 ((SQL2) => {
   class Aliased {
-    constructor(sql22, fieldAlias) {
-      this.sql = sql22;
+    constructor(sql2, fieldAlias) {
+      this.sql = sql2;
       this.fieldAlias = fieldAlias;
     }
     static [entityKind] = "SQL.Aliased";
@@ -32874,8 +32874,8 @@ var PgDialect = class {
       return "none";
     }
   }
-  sqlToQuery(sql22, invokeSource) {
-    return sql22.toQuery({
+  sqlToQuery(sql2, invokeSource) {
+    return sql2.toQuery({
       casing: this.casing,
       escapeName: this.escapeName,
       escapeParam: this.escapeParam,
@@ -35028,10 +35028,10 @@ var PgRelationalQuery = class extends QueryPromise {
 
 // node_modules/drizzle-orm/pg-core/query-builders/raw.js
 var PgRaw = class extends QueryPromise {
-  constructor(execute, sql3, query, mapBatchResult) {
+  constructor(execute, sql2, query, mapBatchResult) {
     super();
     this.execute = execute;
-    this.sql = sql3;
+    this.sql = sql2;
     this.query = query;
     this.mapBatchResult = mapBatchResult;
   }
@@ -35380,8 +35380,8 @@ var PgSession = class {
     ).all();
   }
   /** @internal */
-  async count(sql22, token) {
-    const res = await this.execute(sql22, token);
+  async count(sql2, token) {
+    const res = await this.execute(sql2, token);
     return Number(
       res[0]["count"]
     );
@@ -39923,8 +39923,8 @@ var NodePgSession = class _NodePgSession extends PgSession {
       }
     }
   }
-  async count(sql22) {
-    const res = await this.execute(sql22);
+  async count(sql2) {
+    const res = await this.execute(sql2);
     return Number(
       res["rows"][0]["count"]
     );
@@ -40114,6 +40114,18 @@ var DatabaseStorage = class {
     };
   }
 };
+async function getContactStatuses() {
+  try {
+    const result = await db.execute(sql`select id, status from contact_submissions`);
+    const rows = result.rows;
+    return Object.fromEntries(rows.map((r) => [r.id, r.status ?? "new"]));
+  } catch {
+    return null;
+  }
+}
+async function setContactStatus(id, status) {
+  await db.execute(sql`update contact_submissions set status = ${status} where id = ${id}`);
+}
 var storage = new DatabaseStorage();
 
 // server/mail.ts
@@ -51239,9 +51251,24 @@ async function registerRoutes(httpServer, app2) {
     if (!requireAdmin(req, res)) return;
     try {
       const contacts = await storage.getAllContactSubmissions();
-      res.json({ contacts, count: contacts.length });
+      const statuses = await getContactStatuses();
+      res.json({ contacts, count: contacts.length, statuses });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch contact submissions" });
+    }
+  });
+  const statusSchema = external_exports.object({ status: external_exports.enum(["new", "reviewed", "accepted", "declined"]) });
+  app2.patch("/api/contacts/:id/status", async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    try {
+      const { status } = statusSchema.parse(req.body);
+      await setContactStatus(req.params.id, status);
+      res.json({ ok: true });
+    } catch (error) {
+      if (error instanceof external_exports.ZodError) return res.status(400).json({ message: "Invalid status" });
+      res.status(503).json({
+        message: "Status column missing \u2014 run supabase-status.sql in the Supabase SQL editor once."
+      });
     }
   });
   app2.post("/api/analytics/pageview", async (req, res) => {

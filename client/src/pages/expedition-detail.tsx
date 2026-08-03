@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
+import { useLanguage } from "@/contexts/language-context";
+import { expeditionDetailsEs } from "@/lib/expedition-content-es";
 import { MEDIA } from "@/lib/media";
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
@@ -53,7 +55,7 @@ const COORDS: Record<string, string> = {
   "indonesia-flores": "8.5500\u00B0 S, 119.4890\u00B0 E",
 };
 
-interface ItineraryDay {
+export interface ItineraryDay {
   day: number;
   title: string;
   description: string;
@@ -62,7 +64,7 @@ interface ItineraryDay {
   meals: string;
 }
 
-interface ExpeditionDetail {
+export interface ExpeditionDetail {
   id: string;
   country: string;
   title: string;
@@ -566,7 +568,15 @@ function ItineraryDay({ day, isLast }: { day: ItineraryDay; isLast: boolean }) {
 export default function ExpeditionDetail() {
   useAmbientVideos();
   const { id } = useParams<{ id: string }>();
-  const expedition = id ? expeditionDetails[id] : null;
+  const { language, t } = useLanguage();
+  const base = id ? expeditionDetails[id] : null;
+  // Spanish dossiers are full overrides merged onto the English base;
+  // expedition titles stay in English as brand names.
+  const expedition = base
+    ? language === "es"
+      ? { ...base, ...expeditionDetailsEs[base.id] }
+      : base
+    : null;
 
   if (!expedition) {
     return (
@@ -629,7 +639,7 @@ export default function ExpeditionDetail() {
             data-testid="link-back-to-expeditions"
           >
             <ArrowLeft className="w-4 h-4" />
-            All Expeditions
+            {t("detail.back")}
           </Link>
 
           <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -685,7 +695,7 @@ export default function ExpeditionDetail() {
                 transition={{ duration: 0.6 }}
               >
                 <h2 className="font-display font-bold text-2xl md:text-3xl mb-6" data-testid="heading-journey">
-                  The Journey
+                  {t("detail.journey")}
                 </h2>
                 <p className="font-body text-lg text-muted-foreground leading-relaxed mb-8" data-testid="text-overview">
                   {expedition.overview}
@@ -732,7 +742,7 @@ export default function ExpeditionDetail() {
                 transition={{ duration: 0.6 }}
               >
                 <h2 className="font-display font-bold text-2xl md:text-3xl mb-8" data-testid="heading-itinerary">
-                  Day by Day Itinerary
+                  {t("detail.itinerary")}
                 </h2>
                 <div>
                   {expedition.itinerary.map((day, index) => (
@@ -752,17 +762,17 @@ export default function ExpeditionDetail() {
                   <div className="mb-6 flex items-start justify-between gap-3">
                     <MiniMap id={expedition.id} />
                     <span className="rotate-2 rounded-sm border border-primary/60 px-2 py-1 font-mono text-[10px] tracking-[0.18em] text-primary">
-                      FOUNDING<br/>SEASON
+                      {t("detail.stamp1")}<br/>{t("detail.stamp2")}
                     </span>
                   </div>
                   <div className="mb-6">
                     <span className="font-display text-sm text-muted-foreground uppercase tracking-wide">
-                      Pricing
+                      {t("detail.pricing")}
                     </span>
                     <div className="font-display text-3xl font-bold text-foreground">
                       {expedition.startingFrom}
                     </div>
-                    <span className="font-body text-sm text-muted-foreground">Details shared with accepted applicants</span>
+                    <span className="font-body text-sm text-muted-foreground">{t("detail.pricingNote")}</span>
                   </div>
 
                   <div className="space-y-3 mb-6">
@@ -782,13 +792,13 @@ export default function ExpeditionDetail() {
 
                   <Link href={`/contact?expedition=${expedition.id}`} data-testid="link-inquire-cta">
                     <Button className="w-full font-display tracking-wide" size="lg" data-testid="button-inquire-cta">
-                      Apply for This Journey
+                      {t("detail.apply")}
                     </Button>
                   </Link>
                 </Card>
 
                 <Card className="p-6 bg-card border-border" data-testid="card-included">
-                  <h3 className="font-display font-bold text-lg mb-4">What's Included</h3>
+                  <h3 className="font-display font-bold text-lg mb-4">{t("detail.included")}</h3>
                   <ul className="space-y-2">
                     {expedition.included.map((item, index) => (
                       <li key={index} className="flex items-start gap-2 text-sm">
@@ -800,7 +810,7 @@ export default function ExpeditionDetail() {
                 </Card>
 
                 <Card className="p-6 bg-card border-border" data-testid="card-not-included">
-                  <h3 className="font-display font-bold text-lg mb-4">Not Included</h3>
+                  <h3 className="font-display font-bold text-lg mb-4">{t("detail.notIncluded")}</h3>
                   <ul className="space-y-2">
                     {expedition.notIncluded.map((item, index) => (
                       <li key={index} className="font-body text-sm text-muted-foreground">

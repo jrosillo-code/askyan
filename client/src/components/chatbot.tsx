@@ -79,7 +79,7 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-48px)]"
+            className="fixed right-6 z-50 w-[360px] max-w-[calc(100vw-48px)] bottom-[calc(6rem+env(safe-area-inset-bottom))]"
           >
             <Card className="flex flex-col h-[500px] max-h-[70vh] shadow-2xl border-border bg-background">
               <div className="flex items-center justify-between gap-4 p-4 border-b border-border bg-card rounded-t-md">
@@ -155,7 +155,7 @@ export function Chatbot() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 1, type: "spring", stiffness: 200 }}
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed right-6 z-50 bottom-[calc(1.5rem+env(safe-area-inset-bottom))]"
       >
         <Button
           size="lg"

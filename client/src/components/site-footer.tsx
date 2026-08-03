@@ -23,24 +23,24 @@ export function SiteFooter() {
             <div>
               <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">{t("footer.journeys")}</div>
               <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><Link href="/expeditions" className="hover:text-foreground">{t("nav.expeditions")}</Link></li>
-                <li><Link href="/films" className="hover:text-foreground">{t("nav.films")}</Link></li>
-                <li><Link href="/chronicles" className="hover:text-foreground">{t("nav.chronicles")}</Link></li>
+                <li><Link href="/expeditions" className="inline-block py-0.5 hover:text-foreground">{t("nav.expeditions")}</Link></li>
+                <li><Link href="/films" className="inline-block py-0.5 hover:text-foreground">{t("nav.films")}</Link></li>
+                <li><Link href="/chronicles" className="inline-block py-0.5 hover:text-foreground">{t("nav.chronicles")}</Link></li>
               </ul>
             </div>
             <div>
               <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">{t("footer.collective")}</div>
               <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><Link href="/about" className="hover:text-foreground">{t("nav.about")}</Link></li>
-                <li><Link href="/how-we-travel" className="hover:text-foreground">{t("nav.howWeTravel")}</Link></li>
-                <li><Link href="/ledger" className="hover:text-foreground">{t("nav.ledger")}</Link></li>
+                <li><Link href="/about" className="inline-block py-0.5 hover:text-foreground">{t("nav.about")}</Link></li>
+                <li><Link href="/how-we-travel" className="inline-block py-0.5 hover:text-foreground">{t("nav.howWeTravel")}</Link></li>
+                <li><Link href="/ledger" className="inline-block py-0.5 hover:text-foreground">{t("nav.ledger")}</Link></li>
               </ul>
             </div>
             <div>
               <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">{t("footer.join")}</div>
               <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><Link href="/contact" className="hover:text-foreground">{t("nav.requestAccess")}</Link></li>
-                <li><Link href="/#waitlist" className="hover:text-foreground">{t("footer.waitlist")}</Link></li>
+                <li><Link href="/contact" className="inline-block py-0.5 hover:text-foreground">{t("nav.requestAccess")}</Link></li>
+                <li><Link href="/#waitlist" className="inline-block py-0.5 hover:text-foreground">{t("footer.waitlist")}</Link></li>
               </ul>
             </div>
           </div>

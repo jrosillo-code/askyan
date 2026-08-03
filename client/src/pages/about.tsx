@@ -18,7 +18,7 @@ function PhilosophySection({ t }: { t: (key: string) => string }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -36,7 +36,7 @@ function PhilosophySection({ t }: { t: (key: string) => string }) {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="border-l-2 border-primary pl-6 md:pl-8 max-w-3xl mx-auto"
         >
@@ -84,7 +84,7 @@ function FoundersSection({ t }: { t: (key: string) => string }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
@@ -105,7 +105,7 @@ function FoundersSection({ t }: { t: (key: string) => string }) {
               key={founder.key}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
             >
               <Card

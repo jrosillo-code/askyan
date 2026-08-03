@@ -166,6 +166,18 @@ const translations: Record<Language, Record<string, string>> = {
     "faq.q5": "Is ASKYAN a travel agency?",
     "faq.a5": "No. We're a media collective that runs a small number of expeditions a year and documents them. Access is limited by design.",
 
+    // Expedition dossier labels
+    "detail.journey": "The Journey",
+    "detail.itinerary": "Day by Day Itinerary",
+    "detail.pricing": "Pricing",
+    "detail.pricingNote": "Details shared with accepted applicants",
+    "detail.apply": "Apply for This Journey",
+    "detail.included": "What's Included",
+    "detail.notIncluded": "Not Included",
+    "detail.back": "All Expeditions",
+    "detail.stamp1": "FOUNDING",
+    "detail.stamp2": "SEASON",
+
     // Films notify
     "films.notify.kicker": "First Light",
     "films.notify.title": "Be there at the premiere",
@@ -670,6 +682,18 @@ const translations: Record<Language, Record<string, string>> = {
     "faq.a4": "Poder caminar varios días seguidos en altitud, y estar cómodo lejos de los hoteles. Cada viaje detalla sus propias exigencias — honestas.",
     "faq.q5": "¿Es ASKYAN una agencia de viajes?",
     "faq.a5": "No. Somos un colectivo de medios que realiza un número reducido de expediciones al año y las documenta. El acceso es limitado por diseño.",
+
+    // Expedition dossier labels
+    "detail.journey": "El Viaje",
+    "detail.itinerary": "Itinerario Día a Día",
+    "detail.pricing": "Precio",
+    "detail.pricingNote": "Detalles compartidos con los solicitantes aceptados",
+    "detail.apply": "Solicita Este Viaje",
+    "detail.included": "Qué Incluye",
+    "detail.notIncluded": "No Incluye",
+    "detail.back": "Todas las Expediciones",
+    "detail.stamp1": "TEMPORADA",
+    "detail.stamp2": "FUNDACIONAL",
 
     // Films notify
     "films.notify.kicker": "Primera Luz",

@@ -107,8 +107,8 @@ const pressLogos: { name: string; text: string; url: string; textKey?: string }[
 // of the same file alternate — as the live one nears its final seconds, the
 // idle one restarts from zero and the pair crossfade, so the drift across
 // the desert never visibly ends.
-const GOBI_VIDEO = "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4";
-const GOBI_POSTER = "https://images.pexels.com/videos/8774553/free-video-8774553.jpg?auto=compress&cs=tinysrgb&w=1920";
+const GOBI_VIDEO = "/videos/gobi-web.mp4";
+const GOBI_POSTER = "/images/gobi-poster.jpg";
 const LOOP_FADE_S = 1.6;
 
 function HeroSection() {
@@ -157,7 +157,7 @@ function HeroSection() {
 
   return (
     <section
-      className="relative h-screen flex items-center justify-center overflow-hidden"
+      className="relative h-[100svh] flex items-center justify-center overflow-hidden"
       data-testid="section-hero"
     >
       <div className="absolute inset-0 z-0">
@@ -259,7 +259,7 @@ function PhilosophySection() {
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 1 }}
           className="text-center mb-10"
         >
@@ -274,7 +274,7 @@ function PhilosophySection() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="border-l-2 border-primary pl-6 md:pl-8 max-w-3xl mx-auto"
         >
@@ -316,7 +316,7 @@ function DestinationsSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
         >
@@ -396,7 +396,7 @@ function WhyAskyanSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -469,7 +469,7 @@ function PositiveImpactSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -586,7 +586,7 @@ function SpotlightSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -776,7 +776,7 @@ function TestimonialsSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -882,7 +882,7 @@ function WhenToGoSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
         >
@@ -1021,7 +1021,7 @@ function FoundersSection() {
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
           data-testid="text-founders-headline"
@@ -1038,7 +1038,7 @@ function FoundersSection() {
               key={founder.name}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
             >
               <Card
@@ -1129,7 +1129,7 @@ function WaitlistSection() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
         >
           <p className="font-display text-sm text-primary tracking-[0.3em] uppercase mb-4">

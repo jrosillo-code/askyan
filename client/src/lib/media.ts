@@ -50,12 +50,12 @@ export const MEDIA: Record<string, string> = {
   "sebastian-boring-8zD7rs8UpxU-unsplash_1764996645593.jpg": img(21533323), // Torres del Paine park
 
   // ── expedition films ──
-  "kazakhstan-web.mp4": "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4", // canyon river aerial, no people
-  "kyrgyzstan-web.mp4": "https://videos.pexels.com/video-files/8761030/8761030-hd_1920_1080_30fps.mp4", // green mountain river aerial
-  "mongolia-web.mp4": "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4", // dune drone — Gobi mood, no people
+  "kazakhstan-web.mp4": "/videos/kazakhstan-web.mp4", // canyon river aerial, no people (self-hosted)
+  "kyrgyzstan-web.mp4": "/videos/kyrgyzstan-web.mp4", // green mountain river aerial (self-hosted)
+  "mongolia-web.mp4": "/videos/gobi-web.mp4", // dune drone — Gobi mood, no people (self-hosted)
   "adventure-web.mp4": "/videos/adventure-web.mp4", // real brand footage
-  "bhutan-web.mp4": "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4", // Ladakh Himalaya drone — Thunder Dragon mood
-  "expeditions-hero-web.mp4": "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4", // Himalaya ridge drone — transformation, 60fps
+  "bhutan-web.mp4": "/videos/himalaya-web.mp4", // Ladakh Himalaya drone — Thunder Dragon mood (self-hosted)
+  "expeditions-hero-web.mp4": "/videos/himalaya-web.mp4", // Himalaya ridge drone — transformation, 60fps (self-hosted)
   "12004059_1920_1080_30fps_1765009552268.mp4": "/videos/12004059.mp4", // real brand footage
-  "14862479-hd_1920_1080_60fps_1765009387935.mp4": "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4",
+  "14862479-hd_1920_1080_60fps_1765009387935.mp4": "/videos/nepal-web.mp4", // self-hosted
 };

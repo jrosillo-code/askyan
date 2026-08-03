@@ -215,7 +215,8 @@ export function ApplicationFlow() {
           <div key={t} className="flex-1">
             <div className={`h-0.5 rounded-full transition-colors duration-500 ${i <= step ? "bg-primary" : "bg-border"}`} />
             <p className={`mt-2 font-mono text-[10px] uppercase tracking-[0.2em] ${i === step ? "text-primary" : "text-muted-foreground"}`}>
-              {String(i + 1).padStart(2, "0")} — {t}
+              {String(i + 1).padStart(2, "0")}
+              <span className={i === step ? "" : "hidden sm:inline"}> — {t}</span>
             </p>
           </div>
         ))}

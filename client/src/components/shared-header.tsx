@@ -80,11 +80,11 @@ export function SharedHeader({
 
   const getBackgroundClass = () => {
     if (isScrolled) {
-      return "bg-background/90 backdrop-blur-md border-b border-border";
+      return "bg-background/95 backdrop-blur-md max-md:backdrop-blur-none max-md:bg-background border-b border-border";
     }
     return variant === "transparent" 
       ? "bg-transparent" 
-      : "bg-background/80 backdrop-blur-sm";
+      : "bg-background/80 backdrop-blur-sm max-md:backdrop-blur-none max-md:bg-background/95";
   };
 
   return (
