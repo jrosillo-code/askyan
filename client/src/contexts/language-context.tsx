@@ -168,6 +168,17 @@ const translations: Record<Language, Record<string, string>> = {
     "faq.q5": "Is ASKYAN a travel agency?",
     "faq.a5": "No. We're a media collective that runs a small number of expeditions a year and documents them. Access is limited by design.",
 
+    // The name
+    "name.kicker": "The Name",
+    "name.pron": "ASK-YAHN",
+    "name.aska.lang": "Kyrgyz — the stone",
+    "name.aska.def": "A cliff, a crag, a sheer face of rock — the word for terrain that doesn't yield: the vertical stone of the Tien Shan. Its Kazakh cousin asqar carries the same weight in another register — lofty, towering, the standard epithet of a high mountain.",
+    "name.ayan.lang": "Mongolian — the movement",
+    "name.ayan.def": "A journey, a voyage, an expedition. Not an errand or a commute — ayan is the long passage, the crossing undertaken with intent. It appears in ayan zam, the road of travel, and in ayanchin, one who travels.",
+    "name.join": "The two words share a vowel at the seam; in the blend it collapses, leaving the k as the hinge that holds the halves together.",
+    "name.meaning": "The journey into the high rock. Or read the other way: the passage that the mountains permit.",
+    "name.note": "A name we assembled ourselves from two languages of the range — Kyrgyz supplies the stone, Mongolian the movement. Chosen, not inherited.",
+
     // Expedition dossier labels
     "detail.journey": "The Journey",
     "detail.itinerary": "Day by Day Itinerary",
@@ -686,6 +697,17 @@ const translations: Record<Language, Record<string, string>> = {
     "faq.a4": "Poder caminar varios días seguidos en altitud, y estar cómodo lejos de los hoteles. Cada viaje detalla sus propias exigencias — honestas.",
     "faq.q5": "¿Es ASKYAN una agencia de viajes?",
     "faq.a5": "No. Somos un colectivo de medios que realiza un número reducido de expediciones al año y las documenta. El acceso es limitado por diseño.",
+
+    // The name
+    "name.kicker": "El Nombre",
+    "name.pron": "ASK-YAHN",
+    "name.aska.lang": "Kirguís — la piedra",
+    "name.aska.def": "Un acantilado, un risco, una pared de roca — la palabra para el terreno que no cede: la piedra vertical del Tien Shan. Su primo kazajo asqar lleva el mismo peso en otro registro — alto, imponente, el epíteto habitual de una gran montaña.",
+    "name.ayan.lang": "Mongol — el movimiento",
+    "name.ayan.def": "Un viaje, una travesía, una expedición. No un recado ni un trayecto — ayan es el paso largo, el cruce emprendido con intención. Aparece en ayan zam, el camino del viaje, y en ayanchin, quien viaja.",
+    "name.join": "Las dos palabras comparten una vocal en la costura; en la unión esa vocal se pliega, y la k queda como la bisagra que sostiene las dos mitades.",
+    "name.meaning": "El viaje hacia la alta roca. O leído al revés: el paso que las montañas permiten.",
+    "name.note": "Un nombre que construimos nosotros mismos con dos lenguas de la cordillera — el kirguís pone la piedra, el mongol el movimiento. Elegido, no heredado.",
 
     // Expedition dossier labels
     "detail.journey": "El Viaje",

@@ -29,6 +29,7 @@ const searchableContent: SearchResult[] = [
   { id: "12", title: "The Ledger", description: "What we've promised, and where it stands", category: "destination", url: "/ledger" },
   { id: "13", title: "The Thunder Dragon Path", description: "Bhutan expedition through sacred valleys", category: "expedition", url: "/expedition/bhutan-sacred" },
   { id: "14", title: "Request Access", description: "Apply to the founding cohort", category: "destination", url: "/contact" },
+  { id: "15", title: "Askyan — the name", description: "Kyrgyz stone, Mongolian movement: how the name was built", category: "story", url: "/about#name" },
 ];
 
 interface SearchModalProps {

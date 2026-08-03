@@ -58,6 +58,55 @@ function PhilosophySection({ t }: { t: (key: string) => string }) {
   );
 }
 
+// The name, laid out like the dictionary entry it almost is: Kyrgyz stone,
+// Mongolian movement, welded at the shared vowel. Framed honestly as a name
+// the founders built — chosen, not inherited.
+function NameSection({ t }: { t: (key: string) => string }) {
+  return (
+    <section id="name" className="scroll-mt-28 px-6 py-20 md:py-28" data-testid="section-name">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-12 text-center">
+          <p className="mb-3 font-display text-xs uppercase tracking-[0.3em] text-primary">{t("name.kicker")}</p>
+          <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">ASKYAN</h2>
+          <p className="mt-2 font-mono text-xs tracking-[0.3em] text-muted-foreground">{t("name.pron")}</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-md border border-primary/25 bg-card p-6" data-testid="name-aska">
+            <p className="font-display text-2xl font-bold text-foreground">
+              aska <span className="font-body text-base font-normal text-muted-foreground">(аска)</span>
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-primary">{t("name.aska.lang")}</p>
+            <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">{t("name.aska.def")}</p>
+          </div>
+          <div className="rounded-md border border-primary/25 bg-card p-6" data-testid="name-ayan">
+            <p className="font-display text-2xl font-bold text-foreground">
+              ayan <span className="font-body text-base font-normal text-muted-foreground">(аян)</span>
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-primary">{t("name.ayan.lang")}</p>
+            <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">{t("name.ayan.def")}</p>
+          </div>
+        </div>
+
+        <p className="mt-10 text-center font-mono text-xs tracking-[0.2em] text-foreground/70 sm:text-sm">
+          aska + ayan&ensp;&rarr;&ensp;ask(a)yan&ensp;&rarr;&ensp;<span className="text-primary">ASKYAN</span>
+        </p>
+        <p className="mx-auto mt-3 max-w-xl text-center font-body text-sm leading-relaxed text-muted-foreground">
+          {t("name.join")}
+        </p>
+
+        <p className="mx-auto mt-10 max-w-2xl text-center font-body text-lg italic leading-relaxed text-foreground md:text-xl">
+          {t("name.meaning")}
+        </p>
+        <p className="mx-auto mt-8 max-w-xl text-center font-body text-xs italic leading-relaxed text-muted-foreground">
+          {t("name.note")}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+
 function FoundersSection({ t }: { t: (key: string) => string }) {
   const founders = [
     {
@@ -195,6 +244,10 @@ export default function About() {
           </div>
         </section>
 
+        <NameSection t={t} />
+        <div className="max-w-4xl mx-auto px-6">
+          <hr className="border-t border-white/20" />
+        </div>
         <FoundersSection t={t} />
         <div className="max-w-4xl mx-auto px-6">
           <hr className="border-t border-white/20" />
