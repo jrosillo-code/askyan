@@ -1,0 +1,34 @@
+# One-shot: pull the original logo PNG from the live Replit deployment into
+# the repo (the CI runner has open internet; the dev sandbox doesn't).
+name: fetch-logo
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Locate and download the original logo asset
+        run: |
+          set -euo pipefail
+          for BASE in "https://askya-expeditions--blazerevel.replit.app" "https://askyanexpeditions.com"; do
+            echo "trying $BASE"
+            HTML=$(curl -fsSL --max-time 30 "$BASE/" || true)
+            JS=$(echo "$HTML" | grep -oE '/assets/index-[^"]+\.js' | head -1 || true)
+            [ -z "$JS" ] && continue
+            ASSET=$(curl -fsSL --max-time 60 "$BASE$JS" | grep -oE '/assets/download-Picsart[^"]+\.png' | head -1 || true)
+            [ -z "$ASSET" ] && continue
+            echo "found asset $ASSET"
+            curl -fsSL --max-time 60 "$BASE$ASSET" -o attached_assets/download-Picsart-BackgroundRemover_1764993972814.png
+            exit 0
+          done
+          echo "logo asset not found on either host" >&2
+          exit 1
+      - name: Commit
+        run: |
+          git config user.name "logo-fetch"
+          git config user.email "actions@users.noreply.github.com"
+          git add attached_assets
+          git commit -m "Install the original logo, fetched from the live site"
+          git push
