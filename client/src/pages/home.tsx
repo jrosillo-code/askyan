@@ -230,7 +230,7 @@ function HeroSection() {
       <div className="absolute inset-0 z-0">
         {/* Instant paint while the first stream buffers — no black flash */}
         <img
-          src="https://images.pexels.com/photos/33433629/pexels-photo-33433629.jpeg?auto=compress&cs=tinysrgb&w=1920"
+          src="https://images.pexels.com/videos/8761030/free-video-8761030.jpg?auto=compress&cs=tinysrgb&w=1920"
           alt=""
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover scale-105"
