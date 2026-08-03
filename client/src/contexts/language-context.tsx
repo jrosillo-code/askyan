@@ -109,6 +109,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero ticker
     "hero.cohortForming": "FOUNDING COHORT — NOW FORMING",
+    "hero.cohortKicker": "Founding cohort",
+    "hero.cohortCta": "Now forming — request access →",
 
     // Shared footer
     "footer.tagline": "A private media collective. Curated access to the unseen world.",
@@ -626,6 +628,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero ticker
     "hero.cohortForming": "COHORTE FUNDADORA — EN FORMACIÓN",
+    "hero.cohortKicker": "Cohorte fundadora",
+    "hero.cohortCta": "En formación — solicita acceso →",
 
     // Shared footer
     "footer.tagline": "Un colectivo de medios privado. Acceso curado al mundo no visto.",

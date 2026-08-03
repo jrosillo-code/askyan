@@ -227,21 +227,32 @@ function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 2.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4 w-full pl-6 pr-24 md:px-6"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 w-full px-6"
       >
-        <span className="font-display text-xs tracking-[0.3em] text-white/55 uppercase">{t("hero.featuredIn")}</span>
-        <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
-          {pressLogos.map((logo) => (
-            <Link
-              key={logo.name}
-              href={logo.url}
-              className="font-display text-[10px] md:text-xs tracking-[0.15em] text-white/60 hover:text-white/90 transition-colors"
-              data-testid={`link-press-${logo.name.toLowerCase().replace(/\s+/g, '-')}`}
-            >
-              {logo.textKey ? t(logo.textKey) : logo.text}
-            </Link>
-          ))}
+        <div className="hidden md:flex flex-col items-center gap-4">
+          <span className="font-display text-xs tracking-[0.3em] text-white/55 uppercase">{t("hero.featuredIn")}</span>
+          <div className="flex flex-wrap justify-center items-center gap-8">
+            {pressLogos.map((logo) => (
+              <Link
+                key={logo.name}
+                href={logo.url}
+                className="font-display text-xs tracking-[0.15em] text-white/60 hover:text-white/90 transition-colors"
+                data-testid={`link-press-${logo.name.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                {logo.textKey ? t(logo.textKey) : logo.text}
+              </Link>
+            ))}
+          </div>
         </div>
+        {/* Phones: the four-country strip wraps into ragged lines at this
+            width — one composed corner anchor replaces it, kept clear of
+            the chat button bottom-right. */}
+        <Link href="/contact" className="block w-fit max-w-[calc(100%-4.5rem)] md:hidden" data-testid="link-cohort-mobile">
+          <span className="block border-l-2 border-primary/70 pl-3 font-display text-[10px] tracking-[0.3em] text-white/60 uppercase">
+            {t("hero.cohortKicker")}
+          </span>
+          <span className="mt-1.5 block pl-3 font-body text-sm italic text-white/90">{t("hero.cohortCta")}</span>
+        </Link>
       </motion.div>
     </section>
   );
@@ -911,8 +922,11 @@ function WhenToGoSection() {
                 className="group flex flex-col gap-2 border-b border-primary/15 py-6 transition-colors hover:bg-card/60 md:flex-row md:items-baseline md:gap-8 md:px-4"
                 data-testid={`season-${s.id}`}
               >
-                <span className="w-40 shrink-0 font-mono text-[11px] tracking-[0.2em] text-primary">
-                  {s.code} — {s.country.toUpperCase()}
+                <span className="flex items-baseline justify-between gap-3 md:block md:w-40 md:shrink-0">
+                  <span className="font-mono text-[11px] tracking-[0.2em] text-primary">
+                    {s.code} — {s.country.toUpperCase()}
+                  </span>
+                  <span className="shrink-0 font-mono text-[10px] tracking-[0.15em] text-primary/80 md:hidden">{s.window}</span>
                 </span>
                 <span className="flex-1">
                   <span className="font-display text-xl font-bold text-foreground transition-colors group-hover:text-primary md:text-2xl">
@@ -920,7 +934,7 @@ function WhenToGoSection() {
                   </span>
                   <span className="mt-1 block font-body text-sm italic text-muted-foreground">{s.note}</span>
                 </span>
-                <span className="shrink-0 font-mono text-xs tracking-[0.15em] text-primary/90">{s.window}</span>
+                <span className="hidden shrink-0 font-mono text-xs tracking-[0.15em] text-primary/90 md:inline">{s.window}</span>
               </Link>
             </motion.div>
           ))}
