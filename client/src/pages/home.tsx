@@ -131,13 +131,13 @@ const pressLogos = [
 ];
 
 const heroVideos = [
-  // People-free, destination-true rotation: Kyrgyzstan-green mountains, Gobi
-  // dunes, Charyn-like canyon, snowbound Himalaya mood, high peaks.
-  "https://www.pexels.com/download/video/8761030/",
-  "https://www.pexels.com/download/video/3059046/",
-  "https://www.pexels.com/download/video/28878868/",
-  "https://www.pexels.com/download/video/7593088/",
-  "https://www.pexels.com/download/video/3121327/",
+  // Direct CDN files (the /download/ redirect endpoint refuses hotlinks —
+  // that was the black hero). All landscape, people-free, destination-true.
+  "https://videos.pexels.com/video-files/8761030/8761030-uhd_3840_2160_30fps.mp4",
+  "https://videos.pexels.com/video-files/8774553/8774553-uhd_3840_2160_30fps.mp4",
+  "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4",
+  "https://videos.pexels.com/video-files/7593088/7593088-uhd_4096_1974_30fps.mp4",
+  "https://videos.pexels.com/video-files/3121327/3121327-uhd_3840_2160_24fps.mp4",
 ];
 
 function HeroSection() {
