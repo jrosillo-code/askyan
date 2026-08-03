@@ -107,6 +107,72 @@ const translations: Record<Language, Record<string, string>> = {
     "app.pass.tbc": "TO BE CHARTED",
     "app.pass.note": "Applications are read personally by the founders. If your path and ours align, you'll hear from one of us directly — no automated replies, no mailing blasts.",
 
+    // Hero ticker
+    "hero.cohortForming": "FOUNDING COHORT — NOW FORMING",
+
+    // Shared footer
+    "footer.tagline": "A private media collective. Curated access to the unseen world.",
+    "footer.journeys": "Journeys",
+    "footer.collective": "Collective",
+    "footer.join": "Join",
+    "footer.waitlist": "Waitlist",
+    "nav.howWeTravel": "How We Travel",
+    "nav.ledger": "The Ledger",
+
+    // How We Travel
+    "hwt.kicker": "Our Commitments",
+    "hwt.title": "How We Travel",
+    "hwt.lede": "Three commitments, written before our first season. We would rather be measured against these than decorate the site with numbers we haven't earned.",
+    "hwt.conservation.title": "Conservation",
+    "hwt.conservation.p1": "Access to wild places is a privilege that carries an obligation to protect them. Every route is designed with its footprint in mind — small parties, existing trails, camps that leave no trace.",
+    "hwt.conservation.p2": "From the first paying season onward, a fixed share of every expedition fee goes to conservation work in the regions we travel. We will name the partners and publish the amounts in The Ledger.",
+    "hwt.community.title": "Community",
+    "hwt.community.p1": "Our Cultural Scribes are local — guides, storytellers and hosts who are paid directly and fairly, and who decide what is shared and what stays private.",
+    "hwt.community.p2": "We are building these relationships now, one handshake at a time. No community will appear in our films or itineraries without having a stake in them.",
+    "hwt.sustain.title": "Sustainability",
+    "hwt.sustain.p1": "Small groups, slow travel, overland where the journey allows it. We would rather run six journeys well than sixty carelessly.",
+    "hwt.sustain.p2": "Where impact can't be avoided, it will be measured and offset through verified programs — and reported, honestly, alongside everything else.",
+    "hwt.note": "Nothing on this page is a track record yet. It is the standard we've set for ourselves — hold us to it.",
+    "hwt.ledgerCta": "Follow our progress in The Ledger →",
+
+    // The Ledger
+    "ledger.kicker": "Accountability",
+    "ledger.title": "The Ledger",
+    "ledger.lede": "What we've promised, and where it stands. Updated as the founding seasons unfold — including the parts that don't go to plan.",
+    "ledger.row1": "Six founding expeditions, scouted and run",
+    "ledger.row1.status": "In development — routes being charted with local Scribes",
+    "ledger.row2": "First expedition films premiered",
+    "ledger.row2.status": "In production",
+    "ledger.row3": "Conservation contributions named and published",
+    "ledger.row3.status": "Begins with the first paying season",
+    "ledger.row4": "Cultural Scribe network",
+    "ledger.row4.status": "Being built, one handshake at a time",
+    "ledger.row5": "Client stories on this site",
+    "ledger.row5.status": "None yet — the founding cohort is forming",
+    "ledger.row6": "Founders reading every application personally",
+    "ledger.row6.status": "Active now",
+    "ledger.note": "If something here slips, we'll say so on this page rather than quietly delete it.",
+
+    // FAQ
+    "faq.title": "Questions, answered honestly",
+    "faq.q1": "What does an expedition cost?",
+    "faq.a1": "Pricing is shared with accepted applicants. The founding seasons are priced for small parties and long routes — this is slow, far travel, not a package holiday.",
+    "faq.q2": "When do the first expeditions leave?",
+    "faq.a2": "Within the founding seasons shown for each journey. Exact dates are set with the cohort, because weather and local partners — not brochures — decide them.",
+    "faq.q3": "How does selection work?",
+    "faq.a3": "The founders read every application. We're looking for curiosity and respect for the places, not résumés. If it's a fit, you'll hear from one of us directly.",
+    "faq.q4": "How fit do I need to be?",
+    "faq.a4": "Comfortable walking for consecutive days at altitude, and comfortable far from hotels. Each journey lists its own demands — honest ones.",
+    "faq.q5": "Is ASKYAN a travel agency?",
+    "faq.a5": "No. We're a media collective that runs a small number of expeditions a year and documents them. Access is limited by design.",
+
+    // Films notify
+    "films.notify.kicker": "First Light",
+    "films.notify.title": "Be there at the premiere",
+    "films.notify.body": "Leave your email and you'll hear when the first films are released — nothing else.",
+    "films.notify.button": "Notify me",
+    "films.notify.success": "Noted. You'll be first to know.",
+
     // Footer
     "footer.rights": "All Rights Reserved",
     
@@ -542,6 +608,72 @@ const translations: Record<Language, Record<string, string>> = {
     "app.pass.tbc": "POR TRAZAR",
     "app.pass.note": "Las solicitudes las leen personalmente los fundadores. Si tu camino y el nuestro coinciden, uno de nosotros te escribirá directamente — sin respuestas automáticas, sin correos masivos.",
 
+    // Hero ticker
+    "hero.cohortForming": "COHORTE FUNDADORA — EN FORMACIÓN",
+
+    // Shared footer
+    "footer.tagline": "Un colectivo de medios privado. Acceso curado al mundo no visto.",
+    "footer.journeys": "Viajes",
+    "footer.collective": "Colectivo",
+    "footer.join": "Únete",
+    "footer.waitlist": "Lista de espera",
+    "nav.howWeTravel": "Cómo Viajamos",
+    "nav.ledger": "El Registro",
+
+    // How We Travel
+    "hwt.kicker": "Nuestros Compromisos",
+    "hwt.title": "Cómo Viajamos",
+    "hwt.lede": "Tres compromisos, escritos antes de nuestra primera temporada. Preferimos que nos midan por esto antes que decorar el sitio con cifras que no hemos ganado.",
+    "hwt.conservation.title": "Conservación",
+    "hwt.conservation.p1": "El acceso a lugares salvajes es un privilegio que conlleva la obligación de protegerlos. Cada ruta se diseña pensando en su huella — grupos pequeños, senderos existentes, campamentos que no dejan rastro.",
+    "hwt.conservation.p2": "Desde la primera temporada de pago, una parte fija de cada expedición se destinará a trabajo de conservación en las regiones que recorremos. Nombraremos a los socios y publicaremos los montos en El Registro.",
+    "hwt.community.title": "Comunidad",
+    "hwt.community.p1": "Nuestros Escribas Culturales son locales — guías, narradores y anfitriones a quienes se paga directa y justamente, y que deciden qué se comparte y qué queda privado.",
+    "hwt.community.p2": "Estamos construyendo estas relaciones ahora, un apretón de manos a la vez. Ninguna comunidad aparecerá en nuestras películas o itinerarios sin tener parte en ellos.",
+    "hwt.sustain.title": "Sostenibilidad",
+    "hwt.sustain.p1": "Grupos pequeños, viaje lento, por tierra cuando el camino lo permite. Preferimos hacer seis viajes bien que sesenta con descuido.",
+    "hwt.sustain.p2": "Donde el impacto no pueda evitarse, se medirá y compensará mediante programas verificados — y se informará, con honestidad, junto a todo lo demás.",
+    "hwt.note": "Nada en esta página es todavía un historial. Es el estándar que nos hemos fijado — exígenoslo.",
+    "hwt.ledgerCta": "Sigue nuestro progreso en El Registro →",
+
+    // The Ledger
+    "ledger.kicker": "Rendición de Cuentas",
+    "ledger.title": "El Registro",
+    "ledger.lede": "Lo que hemos prometido y en qué punto está. Actualizado a medida que avanzan las temporadas fundacionales — incluidas las partes que no salen según lo planeado.",
+    "ledger.row1": "Seis expediciones fundacionales, exploradas y realizadas",
+    "ledger.row1.status": "En desarrollo — trazando rutas con los Escribas locales",
+    "ledger.row2": "Estreno de las primeras películas de expedición",
+    "ledger.row2.status": "En producción",
+    "ledger.row3": "Contribuciones a la conservación, nombradas y publicadas",
+    "ledger.row3.status": "Comienza con la primera temporada de pago",
+    "ledger.row4": "Red de Escribas Culturales",
+    "ledger.row4.status": "En construcción, un apretón de manos a la vez",
+    "ledger.row5": "Historias de clientes en este sitio",
+    "ledger.row5.status": "Ninguna aún — la cohorte fundadora se está formando",
+    "ledger.row6": "Fundadores leyendo cada solicitud personalmente",
+    "ledger.row6.status": "Activo ahora",
+    "ledger.note": "Si algo aquí se retrasa, lo diremos en esta página en lugar de borrarlo en silencio.",
+
+    // FAQ
+    "faq.title": "Preguntas, respondidas con honestidad",
+    "faq.q1": "¿Cuánto cuesta una expedición?",
+    "faq.a1": "Los precios se comparten con los solicitantes aceptados. Las temporadas fundacionales están pensadas para grupos pequeños y rutas largas — esto es viaje lento y lejano, no un paquete turístico.",
+    "faq.q2": "¿Cuándo salen las primeras expediciones?",
+    "faq.a2": "Dentro de las temporadas fundacionales de cada viaje. Las fechas exactas se fijan con la cohorte, porque las decide el clima y los socios locales — no los folletos.",
+    "faq.q3": "¿Cómo funciona la selección?",
+    "faq.a3": "Los fundadores leen cada solicitud. Buscamos curiosidad y respeto por los lugares, no currículums. Si encaja, uno de nosotros te escribirá directamente.",
+    "faq.q4": "¿Qué condición física necesito?",
+    "faq.a4": "Poder caminar varios días seguidos en altitud, y estar cómodo lejos de los hoteles. Cada viaje detalla sus propias exigencias — honestas.",
+    "faq.q5": "¿Es ASKYAN una agencia de viajes?",
+    "faq.a5": "No. Somos un colectivo de medios que realiza un número reducido de expediciones al año y las documenta. El acceso es limitado por diseño.",
+
+    // Films notify
+    "films.notify.kicker": "Primera Luz",
+    "films.notify.title": "Está en el estreno",
+    "films.notify.body": "Deja tu correo y sabrás cuando se estrenen las primeras películas — nada más.",
+    "films.notify.button": "Avísame",
+    "films.notify.success": "Anotado. Serás el primero en saberlo.",
+
     // Footer
     "footer.rights": "Todos los Derechos Reservados",
     
@@ -894,6 +1026,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem("askyan-language", language);
+    // Keep the document language honest for screen readers and translators.
+    document.documentElement.lang = language;
   }, [language]);
 
   const setLanguage = (lang: Language) => {

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, Clock, MapPin, Mountain, Users, Flame, Star, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
+import { SiteFooter } from "@/components/site-footer";
 import { MEDIA } from "@/lib/media";
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
@@ -776,9 +777,9 @@ export default function ExpeditionDetail() {
                     </div>
                   </div>
 
-                  <Link href="/#waitlist" data-testid="link-inquire-cta">
+                  <Link href={`/contact?expedition=${expedition.id}`} data-testid="link-inquire-cta">
                     <Button className="w-full font-display tracking-wide" size="lg" data-testid="button-inquire-cta">
-                      Inquire About This Journey
+                      Apply for This Journey
                     </Button>
                   </Link>
                 </Card>
@@ -833,13 +834,7 @@ export default function ExpeditionDetail() {
         </motion.div>
       </section>
 
-      <footer className="py-12 px-6 border-t border-border" data-testid="footer">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="font-display text-sm text-muted-foreground tracking-wide">
-            &copy; {new Date().getFullYear()} ASKYAN EXPEDITIONS. ALL RIGHTS RESERVED.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

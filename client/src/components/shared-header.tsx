@@ -1,51 +1,31 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, Phone, Search } from "lucide-react";
+import { Menu, X, ChevronDown, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { SearchModal } from "@/components/search-modal";
 import logoImage from "@assets/download-Picsart-BackgroundRemover_1764993972814.png";
 
-const months = [
-  "january", "february", "march", "april", "may", "june",
-  "july", "august", "september", "october", "november", "december"
+// The nav's "When to Go" now points at the six real founding seasons —
+// the old 12-month world guide promoted places we don't run.
+const foundingSeasons = [
+  { id: "kazakhstan-steppe", code: "001", title: "The Steppe Awakening", window: "MAY — OCT" },
+  { id: "kyrgyzstan-heights", code: "002", title: "The Celestial Mountains", window: "JUN — SEP" },
+  { id: "mongolia-gobi", code: "003", title: "The Gobi Crossing", window: "MAY — SEP" },
+  { id: "nepal-mustang", code: "004", title: "The Forbidden Kingdom", window: "MAR — NOV" },
+  { id: "bhutan-sacred", code: "005", title: "The Thunder Dragon Path", window: "MAR—MAY · SEP—NOV" },
+  { id: "indonesia-flores", code: "006", title: "The Ring of Fire", window: "APR — NOV" },
 ];
-
-function USFlag() {
-  return (
-    <svg className="w-5 h-3" viewBox="0 0 30 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="30" height="18" fill="#B22234"/>
-      <rect y="1.38" width="30" height="1.38" fill="white"/>
-      <rect y="4.15" width="30" height="1.38" fill="white"/>
-      <rect y="6.92" width="30" height="1.38" fill="white"/>
-      <rect y="9.69" width="30" height="1.38" fill="white"/>
-      <rect y="12.46" width="30" height="1.38" fill="white"/>
-      <rect y="15.23" width="30" height="1.38" fill="white"/>
-      <rect width="12" height="9.69" fill="#3C3B6E"/>
-    </svg>
-  );
-}
-
-function SpainFlag() {
-  return (
-    <svg className="w-5 h-3" viewBox="0 0 30 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="30" height="18" fill="#AA151B"/>
-      <rect y="4.5" width="30" height="9" fill="#F1BF00"/>
-    </svg>
-  );
-}
 
 interface SharedHeaderProps {
   variant?: "transparent" | "solid";
   onScrollToSection?: (id: string) => void;
-  onScrollToMonth?: (month: string) => void;
   activePage?: "expeditions" | "films" | "chronicles" | "about";
 }
 
 export function SharedHeader({ 
   variant = "transparent",
   onScrollToSection,
-  onScrollToMonth,
   activePage
 }: SharedHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -55,7 +35,7 @@ export function SharedHeader({
   const [isFilmsOpen, setIsFilmsOpen] = useState(false);
   const [isChroniclesOpen, setIsChroniclesOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
   const { language, setLanguage, t } = useLanguage();
 
   const expeditionHighlights = [
@@ -92,21 +72,6 @@ export function SharedHeader({
       onScrollToSection(id);
     }
     setIsMobileMenuOpen(false);
-  };
-
-  const handleScrollToMonth = (month: string) => {
-    if (onScrollToMonth) {
-      onScrollToMonth(month);
-    }
-    setIsWhenToGoOpen(false);
-  };
-
-  const handlePhoneClick = () => {
-    if (isHome && onScrollToSection) {
-      onScrollToSection("contact-info");
-    } else {
-      setLocation("/#contact-info");
-    }
   };
 
   const toggleLanguage = () => {
@@ -147,23 +112,15 @@ export function SharedHeader({
             <div className="hidden md:flex items-center gap-2 ml-4 border-l border-border pl-4">
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="text-muted-foreground" 
-                data-testid="button-phone" 
-                aria-label="Contact us"
-                onClick={handlePhoneClick}
-              >
-                <Phone className="w-4 h-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-muted-foreground" 
+                size="sm"
+                className="px-2 font-display text-xs tracking-wider" 
                 data-testid="button-region" 
-                aria-label={language === "en" ? "Switch to Spanish" : "Switch to English"}
+                aria-label={language === "en" ? "Cambiar a español" : "Switch to English"}
                 onClick={toggleLanguage}
               >
-                {language === "en" ? <USFlag /> : <SpainFlag />}
+                <span className={language === "en" ? "text-foreground" : "text-muted-foreground"}>EN</span>
+                <span className="mx-1 text-muted-foreground/50">/</span>
+                <span className={language === "es" ? "text-foreground" : "text-muted-foreground"}>ES</span>
               </Button>
               <Button 
                 variant="ghost" 
@@ -337,23 +294,27 @@ export function SharedHeader({
                 </Link>
               )}
               <div 
-                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-background/95 backdrop-blur-md border border-border rounded-md shadow-lg py-3 px-4 min-w-[180px] transition-all duration-200 ${
+                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-background/95 backdrop-blur-md border border-border rounded-md shadow-lg py-3 px-4 min-w-[240px] transition-all duration-200 ${
                   isWhenToGoOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"
                 }`}
                 role="menu"
                 aria-label="When to go months"
               >
-                <p className="font-display text-xs tracking-wider text-primary uppercase mb-2">{t("featured.locations")}</p>
-                {months.map((month) => (
+                <p className="font-display text-xs tracking-wider text-primary uppercase mb-2">{t("seasonal.kicker")}</p>
+                {foundingSeasons.map((season) => (
                   <Link
-                    key={month}
-                    href={`/when-to-go/${month}`}
-                    className="block w-full py-2 text-left font-display text-sm tracking-wide text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
-                    data-testid={`link-month-${month}`}
+                    key={season.id}
+                    href={`/expedition/${season.id}`}
+                    className="block py-2 group"
+                    data-testid={`link-season-${season.id}`}
                     role="menuitem"
                     tabIndex={isWhenToGoOpen ? 0 : -1}
                   >
-                    {t(`months.${month}`)}
+                    <span className="font-display text-sm text-foreground group-hover:text-primary transition-colors">
+                      <span className="mr-2 font-mono text-[10px] text-primary">{season.code}</span>
+                      {season.title}
+                    </span>
+                    <span className="block font-mono text-[10px] tracking-[0.15em] text-muted-foreground">{season.window}</span>
                   </Link>
                 ))}
               </div>
@@ -475,21 +436,14 @@ export function SharedHeader({
             <div className="flex items-center gap-4 pb-4 border-b border-border">
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="text-muted-foreground" 
-                aria-label="Contact us"
-                onClick={handlePhoneClick}
-              >
-                <Phone className="w-4 h-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-muted-foreground" 
-                aria-label={language === "en" ? "Switch to Spanish" : "Switch to English"}
+                size="sm"
+                className="px-2 font-display text-xs tracking-wider" 
+                aria-label={language === "en" ? "Cambiar a español" : "Switch to English"}
                 onClick={toggleLanguage}
               >
-                {language === "en" ? <USFlag /> : <SpainFlag />}
+                <span className={language === "en" ? "text-foreground" : "text-muted-foreground"}>EN</span>
+                <span className="mx-1 text-muted-foreground/50">/</span>
+                <span className={language === "es" ? "text-foreground" : "text-muted-foreground"}>ES</span>
               </Button>
               <Button 
                 variant="ghost" 

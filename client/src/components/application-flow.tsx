@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,17 +88,52 @@ function BoardingPass({ applied }: { applied: Applied }) {
   );
 }
 
+const DRAFT_KEY = "askyan-app-draft";
+
+interface Draft {
+  step?: number;
+  name?: string;
+  email?: string;
+  expeditionId?: string | null;
+  why?: string;
+  referral?: string;
+}
+
+function loadDraft(): Draft {
+  try {
+    return JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? "{}") as Draft;
+  } catch {
+    return {};
+  }
+}
+
 export function ApplicationFlow() {
-  const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [expeditionId, setExpeditionId] = useState<string | null>(null);
-  const [why, setWhy] = useState("");
-  const [referral, setReferral] = useState("");
+  // A mis-tap must not cost anyone their "why" paragraph: every field is
+  // drafted to sessionStorage and restored on return. An ?expedition= query
+  // param (from an expedition page's apply button) pre-selects the journey.
+  const [draft] = useState(loadDraft);
+  const preselected = (() => {
+    const id = new URLSearchParams(window.location.search).get("expedition");
+    return id && EXPEDITIONS.some((e) => e.id === id) ? id : null;
+  })();
+  const [step, setStep] = useState(preselected ? 1 : draft.step ?? 0);
+  const [name, setName] = useState(draft.name ?? "");
+  const [email, setEmail] = useState(draft.email ?? "");
+  const [expeditionId, setExpeditionId] = useState<string | null>(preselected ?? draft.expeditionId ?? null);
+  const [why, setWhy] = useState(draft.why ?? "");
+  const [referral, setReferral] = useState(draft.referral ?? "");
   const [error, setError] = useState<string | null>(null);
   const [applied, setApplied] = useState<Applied | null>(null);
   const { trackContactSubmission } = useAnalytics();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ step, name, email, expeditionId, why, referral }));
+    } catch {
+      // storage full or blocked — drafts are a convenience, not a requirement
+    }
+  }, [step, name, email, expeditionId, why, referral]);
 
   const expedition = EXPEDITIONS.find((e) => e.id === expeditionId) ?? null;
 
@@ -121,6 +156,11 @@ export function ApplicationFlow() {
     },
     onSuccess: () => {
       trackContactSubmission("expedition");
+      try {
+        sessionStorage.removeItem(DRAFT_KEY);
+      } catch {
+        // ignore
+      }
       setApplied({ name: name.trim(), expedition: expedition! });
     },
     onError: (e: Error) => setError(e.message || t("app.err.generic")),
@@ -128,18 +168,40 @@ export function ApplicationFlow() {
 
   if (applied) return <BoardingPass applied={applied} />;
 
+  const validIdentity = () => {
+    if (name.trim().length < 2) {
+      setStep(0);
+      setError(t("app.err.name"));
+      return false;
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) {
+      setStep(0);
+      setError(t("app.err.email"));
+      return false;
+    }
+    return true;
+  };
+
   const next = () => {
     setError(null);
     if (step === 0) {
-      if (name.trim().length < 2) return setError(t("app.err.name"));
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return setError(t("app.err.email"));
+      if (!validIdentity()) return;
       setStep(1);
     } else if (step === 1) {
       if (!expeditionId) return setError(t("app.err.expedition"));
+      if (!validIdentity()) return;
       setStep(2);
     } else {
       if (why.trim().length < 10) return setError(t("app.err.why"));
+      if (!validIdentity()) return;
       mutation.mutate();
+    }
+  };
+
+  const advanceOnEnter = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      next();
     }
   };
 
@@ -173,6 +235,7 @@ export function ApplicationFlow() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t("app.name.placeholder")}
+                onKeyDown={advanceOnEnter}
                 className="h-12 bg-card"
                 data-testid="input-app-name"
               />
@@ -181,6 +244,7 @@ export function ApplicationFlow() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("app.email.placeholder")}
                 type="email"
+                onKeyDown={advanceOnEnter}
                 className="h-12 bg-card"
                 data-testid="input-app-email"
               />
@@ -224,6 +288,7 @@ export function ApplicationFlow() {
                 value={referral}
                 onChange={(e) => setReferral(e.target.value)}
                 placeholder={t("app.referral.placeholder")}
+                onKeyDown={advanceOnEnter}
                 className="h-12 bg-card"
                 data-testid="input-app-referral"
               />

@@ -1,245 +1,37 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Send, MapPin, Mail, MessageSquare } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
 import { SharedHeader } from "@/components/shared-header";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { useAnalytics } from "@/hooks/use-analytics";
+import { SiteFooter } from "@/components/site-footer";
 import { motion } from "framer-motion";
-import { insertContactSchema, type InsertContact } from "@shared/schema";
 import { ApplicationFlow } from "@/components/application-flow";
 import { useLanguage } from "@/contexts/language-context";
-import { useState } from "react";
 
-function ContactForm() {
-  const { toast } = useToast();
-  const { trackContactSubmission } = useAnalytics();
+const GeneralContactForm = lazy(() => import("@/components/general-contact-form"));
 
-  const form = useForm<InsertContact>({
-    resolver: zodResolver(insertContactSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      inquiryType: undefined,
-      message: "",
-    },
-  });
+const FAQ_ITEMS = [
+  { q: "faq.q1", a: "faq.a1" },
+  { q: "faq.q2", a: "faq.a2" },
+  { q: "faq.q3", a: "faq.a3" },
+  { q: "faq.q4", a: "faq.a4" },
+  { q: "faq.q5", a: "faq.a5" },
+];
 
-  const mutation = useMutation({
-    mutationFn: async (data: InsertContact) => {
-      const response = await apiRequest("POST", "/api/contact", data);
-      return response.json();
-    },
-    onSuccess: (data, variables) => {
-      trackContactSubmission(variables.inquiryType);
-      toast({
-        title: "Message Sent",
-        description: data.message,
-      });
-      form.reset();
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmit = (data: InsertContact) => {
-    mutation.mutate(data);
-  };
-
-  const inquiryTypes = [
-    { value: "expedition", label: "Expedition Inquiry" },
-    { value: "partnership", label: "Partnership Opportunity" },
-    { value: "media", label: "Media & Press" },
-    { value: "other", label: "Other" },
-  ];
-
+function FaqSection() {
+  const { t } = useLanguage();
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-display text-sm tracking-wide text-foreground">
-                  Your Name
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your full name"
-                    className="bg-background border-border focus:border-primary"
-                    data-testid="input-name"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-display text-sm tracking-wide text-foreground">
-                  Email Address
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="bg-background border-border focus:border-primary"
-                    data-testid="input-email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <FormField
-          control={form.control}
-          name="inquiryType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-display text-sm tracking-wide text-foreground">
-                Type of Inquiry
-              </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger
-                    className="bg-background border-border focus:border-primary"
-                    data-testid="select-inquiry-type"
-                  >
-                    <SelectValue placeholder="Select your inquiry type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {inquiryTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-display text-sm tracking-wide text-foreground">
-                Your Message
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us about your expedition dreams, partnership ideas, or any questions you have..."
-                  className="bg-background border-border focus:border-primary min-h-[150px] resize-none"
-                  data-testid="textarea-message"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button
-          type="submit"
-          className="w-full font-display tracking-wide"
-          disabled={mutation.isPending}
-          data-testid="button-submit-contact"
-        >
-          {mutation.isPending ? (
-            "Sending..."
-          ) : (
-            <>
-              <Send className="w-4 h-4 mr-2" />
-              Send Message
-            </>
-          )}
-        </Button>
-      </form>
-    </Form>
-  );
-}
-
-function ContactInfo() {
-  const contactDetails = [
-    {
-      icon: MapPin,
-      title: "Based In",
-      description: "Almaty, Kazakhstan — Gateway to Central Asia",
-    },
-    {
-      icon: Mail,
-      title: "Email",
-      description: "expeditions@askyan.com",
-    },
-    {
-      icon: MessageSquare,
-      title: "Response Time",
-      description: "We respond within 24-48 hours",
-    },
-  ];
-
-  return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="font-display text-2xl font-bold text-foreground mb-4">
-          Let's Start a Conversation
-        </h2>
-        <p className="font-body text-muted-foreground leading-relaxed">
-          Whether you're dreaming of an expedition, seeking partnership opportunities, 
-          or have questions about our journeys, we'd love to hear from you. Every great 
-          adventure begins with a single message.
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        {contactDetails.map((detail, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            className="flex items-start gap-4"
-          >
-            <div className="p-3 rounded-md bg-primary/10 text-primary">
-              <detail.icon className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-display text-sm font-semibold text-foreground">
-                {detail.title}
-              </h3>
-              <p className="font-body text-muted-foreground text-sm">
-                {detail.description}
-              </p>
-            </div>
-          </motion.div>
+    <section className="mx-auto mt-24 max-w-2xl" data-testid="section-faq">
+      <h2 className="mb-8 text-center font-display text-2xl font-bold text-foreground">{t("faq.title")}</h2>
+      <div className="divide-y divide-border border-y border-border">
+        {FAQ_ITEMS.map((item, i) => (
+          <details key={item.q} className="group py-4" data-testid={`faq-${i + 1}`}>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-base text-foreground [&::-webkit-details-marker]:hidden">
+              {t(item.q)}
+              <span className="shrink-0 font-mono text-primary transition-transform duration-200 group-open:rotate-45">+</span>
+            </summary>
+            <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">{t(item.a)}</p>
+          </details>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -271,6 +63,8 @@ export default function Contact() {
 
           <ApplicationFlow />
 
+          <FaqSection />
+
           <div className="mt-20 text-center">
             <button
               onClick={() => setShowGeneral((s) => !s)}
@@ -285,23 +79,22 @@ export default function Contact() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mx-auto mt-8 max-w-xl rounded-md border border-border bg-card p-6 text-left md:p-8"
               >
-                <ContactForm />
+                <Suspense
+                  fallback={
+                    <p className="text-center font-mono text-xs uppercase tracking-[0.3em] text-primary/70 animate-pulse">
+                      ASKYAN
+                    </p>
+                  }
+                >
+                  <GeneralContactForm />
+                </Suspense>
               </motion.div>
             )}
           </div>
         </div>
       </main>
 
-      <footer className="border-t border-border py-12">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="font-display font-bold text-lg tracking-wider text-foreground mb-2">
-            ASKYAN EXPEDITIONS
-          </p>
-          <p className="font-body text-sm italic text-muted-foreground">
-            Curated access to the unseen world
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

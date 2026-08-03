@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import { Chatbot } from "@/components/chatbot";
 import { useLanguage } from "@/contexts/language-context";
 import { MEDIA } from "@/lib/media";
 import { RoadPath } from "@/components/road-path";
+import { SiteFooter } from "@/components/site-footer";
 import logoImage from "@assets/download-Picsart-BackgroundRemover_1764993972814.png";
 const mountainsImage = MEDIA["stock_images/aerial_view_mountain_771f3480.jpg"];
 const desertImage = MEDIA["stock_images/desert_dunes_morocco_5d629ce9.jpg"];
@@ -99,26 +100,24 @@ function AnimatedText({ text, className, delay = 0 }: { text: string; className?
 // Truthful strip: where the founding expeditions actually go. (The previous
 // fabricated press logos are a credibility liability for a trust-first brand —
 // real features can be added here if and when they exist.)
-const pressLogos = [
+const pressLogos: { name: string; text: string; url: string; textKey?: string }[] = [
   { name: "Kazakhstan", text: "KAZAKHSTAN", url: "/expeditions" },
   { name: "Kyrgyzstan", text: "KYRGYZSTAN", url: "/expeditions" },
   { name: "Mongolia", text: "MONGOLIA", url: "/expeditions" },
   { name: "Bhutan", text: "BHUTAN", url: "/expeditions" },
-  { name: "Founding Cohort", text: "FOUNDING COHORT — NOW FORMING", url: "/contact" },
+  { name: "Founding Cohort", text: "FOUNDING COHORT — NOW FORMING", textKey: "hero.cohortForming", url: "/contact" },
 ];
 
-const heroVideos = [
-  // Three clips, all verified HD (1920) — a quarter the bytes of the UHD
-  // files, which is the difference between "loads instantly" and "loads
-  // eventually" on hotel wifi. The 4K-only clips live on expedition pages.
-  "https://videos.pexels.com/video-files/8761030/8761030-hd_1920_1080_30fps.mp4",
-  "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4",
-  "https://videos.pexels.com/video-files/3121327/3121327-hd_1920_1080_24fps.mp4",
-];
+// One clip, played forever: the Gobi dune drone glide. Two stacked players
+// of the same file alternate — as the live one nears its final seconds, the
+// idle one restarts from zero and the pair crossfade, so the drift across
+// the desert never visibly ends.
+const GOBI_VIDEO = "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4";
+const GOBI_POSTER = "https://images.pexels.com/videos/8774553/free-video-8774553.jpg?auto=compress&cs=tinysrgb&w=1920";
+const LOOP_FADE_S = 1.6;
 
 function HeroSection() {
   const { t } = useLanguage();
-  const [currentVideo, setCurrentVideo] = useState(0);
   // Respect accessibility + metered connections: skip video streams entirely
   // and let the poster carry the hero.
   const [staticHero] = useState(
@@ -126,115 +125,64 @@ function HeroSection() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
       (navigator as { connection?: { saveData?: boolean } }).connection?.saveData === true
   );
-  const [previousVideo, setPreviousVideo] = useState<number | null>(null);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [active, setActive] = useState(0);
+  const playersRef = useRef<(HTMLVideoElement | null)[]>([null, null]);
 
-  // First video plays for 12 seconds, others for 8 seconds
-  const getVideoDuration = (index: number) => index === 0 ? 12000 : 8000;
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPreviousVideo(currentVideo);
-      setCurrentVideo((prev) => (prev + 1) % heroVideos.length);
-    }, getVideoDuration(currentVideo));
-
-    return () => clearTimeout(timeout);
-  }, [currentVideo]);
-
-  useEffect(() => {
-    if (previousVideo !== null) {
-      const timeout = setTimeout(() => {
-        setPreviousVideo(null);
-      }, 1500);
-      return () => clearTimeout(timeout);
-    }
-  }, [previousVideo]);
-
-  // Swipe handling for mobile
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe) {
-      // Swipe left = next video
-      setPreviousVideo(currentVideo);
-      setCurrentVideo((prev) => (prev + 1) % heroVideos.length);
-    } else if (isRightSwipe) {
-      // Swipe right = previous video
-      setPreviousVideo(currentVideo);
-      setCurrentVideo((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1));
+  const handleTimeUpdate = (i: number) => {
+    if (i !== active) return;
+    const el = playersRef.current[i];
+    if (!el || !el.duration || !isFinite(el.duration)) return;
+    if (el.currentTime >= el.duration - LOOP_FADE_S) {
+      const other = playersRef.current[1 - i];
+      if (other) {
+        try {
+          other.currentTime = 0;
+        } catch {
+          // metadata not ready yet; it will start from 0 anyway
+        }
+        void other.play()?.catch(() => {});
+      }
+      setActive(1 - i);
     }
   };
 
-  // The upcoming clip is mounted invisibly (buffering AND playing) so the
-  // switch is a genuine crossfade between two live streams — mounting it at
-  // switch time produced a loading stutter instead of a fade.
-  const nextVideo = (currentVideo + 1) % heroVideos.length;
-  const getVideoOpacity = (index: number) => {
-    if (index === currentVideo) return "opacity-100";
-    if (index === previousVideo) return "opacity-100";
-    return "opacity-0";
-  };
-
-  const getVideoZIndex = (index: number) => {
-    if (index === currentVideo) return "z-10";
-    if (index === previousVideo) return "z-0";
-    return "z-0";
-  };
+  // Once the crossfade has finished, park the hidden player.
+  useEffect(() => {
+    const timer = setTimeout(() => playersRef.current[1 - active]?.pause(), 1700);
+    return () => clearTimeout(timer);
+  }, [active]);
 
   return (
-    <section 
-      className="relative h-screen flex items-center justify-center overflow-hidden" 
+    <section
+      className="relative h-screen flex items-center justify-center overflow-hidden"
       data-testid="section-hero"
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
     >
       <div className="absolute inset-0 z-0">
-        {/* Instant paint while the first stream buffers — no black flash */}
+        {/* Instant paint while the stream buffers — no black flash */}
         <img
-          src="https://images.pexels.com/videos/8761030/free-video-8761030.jpg?auto=compress&cs=tinysrgb&w=1920"
+          src={GOBI_POSTER}
           alt=""
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover scale-105"
         />
-        {!staticHero && heroVideos.map((video, index) => {
-          // Mount the live clip, its fade-out partner, and the upcoming clip
-          // (invisible, pre-buffering) — never all five at once.
-          if (index !== currentVideo && index !== previousVideo && index !== nextVideo) return null;
-          return (
-          <video
-            key={video}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            src={video}
-            className={`hero-drift absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ${getVideoOpacity(index)} ${getVideoZIndex(index)}`}
-            onTimeUpdate={(e) => {
-              const video = e.currentTarget;
-              if (video.currentTime >= 10) {
-                video.currentTime = 0;
-              }
-            }}
-          />
-          );
-        })}
+        {!staticHero &&
+          [0, 1].map((i) => (
+            <video
+              key={i}
+              ref={(el) => {
+                playersRef.current[i] = el;
+              }}
+              autoPlay={i === 0}
+              muted
+              playsInline
+              preload="auto"
+              src={GOBI_VIDEO}
+              onTimeUpdate={() => handleTimeUpdate(i)}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ${
+                i === active ? "opacity-100 z-10" : "opacity-0 z-0"
+              }`}
+            />
+          ))}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 z-20" />
       </div>
 
@@ -276,7 +224,7 @@ function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 2.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4 w-full px-6"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4 w-full pl-6 pr-24 md:px-6"
       >
         <span className="font-display text-xs tracking-[0.3em] text-white/40 uppercase">{t("hero.featuredIn")}</span>
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
@@ -287,7 +235,7 @@ function HeroSection() {
               className="font-display text-[10px] md:text-xs tracking-[0.15em] text-white/40 hover:text-white/70 transition-colors"
               data-testid={`link-press-${logo.name.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              {logo.text}
+              {logo.textKey ? t(logo.textKey) : logo.text}
             </a>
           ))}
         </div>
@@ -490,21 +438,21 @@ function PositiveImpactSection() {
       titleKey: "impact.conservation.title",
       descKey: "impact.conservation.desc",
       image: conservationImage,
-      link: "/conservation",
+      link: "/how-we-travel",
     },
     {
       id: "community",
       titleKey: "impact.community.title",
       descKey: "impact.community.desc",
       image: communityImage,
-      link: "/community",
+      link: "/how-we-travel",
     },
     {
       id: "sustainable",
       titleKey: "impact.sustainable.title",
       descKey: "impact.sustainable.desc",
       image: sustainableImage,
-      link: "/sustainable",
+      link: "/how-we-travel",
     },
   ];
 
@@ -1263,62 +1211,6 @@ function ContactInfoSection() {
   );
 }
 
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer className="border-t border-border px-6 pb-10 pt-16" data-testid="footer">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid gap-12 md:grid-cols-3">
-          <div>
-            <div className="flex items-center gap-3">
-              <img src={logoImage} alt="" className="h-9 w-auto brightness-0 invert" />
-              <span className="font-display text-xl font-bold tracking-wide text-foreground">ASKYAN</span>
-            </div>
-            <p className="mt-4 max-w-xs font-body text-sm italic leading-relaxed text-muted-foreground">
-              A private media collective. Curated access to the unseen world.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-8 md:col-span-2 md:grid-cols-3">
-            <div>
-              <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">Journeys</div>
-              <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><a href="/expeditions" className="hover:text-foreground">Expeditions</a></li>
-                <li><a href="/films" className="hover:text-foreground">Films</a></li>
-                <li><a href="/chronicles" className="hover:text-foreground">Chronicles</a></li>
-              </ul>
-            </div>
-            <div>
-              <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">Collective</div>
-              <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><a href="/about" className="hover:text-foreground">About</a></li>
-                <li><a href="/conservation" className="hover:text-foreground">Conservation</a></li>
-                <li><a href="/community" className="hover:text-foreground">Community</a></li>
-              </ul>
-            </div>
-            <div>
-              <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">Join</div>
-              <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
-                <li><a href="/contact" className="hover:text-foreground">Request access</a></li>
-                <li><a href="/#waitlist" className="hover:text-foreground">Waitlist</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 md:flex-row">
-          <p className="font-display text-xs tracking-wide text-muted-foreground">
-            &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
-          </p>
-          <p className="font-display text-xs tracking-[0.15em] text-muted-foreground/70">
-            <a href="/privacy" className="transition-colors hover:text-foreground">PRIVACY</a>
-            <span className="mx-3">&middot;</span>
-            <a href="/terms" className="transition-colors hover:text-foreground">TERMS</a>
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 export default function Home() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -1327,19 +1219,11 @@ export default function Home() {
     }
   };
 
-  const scrollToMonth = (month: string) => {
-    const element = document.getElementById(`month-${month.toLowerCase()}`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SharedHeader 
         variant="transparent"
         onScrollToSection={scrollToSection}
-        onScrollToMonth={scrollToMonth}
       />
       <main>
         <HeroSection />
@@ -1355,7 +1239,7 @@ export default function Home() {
           <ContactInfoSection />
         </div>
       </main>
-      <Footer />
+      <SiteFooter />
       <Chatbot />
     </div>
   );

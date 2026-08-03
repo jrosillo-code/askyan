@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
+import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 
 function PhilosophySection({ t }: { t: (key: string) => string }) {
@@ -170,18 +171,6 @@ function CTASection({ t }: { t: (key: string) => string }) {
   );
 }
 
-function Footer({ t }: { t: (key: string) => string }) {
-  return (
-    <footer className="py-12 px-6 border-t border-border" data-testid="footer">
-      <div className="max-w-7xl mx-auto text-center">
-        <p className="font-display text-sm text-muted-foreground tracking-wide">
-          &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
-        </p>
-      </div>
-    </footer>
-  );
-}
-
 export default function About() {
   const { t } = useLanguage();
   
@@ -216,7 +205,7 @@ export default function About() {
         </div>
         <CTASection t={t} />
       </main>
-      <Footer t={t} />
+      <SiteFooter />
     </div>
   );
 }

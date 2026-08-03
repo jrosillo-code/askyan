@@ -19,6 +19,28 @@ interface Summary {
 
 const KEY_STORAGE = "askyan-admin-key";
 
+// Application triage lives in localStorage on the founder's device (no DB
+// migration needed for a two-person team). Statuses survive reloads here;
+// moving them server-side is a one-column upgrade later.
+const STATUS_STORAGE = "askyan-app-statuses";
+const STATUSES = ["new", "reviewed", "accepted", "declined"] as const;
+type AppStatus = (typeof STATUSES)[number];
+
+function loadStatuses(): Record<string, AppStatus> {
+  try {
+    return JSON.parse(localStorage.getItem(STATUS_STORAGE) ?? "{}") as Record<string, AppStatus>;
+  } catch {
+    return {};
+  }
+}
+
+const STATUS_STYLES: Record<AppStatus, string> = {
+  new: "border-primary/60 text-primary",
+  reviewed: "border-foreground/30 text-foreground/80",
+  accepted: "border-emerald-500/60 text-emerald-400",
+  declined: "border-muted-foreground/40 text-muted-foreground",
+};
+
 async function fetchJson<T>(path: string, key: string): Promise<T> {
   const res = await fetch(path, { headers: { "x-admin-key": key } });
   if (!res.ok) throw new Error(res.status === 401 ? "Wrong key" : `Failed (${res.status})`);
@@ -42,6 +64,20 @@ export default function AdminPage() {
   const [contacts, setContacts] = useState<Contact[] | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [copied, setCopied] = useState(false);
+  const [statuses, setStatuses] = useState<Record<string, AppStatus>>(loadStatuses);
+  const [statusFilter, setStatusFilter] = useState<AppStatus | "all">("all");
+
+  const setStatus = (id: string, status: AppStatus) => {
+    setStatuses((prev) => {
+      const next = { ...prev, [id]: status };
+      try {
+        localStorage.setItem(STATUS_STORAGE, JSON.stringify(next));
+      } catch {
+        // storage unavailable — filtering still works for this session
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (!key) return;
@@ -159,23 +195,55 @@ export default function AdminPage() {
 
         {contacts && (
           <section className="mt-12">
-            <h2 className="font-display text-xl font-bold text-foreground">Messages ({contacts.length})</h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-xl font-bold text-foreground">Messages ({contacts.length})</h2>
+              <div className="flex gap-1.5">
+                {(["all", ...STATUSES] as const).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setStatusFilter(f as AppStatus | "all")}
+                    className={`rounded-md border px-2.5 py-1 font-display text-[10px] uppercase tracking-widest transition-colors ${
+                      statusFilter === f ? "border-primary text-primary" : "border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="mt-4 space-y-3">
               {contacts.length === 0 && (
                 <p className="rounded-md border border-border bg-card p-6 text-sm text-muted-foreground">Nothing yet.</p>
               )}
-              {contacts.map((c) => (
-                <div key={c.id} className="rounded-md border border-border bg-card p-5">
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="font-display font-bold text-foreground">{c.name}</span>
-                    <a href={`mailto:${c.email}`} className="font-body text-sm text-primary">{c.email}</a>
-                    <span className="rounded-full border border-border px-2 py-0.5 font-display text-[10px] uppercase tracking-widest text-muted-foreground">
-                      {c.inquiryType}
-                    </span>
-                  </div>
-                  <p className="mt-3 font-body text-sm leading-relaxed text-foreground/85">{c.message}</p>
-                </div>
-              ))}
+              {contacts
+                .filter((c) => statusFilter === "all" || (statuses[c.id] ?? "new") === statusFilter)
+                .map((c) => {
+                  const status = statuses[c.id] ?? "new";
+                  return (
+                    <div key={c.id} className="rounded-md border border-border bg-card p-5">
+                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        <span className="font-display font-bold text-foreground">{c.name}</span>
+                        <a href={`mailto:${c.email}`} className="font-body text-sm text-primary">{c.email}</a>
+                        <span className="rounded-full border border-border px-2 py-0.5 font-display text-[10px] uppercase tracking-widest text-muted-foreground">
+                          {c.inquiryType}
+                        </span>
+                        <select
+                          value={status}
+                          onChange={(e) => setStatus(c.id, e.target.value as AppStatus)}
+                          className={`ml-auto rounded-sm border bg-transparent px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] outline-none ${STATUS_STYLES[status]}`}
+                          data-testid={`status-${c.id}`}
+                        >
+                          {STATUSES.map((s) => (
+                            <option key={s} value={s} className="bg-card text-foreground">
+                              {s}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <p className="mt-3 font-body text-sm leading-relaxed text-foreground/85">{c.message}</p>
+                    </div>
+                  );
+                })}
             </div>
           </section>
         )}

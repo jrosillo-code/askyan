@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,13 +18,11 @@ const ExpeditionDetail = lazy(() => import("@/pages/expedition-detail"));
 const Films = lazy(() => import("@/pages/films"));
 const Contact = lazy(() => import("@/pages/contact"));
 const About = lazy(() => import("@/pages/about"));
-const Conservation = lazy(() => import("@/pages/conservation"));
-const Community = lazy(() => import("@/pages/community"));
-const Sustainable = lazy(() => import("@/pages/sustainable"));
+const HowWeTravel = lazy(() => import("@/pages/how-we-travel"));
+const Ledger = lazy(() => import("@/pages/ledger"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const PrivacyPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.TermsPage })));
-const MonthDetailPage = lazy(() => import("@/pages/month-detail"));
 const AdminPage = lazy(() => import("@/pages/admin"));
 
 // Quiet, on-brand loading state between chunks.
@@ -53,9 +51,8 @@ const PAGE_TITLES: Record<string, string> = {
   "/chronicles": "Chronicles — ASKYAN",
   "/about": "About — ASKYAN",
   "/contact": "Request Access — ASKYAN",
-  "/conservation": "Conservation — ASKYAN",
-  "/community": "Community — ASKYAN",
-  "/sustainable": "Sustainable Travel — ASKYAN",
+  "/how-we-travel": "How We Travel — ASKYAN",
+  "/ledger": "The Ledger — ASKYAN",
   "/privacy": "Privacy — ASKYAN",
   "/terms": "Terms — ASKYAN",
   "/admin": "Ops Room — ASKYAN",
@@ -83,10 +80,15 @@ function Router() {
       <Route path="/films" component={Films} />
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
-      <Route path="/conservation" component={Conservation} />
-      <Route path="/community" component={Community} />
-      <Route path="/sustainable" component={Sustainable} />
-      <Route path="/when-to-go/:month" component={MonthDetailPage} />
+      <Route path="/how-we-travel" component={HowWeTravel} />
+      <Route path="/ledger" component={Ledger} />
+      {/* Retired pages: the three legacy commitment pages carried invented
+          track records and the month guide promoted destinations we don't
+          run. Old links land somewhere honest instead of a 404. */}
+      <Route path="/conservation">{() => <Redirect to="/how-we-travel" />}</Route>
+      <Route path="/community">{() => <Redirect to="/how-we-travel" />}</Route>
+      <Route path="/sustainable">{() => <Redirect to="/how-we-travel" />}</Route>
+      <Route path="/when-to-go/:month">{() => <Redirect to="/" />}</Route>
       <Route path="/admin" component={AdminPage} />
       <Route path="/privacy" component={PrivacyPage} />
       <Route path="/terms" component={TermsPage} />

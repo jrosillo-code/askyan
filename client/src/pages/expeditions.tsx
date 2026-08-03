@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, Flame, Mountain, Compass, Wind } from "lucide-react";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
+import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import { MEDIA } from "@/lib/media";
 const expeditionsHeroVideo = MEDIA["expeditions-hero-web.mp4"];
@@ -359,13 +360,7 @@ export default function Expeditions() {
         </motion.div>
       </section>
 
-      <footer className="py-12 px-6 border-t border-border" data-testid="footer">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="font-display text-sm text-muted-foreground tracking-wide">
-            &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

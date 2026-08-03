@@ -25,13 +25,10 @@ const searchableContent: SearchResult[] = [
   { id: "8", title: "Paths to the Sky", description: "Trekking Upper Mustang, Nepal", category: "story", url: "/films?video=nepal-trails" },
   { id: "9", title: "The Silent Monks of Bumthang", description: "Bhutan monastery chronicles", category: "story", url: "/chronicles#silent-monks-bhutan" },
   { id: "10", title: "Following the Last Salt Caravans", description: "Ethiopia salt trade traditions", category: "story", url: "/chronicles#salt-caravans-ethiopia" },
-  { id: "11", title: "Conservation First", description: "Our commitment to protecting wild places", category: "destination", url: "/conservation" },
-  { id: "12", title: "Community Support", description: "Supporting local communities", category: "destination", url: "/community" },
-  { id: "13", title: "Sustainable Practices", description: "Responsible travel practices", category: "destination", url: "/sustainable" },
-  { id: "14", title: "Swiss Alps", description: "Mountain adventures in Switzerland", category: "destination", url: "/when-to-go/january" },
-  { id: "15", title: "Japan Cherry Blossoms", description: "Spring in Japan", category: "destination", url: "/when-to-go/march" },
-  { id: "16", title: "Tanzania Safari", description: "African wildlife experiences", category: "destination", url: "/when-to-go/april" },
-  { id: "17", title: "Maldives", description: "Tropical paradise islands", category: "destination", url: "/when-to-go/february" },
+  { id: "11", title: "How We Travel", description: "Our commitments: conservation, community, sustainability", category: "destination", url: "/how-we-travel" },
+  { id: "12", title: "The Ledger", description: "What we've promised, and where it stands", category: "destination", url: "/ledger" },
+  { id: "13", title: "The Thunder Dragon Path", description: "Bhutan expedition through sacred valleys", category: "expedition", url: "/expedition/bhutan-sacred" },
+  { id: "14", title: "Request Access", description: "Apply to the founding cohort", category: "destination", url: "/contact" },
 ];
 
 interface SearchModalProps {

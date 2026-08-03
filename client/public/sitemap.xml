@@ -2,12 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://askyan.vercel.app/</loc></url>
   <url><loc>https://askyan.vercel.app/expeditions</loc></url>
+  <url><loc>https://askyan.vercel.app/expedition/kazakhstan-steppe</loc></url>
+  <url><loc>https://askyan.vercel.app/expedition/kyrgyzstan-heights</loc></url>
+  <url><loc>https://askyan.vercel.app/expedition/mongolia-gobi</loc></url>
+  <url><loc>https://askyan.vercel.app/expedition/nepal-mustang</loc></url>
+  <url><loc>https://askyan.vercel.app/expedition/bhutan-sacred</loc></url>
+  <url><loc>https://askyan.vercel.app/expedition/indonesia-flores</loc></url>
   <url><loc>https://askyan.vercel.app/films</loc></url>
   <url><loc>https://askyan.vercel.app/chronicles</loc></url>
   <url><loc>https://askyan.vercel.app/about</loc></url>
-  <url><loc>https://askyan.vercel.app/conservation</loc></url>
-  <url><loc>https://askyan.vercel.app/community</loc></url>
-  <url><loc>https://askyan.vercel.app/sustainable</loc></url>
+  <url><loc>https://askyan.vercel.app/how-we-travel</loc></url>
+  <url><loc>https://askyan.vercel.app/ledger</loc></url>
   <url><loc>https://askyan.vercel.app/contact</loc></url>
   <url><loc>https://askyan.vercel.app/privacy</loc></url>
   <url><loc>https://askyan.vercel.app/terms</loc></url>

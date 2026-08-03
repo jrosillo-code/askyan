@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Play, Film, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
+import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 
 interface VideoItem {
@@ -180,6 +181,60 @@ function VideoCard({ video, onClick, index, t }: { video: VideoItem; onClick: ()
   );
 }
 
+
+// Turns the "In production" slate into a list: leave an email, hear when the
+// first films premiere. Reuses the waitlist endpoint — one audience, tagged
+// by where they signed up from.
+function PremiereNotify() {
+  const { t } = useLanguage();
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+
+  const submit = async () => {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return setState("error");
+    setState("sending");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      // "already on the waitlist" is success for our purposes here
+      setState(res.ok || res.status === 400 ? "done" : "error");
+    } catch {
+      setState("error");
+    }
+  };
+
+  return (
+    <section className="border-t border-border px-6 py-16" data-testid="section-premiere-notify">
+      <div className="mx-auto max-w-xl text-center">
+        <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">{t("films.notify.kicker")}</p>
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">{t("films.notify.title")}</h2>
+        <p className="font-body text-sm text-muted-foreground mb-6">{t("films.notify.body")}</p>
+        {state === "done" ? (
+          <p className="font-body text-sm italic text-primary" data-testid="text-notify-success">{t("films.notify.success")}</p>
+        ) : (
+          <div className="mx-auto flex max-w-md gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); if (state === "error") setState("idle"); }}
+              onKeyDown={(e) => e.key === "Enter" && submit()}
+              placeholder={t("waitlist.placeholder")}
+              className={`h-11 flex-1 rounded-md border bg-card px-4 font-body text-sm text-foreground outline-none transition-colors focus:border-primary ${state === "error" ? "border-red-400" : "border-border"}`}
+              data-testid="input-notify-email"
+            />
+            <Button onClick={submit} disabled={state === "sending"} className="h-11 font-display tracking-wide" data-testid="button-notify">
+              {t("films.notify.button")}
+            </Button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function Films() {
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const searchString = useSearch();
@@ -295,13 +350,9 @@ export default function Films() {
         </motion.div>
       </section>
 
-      <footer className="py-12 px-6 border-t border-border" data-testid="footer">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="font-display text-sm text-muted-foreground tracking-wide">
-            &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
-          </p>
-        </div>
-      </footer>
+      <PremiereNotify />
+
+      <SiteFooter />
 
       <AnimatePresence>
         {selectedVideo && (

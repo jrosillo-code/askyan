@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
+import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 
 interface Story {
@@ -206,13 +207,7 @@ export default function Stories() {
         </section>
       </main>
 
-      <footer className="py-12 px-6 border-t border-border" data-testid="footer">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="font-display text-sm text-muted-foreground tracking-wide">
-            &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
