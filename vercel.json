@@ -1,5 +1,5 @@
 {
-  "buildCommand": "vite build && node scripts/prerender-meta.mjs",
+  "buildCommand": "vite build && node scripts/prerender-meta.mjs && node scripts/build-serverless.mjs",
   "outputDirectory": "dist/public",
   "headers": [
     {
