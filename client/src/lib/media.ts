@@ -51,11 +51,11 @@ export const MEDIA: Record<string, string> = {
 
   // ── expedition films ──
   "kazakhstan-web.mp4": "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4", // canyon river aerial, no people
-  "kyrgyzstan-web.mp4": "https://videos.pexels.com/video-files/8761030/8761030-uhd_3840_2160_30fps.mp4", // green mountain river aerial
-  "mongolia-web.mp4": "https://videos.pexels.com/video-files/8774553/8774553-uhd_3840_2160_30fps.mp4", // dune drone — Gobi mood, no people
+  "kyrgyzstan-web.mp4": "https://videos.pexels.com/video-files/8761030/8761030-hd_1920_1080_30fps.mp4", // green mountain river aerial
+  "mongolia-web.mp4": "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4", // dune drone — Gobi mood, no people
   "adventure-web.mp4": "/videos/adventure-web.mp4", // real brand footage
-  "bhutan-web.mp4": "https://videos.pexels.com/video-files/18830352/18830352-uhd_2560_1440_60fps.mp4", // Ladakh Himalaya drone — Thunder Dragon mood
-  "expeditions-hero-web.mp4": "https://videos.pexels.com/video-files/3121327/3121327-uhd_3840_2160_24fps.mp4",
+  "bhutan-web.mp4": "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4", // Ladakh Himalaya drone — Thunder Dragon mood
+  "expeditions-hero-web.mp4": "https://videos.pexels.com/video-files/3121327/3121327-hd_1920_1080_24fps.mp4",
   "12004059_1920_1080_30fps_1765009552268.mp4": "/videos/12004059.mp4", // real brand footage
   "14862479-hd_1920_1080_60fps_1765009387935.mp4": "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4",
 };

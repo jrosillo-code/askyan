@@ -130,13 +130,12 @@ const pressLogos = [
 ];
 
 const heroVideos = [
-  // Direct CDN files (the /download/ redirect endpoint refuses hotlinks —
-  // that was the black hero). All landscape, people-free, destination-true.
-  "https://videos.pexels.com/video-files/8761030/8761030-uhd_3840_2160_30fps.mp4",
-  "https://videos.pexels.com/video-files/8774553/8774553-uhd_3840_2160_30fps.mp4",
-  "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4",
-  "https://videos.pexels.com/video-files/7593088/7593088-uhd_4096_1974_30fps.mp4",
-  "https://videos.pexels.com/video-files/3121327/3121327-uhd_3840_2160_24fps.mp4",
+  // Three clips, all verified HD (1920) — a quarter the bytes of the UHD
+  // files, which is the difference between "loads instantly" and "loads
+  // eventually" on hotel wifi. The 4K-only clips live on expedition pages.
+  "https://videos.pexels.com/video-files/8761030/8761030-hd_1920_1080_30fps.mp4",
+  "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4",
+  "https://videos.pexels.com/video-files/3121327/3121327-hd_1920_1080_24fps.mp4",
 ];
 
 function HeroSection() {
