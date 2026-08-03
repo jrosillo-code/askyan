@@ -5,12 +5,13 @@ import { ArrowLeft, ArrowRight, Flame, Mountain, Compass, Wind } from "lucide-re
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { useLanguage } from "@/contexts/language-context";
-import expeditionsHeroVideo from "@assets/expeditions-hero-web.mp4";
-import kazakhstanVideo from "@assets/kazakhstan-web.mp4";
-import kyrgyzstanVideo from "@assets/kyrgyzstan-web.mp4";
-import mongoliaVideo from "@assets/mongolia-web.mp4";
-import nepalVideo from "@assets/14862479-hd_1920_1080_60fps_1765009387935.mp4";
-import indonesiaVideo from "@assets/12004059_1920_1080_30fps_1765009552268.mp4";
+import { MEDIA } from "@/lib/media";
+const expeditionsHeroVideo = MEDIA["expeditions-hero-web.mp4"];
+const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
+const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
+const mongoliaVideo = MEDIA["mongolia-web.mp4"];
+const nepalVideo = MEDIA["14862479-hd_1920_1080_60fps_1765009387935.mp4"];
+const indonesiaVideo = MEDIA["12004059_1920_1080_30fps_1765009552268.mp4"];
 
 interface Expedition {
   id: string;

@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, Clock, MapPin, Mountain, Users, Flame, Star, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
-import kazakhstanVideo from "@assets/kazakhstan-web.mp4";
-import kyrgyzstanVideo from "@assets/kyrgyzstan-web.mp4";
-import mongoliaVideo from "@assets/mongolia-web.mp4";
-import nepalVideo from "@assets/14862479-hd_1920_1080_60fps_1765009387935.mp4";
-import indonesiaVideo from "@assets/12004059_1920_1080_30fps_1765009552268.mp4";
+import { MEDIA } from "@/lib/media";
+const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
+const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
+const mongoliaVideo = MEDIA["mongolia-web.mp4"];
+const nepalVideo = MEDIA["14862479-hd_1920_1080_60fps_1765009387935.mp4"];
+const indonesiaVideo = MEDIA["12004059_1920_1080_30fps_1765009552268.mp4"];
 
 interface ItineraryDay {
   day: number;

@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Recycle, Zap, TreePine } from "lucide-react";
 import { SharedHeader } from "@/components/shared-header";
-import sustainableImage from "@assets/stock_images/sustainable_eco-frie_cb0317fc.jpg";
+import { MEDIA } from "@/lib/media";
+const sustainableImage = MEDIA["stock_images/sustainable_eco-frie_cb0317fc.jpg"];
 
 export default function SustainablePage() {
   const initiatives = [

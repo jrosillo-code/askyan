@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Users, Heart, GraduationCap } from "lucide-react";
 import { SharedHeader } from "@/components/shared-header";
-import communityImage from "@assets/stock_images/local_community_cult_d6accc8e.jpg";
+import { MEDIA } from "@/lib/media";
+const communityImage = MEDIA["stock_images/local_community_cult_d6accc8e.jpg"];
 
 export default function CommunityPage() {
   const initiatives = [

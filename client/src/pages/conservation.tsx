@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Leaf, Shield, Globe } from "lucide-react";
 import { SharedHeader } from "@/components/shared-header";
-import conservationImage from "@assets/stock_images/conservation_wildlif_d0bedb1b.jpg";
+import { MEDIA } from "@/lib/media";
+const conservationImage = MEDIA["stock_images/conservation_wildlif_d0bedb1b.jpg"];
 
 export default function ConservationPage() {
   const initiatives = [
