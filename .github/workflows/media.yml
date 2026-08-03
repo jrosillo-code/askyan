@@ -40,7 +40,7 @@ jobs:
           if want him; then
             dl /tmp/src/him.mp4 "https://videos.pexels.com/video-files/18830352/18830352-hd_1920_1080_60fps.mp4"
             # 30fps halves the weight; drone glides read identically.
-            enc /tmp/src/him.mp4 client/public/videos/himalaya-web.mp4 26 "scale=1920:-2,fps=30"
+            enc /tmp/src/him.mp4 client/public/videos/himalaya-web.mp4 28 "scale=1920:-2,fps=30"
           fi
           if want nep; then
             dl /tmp/src/nep.mp4 "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4"
