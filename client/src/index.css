@@ -385,3 +385,16 @@ button:active, [role="button"]:active {
   border: 2px solid hsl(0 0% 7%);
 }
 *::-webkit-scrollbar-thumb:hover { background: hsl(32 45% 50%); }
+
+/* Hero: slow cinematic drift — barely perceptible, hugely expensive-feeling */
+@keyframes hero-drift {
+  from { transform: scale(1.05) translate3d(0, 0, 0); }
+  to { transform: scale(1.13) translate3d(1.5%, -1%, 0); }
+}
+.hero-drift {
+  animation: hero-drift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-drift { animation: none; transform: scale(1.05); }
+}

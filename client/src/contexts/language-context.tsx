@@ -63,12 +63,12 @@ const translations: Record<Language, Record<string, string>> = {
     "founders.headline": "The Founders",
     
     // Waitlist
-    "waitlist.subtitle": "Join The Inner Circle",
-    "waitlist.title": "Request Early Access",
-    "waitlist.description": "Be among the first to experience the unseen world. Limited spots available for founding members.",
+    "waitlist.subtitle": "The Founding Cohort",
+    "waitlist.title": "Ask to Be Considered",
+    "waitlist.description": "The first journeys will be small, slow, and unrepeatable. Leave your email and we will write back personally.",
     "waitlist.placeholder": "Enter your email",
-    "waitlist.button": "Join Waitlist",
-    "waitlist.success": "Welcome to the inner circle. We'll be in touch.",
+    "waitlist.button": "Request Access",
+    "waitlist.success": "Received. A founder will write to you personally.",
     
     // Footer
     "footer.rights": "All Rights Reserved",
@@ -139,7 +139,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Expeditions Page
     "expeditions.headline": "Expeditions That Transform",
-    "expeditions.subtitle": "Journey beyond the ordinary into territories most will never see. Each expedition is designed to challenge, inspire, and transform.",
+    "expeditions.subtitle": "Six journeys in development across Central Asia and the Himalayas — small parties, local Scribes, no scripts. This is where the collective begins.",
     "expeditions.heroSubtitle": "We don't sell vacations. We architect journeys that fundamentally alter how you experience the world — and yourself.",
     "expeditions.duration": "Duration",
     "expeditions.season": "Season",
@@ -461,12 +461,12 @@ const translations: Record<Language, Record<string, string>> = {
     "founders.headline": "Los Fundadores",
     
     // Waitlist
-    "waitlist.subtitle": "Únete al Círculo Interno",
-    "waitlist.title": "Solicita Acceso Anticipado",
-    "waitlist.description": "Sé de los primeros en experimentar el mundo desconocido. Lugares limitados para miembros fundadores.",
+    "waitlist.subtitle": "La Cohorte Fundadora",
+    "waitlist.title": "Pide Ser Considerado",
+    "waitlist.description": "Los primeros viajes serán pequeños, lentos e irrepetibles. Deja tu correo y te escribiremos personalmente.",
     "waitlist.placeholder": "Ingresa tu correo electrónico",
-    "waitlist.button": "Unirse a la Lista",
-    "waitlist.success": "Bienvenido al círculo interno. Nos pondremos en contacto.",
+    "waitlist.button": "Solicitar Acceso",
+    "waitlist.success": "Recibido. Un fundador te escribirá personalmente.",
     
     // Footer
     "footer.rights": "Todos los Derechos Reservados",
@@ -537,7 +537,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Expeditions Page
     "expeditions.headline": "Expediciones Que Transforman",
-    "expeditions.subtitle": "Viaja más allá de lo ordinario hacia territorios que la mayoría nunca verá. Cada expedición está diseñada para desafiar, inspirar y transformar.",
+    "expeditions.subtitle": "Seis viajes en desarrollo por Asia Central y el Himalaya — grupos pequeños, Escribas locales, sin guiones. Aquí comienza el colectivo.",
     "expeditions.heroSubtitle": "No vendemos vacaciones. Arquitectamos viajes que alteran fundamentalmente cómo experimentas el mundo — y a ti mismo.",
     "expeditions.duration": "Duración",
     "expeditions.season": "Temporada",

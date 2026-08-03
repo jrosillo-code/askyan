@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Chatbot } from "@/components/chatbot";
 import { useLanguage } from "@/contexts/language-context";
 import { MEDIA } from "@/lib/media";
+import logoImage from "@assets/download-Picsart-BackgroundRemover_1764993972814.png";
 const mountainsImage = MEDIA["stock_images/aerial_view_mountain_771f3480.jpg"];
 const desertImage = MEDIA["stock_images/desert_dunes_morocco_5d629ce9.jpg"];
 const oceanImage = MEDIA["stock_images/tropical_ocean_islan_60d51698.jpg"];
@@ -141,6 +142,13 @@ const heroVideos = [
 function HeroSection() {
   const { t } = useLanguage();
   const [currentVideo, setCurrentVideo] = useState(0);
+  // Respect accessibility + metered connections: skip video streams entirely
+  // and let the poster carry the hero.
+  const [staticHero] = useState(
+    () =>
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      (navigator as { connection?: { saveData?: boolean } }).connection?.saveData === true
+  );
   const [previousVideo, setPreviousVideo] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -223,7 +231,7 @@ function HeroSection() {
           aria-hidden
           className="absolute inset-0 w-full h-full object-cover scale-105"
         />
-        {heroVideos.map((video, index) => {
+        {!staticHero && heroVideos.map((video, index) => {
           // Mount only the video on screen and its crossfade partner —
           // mounting all five streamed ~5 concurrent UHD downloads on load.
           if (index !== currentVideo && index !== previousVideo) return null;
@@ -236,7 +244,7 @@ function HeroSection() {
             playsInline
             preload="auto"
             src={video}
-            className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-[1500ms] ${getVideoOpacity(index)} ${getVideoZIndex(index)}`}
+            className={`hero-drift absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ${getVideoOpacity(index)} ${getVideoZIndex(index)}`}
             onTimeUpdate={(e) => {
               const video = e.currentTarget;
               if (video.currentTime >= 10) {
@@ -1396,16 +1404,54 @@ function ContactInfoSection() {
 function Footer() {
   const { t } = useLanguage();
   return (
-    <footer className="py-12 px-6 border-t border-border" data-testid="footer">
-      <div className="max-w-7xl mx-auto text-center">
-        <p className="font-display text-sm text-muted-foreground tracking-wide">
-          &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
-        </p>
-        <p className="mt-3 font-display text-xs tracking-[0.15em] text-muted-foreground/70">
-          <a href="/privacy" className="transition-colors hover:text-foreground">PRIVACY</a>
-          <span className="mx-3">&middot;</span>
-          <a href="/terms" className="transition-colors hover:text-foreground">TERMS</a>
-        </p>
+    <footer className="border-t border-border px-6 pb-10 pt-16" data-testid="footer">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-12 md:grid-cols-3">
+          <div>
+            <div className="flex items-center gap-3">
+              <img src={logoImage} alt="" className="h-9 w-auto brightness-0 invert" />
+              <span className="font-display text-xl font-bold tracking-wide text-foreground">ASKYAN</span>
+            </div>
+            <p className="mt-4 max-w-xs font-body text-sm italic leading-relaxed text-muted-foreground">
+              A private media collective. Curated access to the unseen world.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-8 md:col-span-2 md:grid-cols-3">
+            <div>
+              <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">Journeys</div>
+              <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
+                <li><a href="/expeditions" className="hover:text-foreground">Expeditions</a></li>
+                <li><a href="/films" className="hover:text-foreground">Films</a></li>
+                <li><a href="/chronicles" className="hover:text-foreground">Chronicles</a></li>
+              </ul>
+            </div>
+            <div>
+              <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">Collective</div>
+              <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
+                <li><a href="/about" className="hover:text-foreground">About</a></li>
+                <li><a href="/conservation" className="hover:text-foreground">Conservation</a></li>
+                <li><a href="/community" className="hover:text-foreground">Community</a></li>
+              </ul>
+            </div>
+            <div>
+              <div className="font-display text-xs uppercase tracking-[0.25em] text-primary">Join</div>
+              <ul className="mt-4 space-y-2.5 font-body text-sm text-muted-foreground">
+                <li><a href="/contact" className="hover:text-foreground">Request access</a></li>
+                <li><a href="/#waitlist" className="hover:text-foreground">Waitlist</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 md:flex-row">
+          <p className="font-display text-xs tracking-wide text-muted-foreground">
+            &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
+          </p>
+          <p className="font-display text-xs tracking-[0.15em] text-muted-foreground/70">
+            <a href="/privacy" className="transition-colors hover:text-foreground">PRIVACY</a>
+            <span className="mx-3">&middot;</span>
+            <a href="/terms" className="transition-colors hover:text-foreground">TERMS</a>
+          </p>
+        </div>
       </div>
     </footer>
   );
