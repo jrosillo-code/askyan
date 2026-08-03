@@ -4,17 +4,20 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe live chat API
+      - name: Probe live API
         run: |
           echo "=== POST /api/chat ==="
-          curl -sS -o /tmp/chat.json -w "HTTP %{http_code}\n" \
+          curl -sS -o /tmp/r.json -w "HTTP %{http_code}\n" \
             -X POST https://askyan.vercel.app/api/chat \
             -H "Content-Type: application/json" \
             -d '{"messages":[{"role":"user","content":"Which expeditions do you run?"}]}' || true
-          cat /tmp/chat.json; echo
-          echo "=== POST /api/chat (assistant-first history, mirrors widget) ==="
-          curl -sS -o /tmp/chat2.json -w "HTTP %{http_code}\n" \
-            -X POST https://askyan.vercel.app/api/chat \
+          cat /tmp/r.json; echo
+          echo "=== GET /api/subscribers (no key; expect 401/503 JSON) ==="
+          curl -sS -o /tmp/r2.json -w "HTTP %{http_code}\n" https://askyan.vercel.app/api/subscribers || true
+          cat /tmp/r2.json; echo
+          echo "=== POST /api/subscribe (DB path) ==="
+          curl -sS -o /tmp/r3.json -w "HTTP %{http_code}\n" \
+            -X POST https://askyan.vercel.app/api/subscribe \
             -H "Content-Type: application/json" \
-            -d '{"messages":[{"role":"assistant","content":"Welcome to ASKYAN."},{"role":"user","content":"Tell me about the Gobi expedition"}]}' || true
-          cat /tmp/chat2.json; echo
+            -d '{"email":"ci-probe@example.com"}' || true
+          cat /tmp/r3.json; echo
