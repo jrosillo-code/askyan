@@ -22,7 +22,7 @@ const translations: Record<Language, Record<string, string>> = {
     "hero.subtitle": "A Private Media Collective",
     "hero.title": "This Is Not A Tour.",
     "hero.description": "It's an invitation to the unseen world.",
-    "hero.featuredIn": "As Featured In",
+    "hero.featuredIn": "First Expeditions",
     
     // Featured Titles
     "featured.title": "Featured Journeys",
@@ -420,7 +420,7 @@ const translations: Record<Language, Record<string, string>> = {
     "hero.subtitle": "Un Colectivo de Medios Privado",
     "hero.title": "Esto No Es Un Tour.",
     "hero.description": "Es una invitación al mundo desconocido.",
-    "hero.featuredIn": "Como Aparece En",
+    "hero.featuredIn": "Primeras Expediciones",
     
     // Featured Titles
     "featured.title": "Viajes Destacados",

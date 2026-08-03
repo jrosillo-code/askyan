@@ -34,6 +34,24 @@ function getAI(): { client: OpenAI; model: string } | null {
   return { client: aiClient, model: aiModel };
 }
 
+// Admin-only reads (waitlist, contact messages, analytics) — these hold
+// personal data and must never be public. Locked with ADMIN_SECRET: requests
+// need an `x-admin-key` header (or ?key= for quick browser checks). With no
+// ADMIN_SECRET configured they're locked entirely, never open by default.
+function requireAdmin(req: { headers: Record<string, unknown>; query: Record<string, unknown> }, res: {
+  status: (code: number) => { json: (body: unknown) => unknown };
+}): boolean {
+  const secret = process.env.ADMIN_SECRET;
+  const provided = (req.headers["x-admin-key"] as string) ?? (req.query.key as string);
+  if (!secret || !provided || provided !== secret) {
+    res.status(secret ? 401 : 503).json({
+      message: secret ? "Unauthorized" : "Admin access is not configured.",
+    });
+    return false;
+  }
+  return true;
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -64,7 +82,8 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/subscribers", async (_req, res) => {
+  app.get("/api/subscribers", async (req, res) => {
+    if (!requireAdmin(req as never, res)) return;
     try {
       const subscribers = await storage.getAllSubscribers();
       res.json({ subscribers, count: subscribers.length });
@@ -91,7 +110,8 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/contacts", async (_req, res) => {
+  app.get("/api/contacts", async (req, res) => {
+    if (!requireAdmin(req as never, res)) return;
     try {
       const contacts = await storage.getAllContactSubmissions();
       res.json({ contacts, count: contacts.length });
@@ -126,7 +146,8 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/analytics/summary", async (_req, res) => {
+  app.get("/api/analytics/summary", async (req, res) => {
+    if (!requireAdmin(req as never, res)) return;
     try {
       const summary = await storage.getAnalyticsSummary();
       res.json(summary);

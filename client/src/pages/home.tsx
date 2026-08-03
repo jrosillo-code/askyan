@@ -118,13 +118,15 @@ function AnimatedText({ text, className, delay = 0 }: { text: string; className?
   );
 }
 
+// Truthful strip: where the founding expeditions actually go. (The previous
+// fabricated press logos are a credibility liability for a trust-first brand —
+// real features can be added here if and when they exist.)
 const pressLogos = [
-  { name: "Forbes", text: "FORBES", url: "https://www.forbes.com" },
-  { name: "Financial Times", text: "FINANCIAL TIMES", url: "https://www.ft.com" },
-  { name: "Robb Report", text: "ROBB REPORT", url: "https://robbreport.com" },
-  { name: "Travel + Leisure", text: "TRAVEL + LEISURE", url: "https://www.travelandleisure.com" },
-  { name: "Conde Nast", text: "CONDE NAST TRAVELER", url: "https://www.cntraveler.com" },
-  { name: "The Times", text: "THE TIMES", url: "https://www.thetimes.co.uk" },
+  { name: "Kazakhstan", text: "KAZAKHSTAN", url: "/expeditions" },
+  { name: "Kyrgyzstan", text: "KYRGYZSTAN", url: "/expeditions" },
+  { name: "Mongolia", text: "MONGOLIA", url: "/expeditions" },
+  { name: "Bhutan", text: "BHUTAN", url: "/expeditions" },
+  { name: "Founding Cohort", text: "FOUNDING COHORT — NOW FORMING", url: "/contact" },
 ];
 
 const heroVideos = [
@@ -300,8 +302,6 @@ function HeroSection() {
             <a
               key={logo.name}
               href={logo.url}
-              target="_blank"
-              rel="noopener noreferrer"
               className="font-display text-[10px] md:text-xs tracking-[0.15em] text-white/40 hover:text-white/70 transition-colors"
               data-testid={`link-press-${logo.name.toLowerCase().replace(/\s+/g, '-')}`}
             >
@@ -1406,6 +1406,11 @@ function Footer() {
       <div className="max-w-7xl mx-auto text-center">
         <p className="font-display text-sm text-muted-foreground tracking-wide">
           &copy; {new Date().getFullYear()} {t("common.copyright")}. {t("footer.rights").toUpperCase()}.
+        </p>
+        <p className="mt-3 font-display text-xs tracking-[0.15em] text-muted-foreground/70">
+          <a href="/privacy" className="transition-colors hover:text-foreground">PRIVACY</a>
+          <span className="mx-3">&middot;</span>
+          <a href="/terms" className="transition-colors hover:text-foreground">TERMS</a>
         </p>
       </div>
     </footer>

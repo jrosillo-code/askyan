@@ -18,6 +18,7 @@ import Conservation from "@/pages/conservation";
 import Community from "@/pages/community";
 import Sustainable from "@/pages/sustainable";
 import NotFound from "@/pages/not-found";
+import { PrivacyPage, TermsPage } from "@/pages/legal";
 import MonthDetailPage from "@/pages/month-detail";
 
 function useScrollToTop() {
@@ -45,6 +46,8 @@ function Router() {
       <Route path="/community" component={Community} />
       <Route path="/sustainable" component={Sustainable} />
       <Route path="/when-to-go/:month" component={MonthDetailPage} />
+      <Route path="/privacy" component={PrivacyPage} />
+      <Route path="/terms" component={TermsPage} />
       <Route component={NotFound} />
     </Switch>
   );
