@@ -931,6 +931,16 @@ function TestimonialsSection() {
   );
 }
 
+// The founding seasons: when each of the six landscapes is most itself.
+const FOUNDING_SEASONS = [
+  { id: "kazakhstan-steppe", code: "001", country: "Kazakhstan", title: "The Steppe Awakening", window: "MAY — OCT", note: "The steppe greens and Charyn Canyon glows at dusk." },
+  { id: "kyrgyzstan-heights", code: "002", country: "Kyrgyzstan", title: "The Celestial Mountains", window: "JUN — SEP", note: "High passes open; Song-Kul lives its brief nomad summer." },
+  { id: "mongolia-gobi", code: "003", country: "Mongolia", title: "The Gobi Crossing", window: "MAY — SEP", note: "Desert light before the winter winds arrive." },
+  { id: "nepal-mustang", code: "004", country: "Nepal", title: "The Forbidden Kingdom", window: "MAR — NOV", note: "Mustang's rain shadow keeps Lo dry through monsoon." },
+  { id: "bhutan-sacred", code: "005", country: "Bhutan", title: "The Thunder Dragon Path", window: "MAR—MAY · SEP—NOV", note: "Rhododendron spring; crystal-air autumn." },
+  { id: "indonesia-flores", code: "006", country: "Indonesia", title: "The Ring of Fire", window: "APR — NOV", note: "Dry season across the volcanic arc." },
+];
+
 const monthsData = [
   { name: "January", key: "january", image: januaryImage, destinationsList: [
     { name: "Swiss Alps", image: swissAlpsImage },
@@ -1096,9 +1106,6 @@ function WhenToGoSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 md:mb-20"
         >
-          <p className="font-display text-sm tracking-[0.3em] text-primary uppercase mb-4">
-            {t("seasonal.subtitle")}
-          </p>
           <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
             {t("seasonal.kicker")}
           </p>
@@ -1110,9 +1117,32 @@ function WhenToGoSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {monthsData.map((month, index) => (
-            <MonthFlipCard key={month.name} month={month} index={index} />
+        <div className="mx-auto max-w-4xl">
+          {FOUNDING_SEASONS.map((s, i) => (
+            <motion.div
+              key={s.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.06 }}
+            >
+              <Link
+                href={`/expedition/${s.id}`}
+                className="group flex flex-col gap-2 border-b border-primary/15 py-6 transition-colors hover:bg-card/60 md:flex-row md:items-baseline md:gap-8 md:px-4"
+                data-testid={`season-${s.id}`}
+              >
+                <span className="w-40 shrink-0 font-mono text-[11px] tracking-[0.2em] text-primary">
+                  {s.code} — {s.country.toUpperCase()}
+                </span>
+                <span className="flex-1">
+                  <span className="font-display text-xl font-bold text-foreground transition-colors group-hover:text-primary md:text-2xl">
+                    {s.title}
+                  </span>
+                  <span className="mt-1 block font-body text-sm italic text-muted-foreground">{s.note}</span>
+                </span>
+                <span className="shrink-0 font-mono text-xs tracking-[0.15em] text-primary/90">{s.window}</span>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>

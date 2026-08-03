@@ -189,6 +189,23 @@ export default function About() {
     <div className="min-h-screen bg-background">
       <SharedHeader variant="solid" activePage="about" />
       <main className="pt-20">
+        {/* The manifesto — the standard, said once, at full volume */}
+        <section className="border-y border-primary/15 px-6 py-24 md:py-32">
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="font-display text-xs uppercase tracking-[0.3em] text-primary">The Line We Hold</p>
+            <blockquote className="mx-auto mt-8 font-display text-3xl font-semibold leading-snug text-foreground md:text-5xl md:leading-tight">
+              “If a tour bus can photograph it,<br className="hidden md:block" /> it isn’t on our route.”
+            </blockquote>
+            <p className="mx-auto mt-10 max-w-2xl font-body text-base italic leading-relaxed text-muted-foreground md:text-lg">
+              ASKYAN is new, and we would rather say so than pretend otherwise. There are no
+              client stories yet, no awards, no press wall — there is a slate of six journeys,
+              a network of Cultural Scribes being built one handshake at a time, and two founders
+              reading every application personally. The first cohort won’t join a travel brand.
+              They’ll help set its standard.
+            </p>
+          </div>
+        </section>
+
         <FoundersSection t={t} />
         <div className="max-w-4xl mx-auto px-6">
           <hr className="border-t border-white/20" />

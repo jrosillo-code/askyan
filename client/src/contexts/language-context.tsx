@@ -50,7 +50,7 @@ const translations: Record<Language, Record<string, string>> = {
     "seasonal.subtitle": "Seasonal Guide",
     "seasonal.kicker": "The Calendar",
     "seasonal.title": "When To Go",
-    "seasonal.description": "Every month offers unique experiences. Our travel experts have curated the perfect destinations for each season.",
+    "seasonal.description": "Every journey has its window. These are the founding seasons — when each landscape is most itself.",
     
     // Adventure Section
     "adventure.subtitle": "Our Areas of Expertise",
@@ -451,7 +451,7 @@ const translations: Record<Language, Record<string, string>> = {
     "seasonal.subtitle": "Guía Estacional",
     "seasonal.kicker": "El Calendario",
     "seasonal.title": "Cuándo Ir",
-    "seasonal.description": "Cada mes ofrece experiencias únicas. Nuestros expertos en viajes han seleccionado los destinos perfectos para cada temporada.",
+    "seasonal.description": "Cada viaje tiene su ventana. Estas son las temporadas fundadoras — cuando cada paisaje es más él mismo.",
     
     // Adventure Section
     "adventure.subtitle": "Nuestras Áreas de Especialización",

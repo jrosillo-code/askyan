@@ -17,6 +17,31 @@ const CODES: Record<string, string> = {
   "kazakhstan-steppe": "001", "kyrgyzstan-heights": "002", "mongolia-gobi": "003",
   "nepal-mustang": "004", "bhutan-sacred": "005", "indonesia-flores": "006",
 };
+const LATLON: Record<string, [number, number]> = {
+  "kazakhstan-steppe": [79.08, 43.35], "kyrgyzstan-heights": [75.13, 41.84],
+  "mongolia-gobi": [103.5, 43.5], "nepal-mustang": [83.95, 29.19],
+  "bhutan-sacred": [89.36, 27.49], "indonesia-flores": [119.49, -8.55],
+};
+// Tiny dossier map: graticule + one gold anchor point over the Asia frame.
+function MiniMap({ id }: { id: string }) {
+  const ll = LATLON[id];
+  if (!ll) return null;
+  const x = ((ll[0] - 55) / (130 - 55)) * 148;
+  const y = ((50 - ll[1]) / (50 - -12)) * 88;
+  return (
+    <svg width="148" height="88" viewBox="0 0 148 88" fill="none" className="rounded-sm border border-primary/25">
+      {[22, 44, 66].map((gy) => (
+        <line key={gy} x1="0" y1={gy} x2="148" y2={gy} stroke="#D4A373" strokeOpacity="0.15" strokeWidth="1" />
+      ))}
+      {[37, 74, 111].map((gx) => (
+        <line key={gx} x1={gx} y1="0" x2={gx} y2="88" stroke="#D4A373" strokeOpacity="0.15" strokeWidth="1" />
+      ))}
+      <circle cx={x} cy={y} r="8" fill="#D4A373" fillOpacity="0.2" />
+      <circle cx={x} cy={y} r="3" fill="#D4A373" />
+    </svg>
+  );
+}
+
 const COORDS: Record<string, string> = {
   "kazakhstan-steppe": "43.3510\u00B0 N, 79.0794\u00B0 E",
   "kyrgyzstan-heights": "41.8397\u00B0 N, 75.1338\u00B0 E",
@@ -720,6 +745,12 @@ export default function ExpeditionDetail() {
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
                 <Card className="p-6 bg-card border-border" data-testid="card-pricing">
+                  <div className="mb-6 flex items-start justify-between gap-3">
+                    <MiniMap id={expedition.id} />
+                    <span className="rotate-2 rounded-sm border border-primary/60 px-2 py-1 font-mono text-[10px] tracking-[0.18em] text-primary">
+                      FOUNDING<br/>SEASON
+                    </span>
+                  </div>
                   <div className="mb-6">
                     <span className="font-display text-sm text-muted-foreground uppercase tracking-wide">
                       Pricing

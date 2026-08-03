@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { motion } from "framer-motion";
 import { insertContactSchema, type InsertContact } from "@shared/schema";
+import { ApplicationFlow } from "@/components/application-flow";
+import { useState } from "react";
 
 function ContactForm() {
   const { toast } = useToast();
@@ -241,66 +243,60 @@ function ContactInfo() {
 }
 
 export default function Contact() {
+  const [showGeneral, setShowGeneral] = useState(false);
   return (
     <div className="min-h-screen bg-background">
-      <SharedHeader variant="transparent" />
+      <SharedHeader variant="solid" />
 
-      <main className="pt-24 pb-16">
+      <main className="pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 font-display text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-            data-testid="link-back-home"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Link>
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-12 text-center"
           >
+            <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
+              The Founding Cohort
+            </p>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Contact Us
+              Request Access
             </h1>
-            <p className="font-body text-lg text-muted-foreground max-w-2xl">
-              Reach out to discuss your next expedition, explore partnership opportunities, 
-              or simply share your wanderlust with us.
+            <p className="font-body text-lg italic text-muted-foreground max-w-xl mx-auto">
+              The first journeys will be small, slow, and unrepeatable.
+              Tell us who you are — a founder reads every application.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              <ContactInfo />
-            </motion.div>
+          <ApplicationFlow />
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="bg-card border border-border rounded-md p-6 md:p-8"
+          <div className="mt-20 text-center">
+            <button
+              onClick={() => setShowGeneral((s) => !s)}
+              className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
+              data-testid="button-toggle-general"
             >
-              <h2 className="font-display text-xl font-bold text-foreground mb-6">
-                Send Us a Message
-              </h2>
-              <ContactForm />
-            </motion.div>
+              {showGeneral ? "Hide general inquiries" : "Press, partnerships or something else \u2192"}
+            </button>
+            {showGeneral && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mx-auto mt-8 max-w-xl rounded-md border border-border bg-card p-6 text-left md:p-8"
+              >
+                <ContactForm />
+              </motion.div>
+            )}
           </div>
         </div>
       </main>
 
       <footer className="border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="font-display font-black text-lg tracking-wider text-foreground mb-2">
+          <p className="font-display font-bold text-lg tracking-wider text-foreground mb-2">
             ASKYAN EXPEDITIONS
           </p>
-          <p className="font-body text-sm text-muted-foreground">
+          <p className="font-body text-sm italic text-muted-foreground">
             Curated access to the unseen world
           </p>
         </div>

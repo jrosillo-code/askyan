@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { notifyFounders, confirmApplicant } from "./mail";
 import { insertSubscriberSchema, insertContactSchema, insertPageViewSchema, insertAnalyticsEventSchema } from "../shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -91,6 +92,7 @@ export async function registerRoutes(
       }
       
       const subscriber = await storage.createSubscriber(validatedData);
+      notifyFounders("New waitlist signup — ASKYAN", { email: subscriber.email });
       res.status(201).json({ 
         message: "Successfully joined the waitlist!",
         subscriber: { id: subscriber.id, email: subscriber.email }
@@ -120,6 +122,15 @@ export async function registerRoutes(
       if (!rateLimit(req, "contact", 6)) return res.status(429).json({ message: "Too many attempts — try again in a minute." });
       const validatedData = insertContactSchema.parse(req.body);
       const contact = await storage.createContactSubmission(validatedData);
+      notifyFounders(`New ${validatedData.inquiryType} message — ASKYAN`, {
+        name: validatedData.name,
+        email: validatedData.email,
+        type: validatedData.inquiryType,
+        message: validatedData.message,
+      });
+      if (validatedData.inquiryType === "expedition") {
+        confirmApplicant(validatedData.email, validatedData.name);
+      }
       res.status(201).json({ 
         message: "Your message has been sent! We'll be in touch soon.",
         contact: { id: contact.id }
