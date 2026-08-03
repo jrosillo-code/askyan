@@ -255,7 +255,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Chronicles
     "chronicles.headline": "The Chronicles",
-    "chronicles.subtitle": "Stories from the edges of the world, told by those who live them.",
+    "chronicles.subtitle": "The stories we are going to find. Chronicles begin with the founding expeditions.",
     
     "chronicle.bhutan.title": "The Silent Monks of Bumthang",
     "chronicle.bhutan.location": "Bhutan",
@@ -390,7 +390,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Chronicles/Stories Page
     "chronicles.description": "Dispatches from the edges of the map. Each chronicle is a window into the authentic stories and cultures that exist beyond the reach of conventional travel.",
-    "chronicles.readChronicle": "Read Chronicle",
+    "chronicles.readChronicle": "Coming with the cohort",
     "chronicles.moreComingSoon": "More chronicles are being written. Join the expedition to receive them first.",
     
     // Month highlights
@@ -653,7 +653,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Chronicles
     "chronicles.headline": "Las Crónicas",
-    "chronicles.subtitle": "Historias desde los confines del mundo, contadas por quienes las viven.",
+    "chronicles.subtitle": "Las historias que vamos a encontrar. Las crónicas comienzan con las expediciones fundadoras.",
     
     "chronicle.bhutan.title": "Los Monjes Silenciosos de Bumthang",
     "chronicle.bhutan.location": "Bután",
@@ -788,7 +788,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Chronicles/Stories Page
     "chronicles.description": "Despachos desde los confines del mapa. Cada crónica es una ventana a las historias y culturas auténticas que existen más allá del alcance del turismo convencional.",
-    "chronicles.readChronicle": "Leer Crónica",
+    "chronicles.readChronicle": "Llega con la cohorte",
     "chronicles.moreComingSoon": "Se están escribiendo más crónicas. Únete a la expedición para recibirlas primero.",
     
     // Month highlights

@@ -56,7 +56,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     difficulty: "Moderate",
     category: "Horseback & Wilderness",
     groupSize: "4-8 travelers",
-    startingFrom: "$6,800",
+    startingFrom: "By application",
     videoUrl: kazakhstanVideo,
     galleryImages: [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
@@ -201,7 +201,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     difficulty: "Challenging",
     category: "Trekking & Culture",
     groupSize: "4-6 travelers",
-    startingFrom: "$5,400",
+    startingFrom: "By application",
     videoUrl: kyrgyzstanVideo,
     galleryImages: [
       "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
@@ -329,7 +329,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     difficulty: "Moderate",
     category: "Desert & Nomadic",
     groupSize: "4-8 travelers",
-    startingFrom: "$7,200",
+    startingFrom: "By application",
     videoUrl: mongoliaVideo,
     galleryImages: [
       "https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=800&q=80",
@@ -368,7 +368,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     difficulty: "Challenging",
     category: "Trekking & Sacred Sites",
     groupSize: "4-8 travelers",
-    startingFrom: "$8,500",
+    startingFrom: "By application",
     videoUrl: nepalVideo,
     galleryImages: [
       "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=800&q=80",
@@ -409,7 +409,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     difficulty: "Moderate",
     category: "Sacred & Spiritual",
     groupSize: "4-8 travelers",
-    startingFrom: "$7,800",
+    startingFrom: "By application",
     imageUrl: "https://images.unsplash.com/photo-1553856622-d1b352e9a211?w=1920&q=80",
     galleryImages: [
       "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=800&q=80",
@@ -445,7 +445,7 @@ const expeditionDetails: Record<string, ExpeditionDetail> = {
     difficulty: "Moderate",
     category: "Marine & Volcanic",
     groupSize: "6-10 travelers",
-    startingFrom: "$6,200",
+    startingFrom: "By application",
     videoUrl: indonesiaVideo,
     galleryImages: [
       "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
@@ -704,12 +704,12 @@ export default function ExpeditionDetail() {
                 <Card className="p-6 bg-card border-border" data-testid="card-pricing">
                   <div className="mb-6">
                     <span className="font-display text-sm text-muted-foreground uppercase tracking-wide">
-                      Starting From
+                      Pricing
                     </span>
                     <div className="font-display text-3xl font-bold text-foreground">
                       {expedition.startingFrom}
                     </div>
-                    <span className="font-body text-sm text-muted-foreground">per person</span>
+                    <span className="font-body text-sm text-muted-foreground">Details shared with accepted applicants</span>
                   </div>
 
                   <div className="space-y-3 mb-6">
