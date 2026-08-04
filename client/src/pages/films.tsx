@@ -262,11 +262,12 @@ export default function Films() {
           <video
           data-ambient=""
             src="/films-hero-video.mp4"
+            poster="/images/films-hero-poster.jpg"
             autoPlay
             muted
             loop
             playsInline
-            className="w-full h-full object-cover"
+            className="hero-video w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
         </div>

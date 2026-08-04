@@ -12,7 +12,7 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
-import { MEDIA } from "@/lib/media";
+import { MEDIA, VIDEO_POSTERS } from "@/lib/media";
 import { RoadPath } from "@/components/road-path";
 import { SiteFooter } from "@/components/site-footer";
 import { lazy, Suspense } from "react";
@@ -641,17 +641,12 @@ function SpotlightSection() {
                           muted
                           playsInline
                           preload="metadata"
+                          poster={VIDEO_POSTERS[currentAdventure.video]}
                           src={currentAdventure.video}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           onCanPlay={(e) => {
                             const video = e.currentTarget;
                             video.play().catch(() => {});
-                          }}
-                          onTimeUpdate={(e) => {
-                            const video = e.currentTarget;
-                            if (video.currentTime >= 10) {
-                              video.currentTime = 0;
-                            }
                           }}
                         />
                       ) : (
@@ -956,17 +951,12 @@ function AdventureFeatureSection() {
           muted
           playsInline
           preload="metadata"
+          poster={VIDEO_POSTERS[adventureVideo]}
           src={adventureVideo}
           className="absolute inset-0 w-full h-full object-cover"
           onCanPlay={(e) => {
             const video = e.currentTarget;
             video.play().catch(() => {});
-          }}
-          onTimeUpdate={(e) => {
-            const video = e.currentTarget;
-            if (video.currentTime >= 10) {
-              video.currentTime = 0;
-            }
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />

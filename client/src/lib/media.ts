@@ -59,3 +59,16 @@ export const MEDIA: Record<string, string> = {
   "12004059_1920_1080_30fps_1765009552268.mp4": "/videos/12004059.mp4", // real brand footage
   "14862479-hd_1920_1080_60fps_1765009387935.mp4": "/videos/nepal-web.mp4", // self-hosted
 };
+
+// Matching first-frame stills (CI-extracted) so every ambient video fades in
+// from its own scene instead of a black rectangle while it buffers.
+export const VIDEO_POSTERS: Record<string, string> = {
+  "/videos/gobi-web.mp4": "/images/gobi-poster.jpg",
+  "/videos/kazakhstan-web.mp4": "/images/kazakhstan-web-poster.jpg",
+  "/videos/kyrgyzstan-web.mp4": "/images/kyrgyzstan-web-poster.jpg",
+  "/videos/himalaya-web.mp4": "/images/himalaya-web-poster.jpg",
+  "/videos/nepal-web.mp4": "/images/nepal-web-poster.jpg",
+  "/videos/adventure-web.mp4": "/images/adventure-web-poster.jpg",
+  "/videos/12004059.mp4": "/images/indonesia-web-poster.jpg",
+  "/films-hero-video.mp4": "/images/films-hero-poster.jpg",
+};

@@ -7,7 +7,7 @@ import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
-import { MEDIA } from "@/lib/media";
+import { MEDIA, VIDEO_POSTERS } from "@/lib/media";
 const expeditionsHeroVideo = MEDIA["expeditions-hero-web.mp4"];
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
@@ -151,17 +151,12 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
               muted
               playsInline
               preload="metadata"
+              poster={VIDEO_POSTERS[expedition.videoUrl]}
               src={expedition.videoUrl}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               onCanPlay={(e) => {
                 const video = e.currentTarget;
                 video.play().catch(() => {});
-              }}
-              onTimeUpdate={(e) => {
-                const video = e.currentTarget;
-                if (video.currentTime >= 10) {
-                  video.currentTime = 0;
-                }
               }}
             />
           ) : (
@@ -260,13 +255,8 @@ export default function Expeditions() {
             muted
             playsInline
             preload="auto"
+            poster={VIDEO_POSTERS[expeditionsHeroVideo]}
             className="hero-video w-full h-full object-cover"
-            onTimeUpdate={(e) => {
-              const video = e.currentTarget;
-              if (video.currentTime >= 10) {
-                video.currentTime = 0;
-              }
-            }}
           >
             <source src={expeditionsHeroVideo} type="video/mp4" />
           </video>

@@ -163,6 +163,7 @@ function usePageTitle() {
 }
 
 function Router() {
+  const [location] = useLocation();
   useEffect(() => {
     captureAttribution();
   }, []);
@@ -181,6 +182,9 @@ function Router() {
       </a>
       <div id="main-content">
     <Suspense fallback={<RouteFallback />}>
+    {/* Keyed per location: each page eases in over ~a quarter second
+        instead of hard-swapping. */}
+    <div key={location} className="route-fade">
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/chronicles" component={Stories} />
@@ -203,6 +207,7 @@ function Router() {
       <Route path="/terms" component={TermsPage} />
       <Route component={NotFound} />
     </Switch>
+    </div>
     </Suspense>
       </div>
     </>
