@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       only:
-        description: "Encode only one target (all|gobi|kaz|kyr|him|nep|films)"
+        description: "Encode only one target (all|gobi|kaz|kyr|him|nep|films|posters)"
         default: "all"
 permissions:
   contents: write
@@ -45,6 +45,16 @@ jobs:
           if want nep; then
             dl /tmp/src/nep.mp4 "https://videos.pexels.com/video-files/14862479/14862479-hd_1920_1080_60fps.mp4"
             enc /tmp/src/nep.mp4 client/public/videos/nepal-web.mp4 26 "scale=1920:-2"
+          fi
+          if want posters; then
+            pf() { ffmpeg -y -ss 0.5 -i "$1" -frames:v 1 -q:v 3 -vf "scale=1600:-2" "client/public/images/$2-poster.jpg"; ls -la "client/public/images/$2-poster.jpg"; }
+            pf client/public/videos/kazakhstan-web.mp4 kazakhstan-web
+            pf client/public/videos/kyrgyzstan-web.mp4 kyrgyzstan-web
+            pf client/public/videos/himalaya-web.mp4   himalaya-web
+            pf client/public/videos/nepal-web.mp4      nepal-web
+            pf client/public/videos/adventure-web.mp4  adventure-web
+            pf client/public/videos/12004059.mp4       indonesia-web
+            pf client/public/films-hero-video.mp4      films-hero
           fi
           if want films; then
             enc client/public/films-popup-video.mp4 /tmp/popup.mp4 25 "scale=1600:-2"
