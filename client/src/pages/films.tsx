@@ -259,14 +259,16 @@ export default function Films() {
 
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
+          {/* preload="auto" marks this EAGER to the ambient controller — it is
+              the first thing on the page, so it keeps its head start. */}
           <video
-          data-ambient=""
+            data-ambient=""
             src="/films-hero-video.mp4"
             poster="/images/films-hero-poster.jpg"
-            autoPlay
             muted
             loop
             playsInline
+            preload="auto"
             className="hero-video w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />

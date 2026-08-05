@@ -60,11 +60,24 @@ export function SharedHeader({
   const isHome = location === "/";
 
   useEffect(() => {
+    // Passive: without it the browser must wait for this handler to return
+    // before it can scroll, since a non-passive listener is allowed to call
+    // preventDefault. The header mounts on every page, so that put a
+    // main-thread hop in front of every scroll event on the site.
+    // rAF-coalesced too, so a burst of events costs one read rather than thirty.
+    let raf = 0;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        setIsScrolled(window.scrollY > 50);
+      });
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   const handleScrollToSection = (id: string) => {

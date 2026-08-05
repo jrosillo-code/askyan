@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Switch, Route, Redirect, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { usePageTracking } from "@/hooks/use-analytics";
 import { LanguageProvider } from "@/contexts/language-context";
 import { captureAttribution } from "@/lib/attribution";
+import { MotionConfig } from "framer-motion";
 
 import Home from "@/pages/home";
 
@@ -26,8 +27,18 @@ const PrivacyPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m
 const TermsPage = lazy(() => import("@/pages/legal").then((m) => ({ default: m.TermsPage })));
 const AdminPage = lazy(() => import("@/pages/admin"));
 
-// Quiet, on-brand loading state between chunks.
+// Quiet, on-brand loading state between chunks — but held back for a beat.
+// A chunk that arrives in 80ms does not need a loading screen; showing one
+// anyway reads as a stutter, because the eye catches the flash and not the
+// content. Below the threshold the old page simply stays until the new one is
+// ready; above it, the wait is real and deserves to be acknowledged.
 function RouteFallback() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 180);
+    return () => clearTimeout(t);
+  }, []);
+  if (!show) return null;
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <span className="font-display text-xs uppercase tracking-[0.4em] text-primary/70 animate-pulse">
@@ -35,6 +46,52 @@ function RouteFallback() {
       </span>
     </div>
   );
+}
+
+// Every lazy route, keyed by the path that reaches it. Same import specifiers
+// as the lazy() calls above, so Vite resolves them to the same chunks and a
+// prefetch genuinely warms the thing the click will need.
+const ROUTE_CHUNKS: Record<string, () => Promise<unknown>> = {
+  "/chronicles": () => import("@/pages/stories"),
+  "/expeditions": () => import("@/pages/expeditions"),
+  "/films": () => import("@/pages/films"),
+  "/contact": () => import("@/pages/contact"),
+  "/about": () => import("@/pages/about"),
+  "/how-we-travel": () => import("@/pages/how-we-travel"),
+  "/ledger": () => import("@/pages/ledger"),
+  "/privacy": () => import("@/pages/legal"),
+  "/terms": () => import("@/pages/legal"),
+};
+
+// Fetch a route's chunk the moment someone shows INTENT to go there — a
+// pointer resting on the link, or a finger landing on it — rather than when
+// they commit. The gap between hover and click is a few hundred milliseconds
+// of otherwise idle network, and it is almost always enough to cover the
+// chunk, so the fallback above never gets to fire. One delegated listener
+// covers every link on the site, including ones rendered later.
+function usePrefetchOnIntent() {
+  useEffect(() => {
+    const warmed = new Set<string>();
+    const onIntent = (e: Event) => {
+      const target = e.target as Element | null;
+      const anchor = target?.closest?.("a[href^='/']") as HTMLAnchorElement | null;
+      if (!anchor) return;
+      const path = (anchor.getAttribute("href") ?? "").split(/[?#]/)[0];
+      if (!path || warmed.has(path)) return;
+      const load = path.startsWith("/expedition/")
+        ? () => import("@/pages/expedition-detail")
+        : ROUTE_CHUNKS[path];
+      if (!load) return;
+      warmed.add(path);
+      void load().catch(() => warmed.delete(path));
+    };
+    document.addEventListener("pointerover", onIntent, { passive: true });
+    document.addEventListener("touchstart", onIntent, { passive: true });
+    return () => {
+      document.removeEventListener("pointerover", onIntent);
+      document.removeEventListener("touchstart", onIntent);
+    };
+  }, []);
 }
 
 // One scroll policy for the whole app:
@@ -134,7 +191,13 @@ function useScrollManager() {
         return false;
       });
     } else {
-      window.scrollTo(0, 0);
+      // Explicitly instant. The two-argument scrollTo(0, 0) inherits the CSS
+      // `scroll-behavior: smooth` we set globally, so every ordinary link
+      // click was ANIMATING the scroll back to the top — a half-second glide
+      // through the old page's content while the new route was mounting under
+      // it. Smooth is what we want for in-page hashes, never for landing on a
+      // new page.
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     }
     return () => {
       cancelled = true;
@@ -170,6 +233,7 @@ function Router() {
   usePageTracking();
   useScrollManager();
   usePageTitle();
+  usePrefetchOnIntent();
 
 
   return (
@@ -217,12 +281,20 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </LanguageProvider>
+      {/* One switch for every framer-motion animation on the site: with
+          reducedMotion="user", a visitor who has asked their OS to reduce
+          motion gets transforms dropped and opacity kept, so the site still
+          reads as composed rather than dead. The CSS animations already
+          honoured the preference individually; this closes the JS half, which
+          is most of the motion here. */}
+      <MotionConfig reducedMotion="user">
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </LanguageProvider>
+      </MotionConfig>
     </QueryClientProvider>
   );
 }

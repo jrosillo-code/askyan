@@ -109,7 +109,13 @@ const pressLogos: { name: string; text: string; url: string; textKey?: string }[
 // the desert never visibly ends.
 const GOBI_VIDEO = "/videos/gobi-web.mp4";
 const GOBI_POSTER = "/images/gobi-poster.jpg";
+// Hand over this many seconds before the clip ends. The dissolve itself is
+// slightly shorter (see .hero-dissolve) so it finishes while the outgoing
+// player still has frames left to give.
 const LOOP_FADE_S = 1.6;
+// How far ahead to wake the idle player: fetch it if it has never loaded, and
+// park it at t=0. Both are things you do NOT want to be doing at the seam.
+const LOOP_PRIME_S = 10;
 
 function HeroSection() {
   const { t } = useLanguage();
@@ -121,52 +127,118 @@ function HeroSection() {
       (navigator as { connection?: { saveData?: boolean } }).connection?.saveData === true
   );
   const [active, setActive] = useState(0);
+  // True while a handoff is in flight. During the dissolve BOTH players are
+  // opaque: the incoming one fades in on top while the outgoing one holds at
+  // full opacity underneath. Fading them in opposite directions — the obvious
+  // way, and what this used to do — is not a cross-dissolve: at the midpoint
+  // both sit near 50%, so the layer behind shows through and the desert dips
+  // in brightness once every loop, right at the seam you are trying to hide.
+  const [dissolving, setDissolving] = useState(false);
   const playersRef = useRef<(HTMLVideoElement | null)[]>([null, null]);
+  const primed = useRef(false);
 
   const handleTimeUpdate = (i: number) => {
     if (i !== active) return;
     const el = playersRef.current[i];
     if (!el || !el.duration || !isFinite(el.duration)) return;
-    const remaining = el.duration - el.currentTime;
     const other = playersRef.current[1 - i];
-    // The partner starts as preload="none" so its download never competes
+    if (!other) return;
+    const remaining = el.duration - el.currentTime;
+
+    // The partner starts at preload="none" so its download never competes
     // with the visible stream (double-buffering both from t=0 dropped frames
-    // on slower connections). Warm it up shortly before the seam.
-    if (remaining <= 10 && other && other.readyState === 0) {
-      other.preload = "auto";
-      other.load();
-    }
-    if (remaining <= LOOP_FADE_S) {
-      if (other) {
+    // on slower connections). Wake it early and leave it sitting on frame 0.
+    if (remaining <= LOOP_PRIME_S && !primed.current) {
+      primed.current = true;
+      if (other.readyState === 0) {
+        other.preload = "auto";
+        other.load();
+      }
+      const rewind = () => {
         try {
           other.currentTime = 0;
         } catch {
-          // metadata not ready yet; it will start from 0 anyway
+          // Seek refused; play() below rewinds an ended player anyway.
         }
-        void other.play()?.catch(() => {});
-      }
+      };
+      if (other.readyState >= 1) rewind();
+      else other.addEventListener("loadedmetadata", rewind, { once: true });
+    }
+
+    if (remaining <= LOOP_FADE_S) {
+      primed.current = false;
+      void other.play()?.catch(() => {});
+      setDissolving(true);
       setActive(1 - i);
     }
   };
 
-  // Once the crossfade has finished, park the hidden player.
+  // Once the dissolve has finished the outgoing player is completely covered,
+  // so it can drop out of the composite and stop decoding without a flicker.
   useEffect(() => {
-    const timer = setTimeout(() => playersRef.current[1 - active]?.pause(), 1700);
+    if (!dissolving) return;
+    const timer = setTimeout(() => {
+      setDissolving(false);
+      playersRef.current[1 - active]?.pause();
+    }, LOOP_FADE_S * 1000);
     return () => clearTimeout(timer);
-  }, [active]);
+  }, [dissolving, active]);
+
+  // The home page is long, and the hero used to keep decoding the whole way
+  // down it — a 1080p stream running behind six screens of content nobody can
+  // see it through. Park both players when the hero leaves, resume only the
+  // live one when it comes back. Read through a ref so changing which player
+  // is live doesn't tear down and rebuild the observer.
+  const sectionRef = useRef<HTMLElement>(null);
+  const activeRef = useRef(active);
+  activeRef.current = active;
+  useEffect(() => {
+    if (staticHero) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const resume = () => {
+      if (document.visibilityState !== "visible") return;
+      void playersRef.current[activeRef.current]?.play()?.catch(() => {});
+    };
+    const park = () => playersRef.current.forEach((p) => p?.pause());
+    let onScreen = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        onScreen ? resume() : park();
+      },
+      { rootMargin: "100px" }
+    );
+    io.observe(el);
+    const onVisibility = () => (document.visibilityState === "visible" && onScreen ? resume() : park());
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [staticHero]);
 
   return (
     <section
+      ref={sectionRef}
       className="relative h-[100svh] flex items-center justify-center overflow-hidden"
       data-testid="section-hero"
     >
       <div className="absolute inset-0 z-0">
-        {/* Instant paint while the stream buffers — no black flash */}
+        {/* Instant paint while the stream buffers — no black flash. When the
+            video is skipped entirely (Save Data, or reduced motion) this still
+            is the hero, so it gets the slow drift: a composited transform,
+            no bytes, and the class disables itself under reduced motion — so
+            the visitor on a metered connection gets a living frame and the
+            visitor who asked for stillness gets stillness. */}
         <img
           src={GOBI_POSTER}
           alt=""
           aria-hidden
-          className="absolute inset-0 w-full h-full object-cover scale-105"
+          fetchPriority="high"
+          className={`absolute inset-0 w-full h-full object-cover ${
+            staticHero ? "hero-drift" : "scale-105"
+          }`}
         />
         {!staticHero &&
           [0, 1].map((i) => (
@@ -181,8 +253,14 @@ function HeroSection() {
               preload={i === 0 ? "auto" : "none"}
               src={GOBI_VIDEO}
               onTimeUpdate={() => handleTimeUpdate(i)}
-              className={`hero-video absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ${
-                i === active ? "opacity-100 z-10" : "opacity-0 z-0"
+              className={`hero-video absolute inset-0 w-full h-full object-cover ${
+                i === active
+                  ? // On top, dissolving in. React drops and re-adds this class
+                    // on every handoff, which is what restarts the animation.
+                    "z-20 opacity-100 hero-dissolve"
+                  : dissolving
+                    ? "z-10 opacity-100" // holding underneath, still visible
+                    : "z-10 opacity-0" // parked
               }`}
             />
           ))}
@@ -197,6 +275,17 @@ function HeroSection() {
         transition={{ duration: 0.5 }}
         className="relative z-30 text-center px-6 max-w-4xl mx-auto"
       >
+        {/* The hero's breathing light. This used to be an infinite text-shadow
+            keyframe on every word of the headline — a repaint of the largest
+            text on the page, every frame, forever, layered over a playing
+            video. Same look, moved onto one element whose opacity animates:
+            opacity is a compositor property, so the pulse costs the main
+            thread nothing and the video underneath keeps its frames. */}
+        <div
+          aria-hidden
+          className="hero-glow pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[130%] w-[140%] -translate-x-1/2 -translate-y-1/2"
+        />
+
         <motion.p
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -636,7 +725,6 @@ function SpotlightSection() {
                       {'video' in currentAdventure && currentAdventure.video ? (
                         <video
                           data-ambient=""
-                          autoPlay
                           loop
                           muted
                           playsInline
@@ -644,10 +732,6 @@ function SpotlightSection() {
                           poster={VIDEO_POSTERS[currentAdventure.video]}
                           src={currentAdventure.video}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          onCanPlay={(e) => {
-                            const video = e.currentTarget;
-                            video.play().catch(() => {});
-                          }}
                         />
                       ) : (
                         <img loading="lazy" decoding="async"
@@ -946,7 +1030,6 @@ function AdventureFeatureSection() {
       <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
         <video
           data-ambient=""
-          autoPlay
           loop
           muted
           playsInline
@@ -954,10 +1037,6 @@ function AdventureFeatureSection() {
           poster={VIDEO_POSTERS[adventureVideo]}
           src={adventureVideo}
           className="absolute inset-0 w-full h-full object-cover"
-          onCanPlay={(e) => {
-            const video = e.currentTarget;
-            video.play().catch(() => {});
-          }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         

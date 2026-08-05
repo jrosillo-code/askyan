@@ -624,9 +624,9 @@ export default function ExpeditionDetail() {
       <section className="relative min-h-[80vh] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
           {expedition.videoUrl ? (
+            /* preload="auto" marks this EAGER to the ambient controller. */
             <video
               data-ambient=""
-              autoPlay
               loop
               muted
               playsInline

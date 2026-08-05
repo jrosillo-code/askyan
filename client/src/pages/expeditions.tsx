@@ -146,7 +146,6 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
           {expedition.videoUrl ? (
             <video
               data-ambient=""
-              autoPlay
               loop
               muted
               playsInline
@@ -154,10 +153,6 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
               poster={VIDEO_POSTERS[expedition.videoUrl]}
               src={expedition.videoUrl}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              onCanPlay={(e) => {
-                const video = e.currentTarget;
-                video.play().catch(() => {});
-              }}
             />
           ) : (
             <img loading="lazy" decoding="async"
@@ -248,9 +243,11 @@ export default function Expeditions() {
 
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
+          {/* preload="auto" marks this EAGER to the ambient controller: it is
+              on screen the moment the page opens, so it keeps its head start
+              instead of waiting on an observer callback. */}
           <video
             data-ambient=""
-            autoPlay
             loop
             muted
             playsInline

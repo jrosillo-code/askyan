@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 // reduced-motion users.
 export function RoadPath() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
   const [geometry, setGeometry] = useState<{ h: number; d: string } | null>(null);
 
   useEffect(() => {
@@ -40,24 +39,29 @@ export function RoadPath() {
   }, []);
 
   useEffect(() => {
-    const path = pathRef.current;
-    const el = wrapRef.current?.parentElement;
-    if (!path || !el || !geometry) return;
-    const L = path.getTotalLength();
-    path.style.strokeDasharray = `${L}`;
+    const wrap = wrapRef.current;
+    const el = wrap?.parentElement;
+    if (!wrap || !el || !geometry) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      path.style.strokeDashoffset = "0";
+      wrap.style.clipPath = "none";
       return;
     }
     let raf = 0;
+    // The reveal is a clip, not a stroke-dash animation. Animating
+    // stroke-dashoffset invalidates the path's whole bounding box, and this
+    // path is as tall as the page — so every scroll frame was re-rasterising
+    // an 80px × several-thousand-px stroke. Because the road only ever
+    // descends, cutting it off at a horizontal line is visually identical to
+    // walking the dash along it, and the SVG itself never changes: the
+    // browser rasterises the road once and just moves the cut.
     const draw = () => {
       raf = 0;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
       // Progress: how far the viewport has traveled through this container.
       const progress = Math.min(1, Math.max(0, (vh * 0.85 - rect.top) / (rect.height + vh * 0.4)));
-      path.style.strokeDashoffset = `${L * (1 - progress)}`;
+      wrap.style.clipPath = `inset(0 0 ${((1 - progress) * 100).toFixed(2)}% 0)`;
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(draw);
@@ -73,11 +77,15 @@ export function RoadPath() {
   }, [geometry]);
 
   return (
-    <div ref={wrapRef} aria-hidden className="pointer-events-none absolute inset-y-0 left-2 z-0 hidden w-20 lg:block">
+    <div
+      ref={wrapRef}
+      aria-hidden
+      className="pointer-events-none absolute inset-y-0 left-2 z-0 hidden w-20 will-change-[clip-path] lg:block"
+      style={{ clipPath: "inset(0 0 100% 0)" }}
+    >
       {geometry && (
         <svg width="80" height={geometry.h} viewBox={`0 0 80 ${geometry.h}`} fill="none" className="absolute inset-0">
           <path
-            ref={pathRef}
             d={geometry.d}
             stroke="#D4A373"
             strokeOpacity="0.4"
