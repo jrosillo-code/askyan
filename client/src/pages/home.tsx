@@ -105,17 +105,46 @@ const pressLogos: { name: string; text: string; url: string; textKey?: string }[
 
 // One clip, played forever: the Gobi dune drone glide. Two stacked players
 // of the same file alternate — as the live one nears its final seconds, the
-// idle one restarts from zero and the pair crossfade, so the drift across
-// the desert never visibly ends.
+// idle one restarts and the pair crossfade, so the drift across the desert
+// never visibly ends.
 const GOBI_VIDEO = "/videos/gobi-web.mp4";
 const GOBI_POSTER = "/images/gobi-poster.jpg";
+// Every cycle begins here, not at zero. x264's rate control spends its first
+// stretch after the opening keyframe settling down — measurably: the encoded
+// detail in a frame climbs about 6% between t=0 and t=2 — so the clip's true
+// first second is softer than the rest of it, and that softness is the first
+// thing anyone sees. Starting past it also means the frames being shown are
+// ones that were fetched a while ago rather than moments ago.
+// The poster is cut from this exact timestamp (see .github/workflows/media.yml);
+// if this number changes, that frame has to change with it.
+const HERO_START_S = 1.5;
+// Don't show the video until this many seconds are decoded and waiting beyond
+// the playhead. Until then the poster holds — and since the poster IS this
+// frame, waiting looks like nothing at all, where starting early looks like a
+// stutter.
+const HERO_WARMUP_S = 2.5;
+// A slow connection must not mean a hero that never moves: after this long,
+// play with whatever has arrived.
+const HERO_WARMUP_TIMEOUT_MS = 6000;
 // Hand over this many seconds before the clip ends. The dissolve itself is
 // slightly shorter (see .hero-dissolve) so it finishes while the outgoing
 // player still has frames left to give.
 const LOOP_FADE_S = 1.6;
 // How far ahead to wake the idle player: fetch it if it has never loaded, and
-// park it at t=0. Both are things you do NOT want to be doing at the seam.
+// park it on the start frame. Both are things you do NOT want to be doing at
+// the seam.
 const LOOP_PRIME_S = 10;
+
+// Seconds of contiguous buffered video sitting ahead of the playhead.
+function bufferedAhead(el: HTMLVideoElement): number {
+  const t = el.currentTime;
+  for (let i = 0; i < el.buffered.length; i++) {
+    if (el.buffered.start(i) <= t + 0.05 && el.buffered.end(i) > t) {
+      return el.buffered.end(i) - t;
+    }
+  }
+  return 0;
+}
 
 function HeroSection() {
   const { t } = useLanguage();
@@ -134,8 +163,22 @@ function HeroSection() {
   // both sit near 50%, so the layer behind shows through and the desert dips
   // in brightness once every loop, right at the seam you are trying to hide.
   const [dissolving, setDissolving] = useState(false);
+  // Whether the video has taken over from the poster yet, and how many times
+  // it has looped. The count matters because the FIRST appearance must not
+  // dissolve: the poster and the video hold the same frame, so a cross-fade
+  // there blends two nearly identical images — and since the poster is scaled
+  // slightly differently than the video used to be, that read as a soft,
+  // ghosted second at load rather than as a transition. Handoffs later on are
+  // between genuinely different frames and do want the dissolve.
+  const [live, setLive] = useState(false);
+  const [loops, setLoops] = useState(0);
   const playersRef = useRef<(HTMLVideoElement | null)[]>([null, null]);
   const primed = useRef(false);
+  // Shared between the warm-up and the offscreen observer below, so neither
+  // starts playback the other has decided against.
+  const onScreenRef = useRef(true);
+  const liveRef = useRef(false);
+  liveRef.current = live;
 
   const handleTimeUpdate = (i: number) => {
     if (i !== active) return;
@@ -156,9 +199,9 @@ function HeroSection() {
       }
       const rewind = () => {
         try {
-          other.currentTime = 0;
+          other.currentTime = HERO_START_S;
         } catch {
-          // Seek refused; play() below rewinds an ended player anyway.
+          // Seek refused; it will be retried at the seam.
         }
       };
       if (other.readyState >= 1) rewind();
@@ -167,11 +210,66 @@ function HeroSection() {
 
     if (remaining <= LOOP_FADE_S) {
       primed.current = false;
+      // Belt and braces: if priming never ran (or the seek was refused while
+      // metadata was still loading), put the partner on the start frame now.
+      if (other.currentTime < HERO_START_S - 0.1 || other.ended) {
+        try {
+          other.currentTime = HERO_START_S;
+        } catch {
+          /* nothing more to do; it will start wherever it can */
+        }
+      }
       void other.play()?.catch(() => {});
       setDissolving(true);
+      setLoops((n) => n + 1);
       setActive(1 - i);
     }
   };
+
+  // First play. Nothing is shown until the video can genuinely run: seek past
+  // the soft opening, then wait for a real cushion of decoded frames beyond
+  // the playhead. The poster is that same frame, so this wait is invisible —
+  // whereas playing the instant `canplay` fires means starting on a nearly
+  // empty buffer, which is the stutter.
+  useEffect(() => {
+    if (staticHero) return;
+    const el = playersRef.current[0];
+    if (!el) return;
+    let started = false;
+
+    const attempt = (force = false) => {
+      if (started || !el.duration || !isFinite(el.duration)) return;
+      // Arriving mid-page (a restored scroll position, a #hash link) means the
+      // hero may never have been on screen. Don't start it behind their back.
+      if (!onScreenRef.current || document.visibilityState !== "visible") return;
+      if (el.currentTime < HERO_START_S - 0.05) {
+        try {
+          el.currentTime = HERO_START_S;
+        } catch {
+          /* metadata not ready yet; a later event will retry */
+        }
+        if (!force) return;
+      }
+      if (!force && el.readyState < 4 && bufferedAhead(el) < HERO_WARMUP_S) return;
+      started = true;
+      void el.play().catch(() => {});
+      setLive(true);
+    };
+
+    const events = ["loadedmetadata", "seeked", "progress", "canplay", "canplaythrough"];
+    const onEvent = () => attempt();
+    events.forEach((e) => el.addEventListener(e, onEvent));
+    // buffered ranges grow without firing an event on every browser.
+    const poll = window.setInterval(onEvent, 150);
+    const giveUp = window.setTimeout(() => attempt(true), HERO_WARMUP_TIMEOUT_MS);
+    attempt();
+
+    return () => {
+      events.forEach((e) => el.removeEventListener(e, onEvent));
+      clearInterval(poll);
+      clearTimeout(giveUp);
+    };
+  }, [staticHero]);
 
   // Once the dissolve has finished the outgoing player is completely covered,
   // so it can drop out of the composite and stop decoding without a flicker.
@@ -198,19 +296,22 @@ function HeroSection() {
     if (!el) return;
     const resume = () => {
       if (document.visibilityState !== "visible") return;
+      // Before the first reveal the warm-up owns starting playback — it is
+      // still deciding whether there are enough frames to run smoothly.
+      if (!liveRef.current) return;
       void playersRef.current[activeRef.current]?.play()?.catch(() => {});
     };
     const park = () => playersRef.current.forEach((p) => p?.pause());
-    let onScreen = true;
     const io = new IntersectionObserver(
       ([entry]) => {
-        onScreen = entry.isIntersecting;
-        onScreen ? resume() : park();
+        onScreenRef.current = entry.isIntersecting;
+        onScreenRef.current ? resume() : park();
       },
       { rootMargin: "100px" }
     );
     io.observe(el);
-    const onVisibility = () => (document.visibilityState === "visible" && onScreen ? resume() : park());
+    const onVisibility = () =>
+      document.visibilityState === "visible" && onScreenRef.current ? resume() : park();
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       io.disconnect();
@@ -225,12 +326,17 @@ function HeroSection() {
       data-testid="section-hero"
     >
       <div className="absolute inset-0 z-0">
-        {/* Instant paint while the stream buffers — no black flash. When the
-            video is skipped entirely (Save Data, or reduced motion) this still
-            is the hero, so it gets the slow drift: a composited transform,
-            no bytes, and the class disables itself under reduced motion — so
-            the visitor on a metered connection gets a living frame and the
-            visitor who asked for stillness gets stillness. */}
+        {/* Instant paint while the stream buffers — no black flash. This is a
+            still of the exact frame the video starts on, so the handover from
+            one to the other is invisible and the wait costs nothing to look at.
+            The scale MUST match the players below: they sit on top of this, and
+            5% of misregistration between two near-identical images reads as a
+            soft, doubled second at load — which is precisely what it did.
+            When the video is skipped entirely (Save Data, or reduced motion)
+            this is the hero outright, so it takes the slow drift: a composited
+            transform, no bytes, and the class disables itself under reduced
+            motion — a metered visitor gets a living frame, a visitor who asked
+            for stillness gets stillness. */}
         <img
           src={GOBI_POSTER}
           alt=""
@@ -247,20 +353,26 @@ function HeroSection() {
               ref={(el) => {
                 playersRef.current[i] = el;
               }}
-              autoPlay={i === 0}
+              // No autoPlay: playback starts from the warm-up effect above,
+              // once there are enough decoded frames to run without stalling.
               muted
               playsInline
               preload={i === 0 ? "auto" : "none"}
               src={GOBI_VIDEO}
               onTimeUpdate={() => handleTimeUpdate(i)}
-              className={`hero-video absolute inset-0 w-full h-full object-cover ${
-                i === active
-                  ? // On top, dissolving in. React drops and re-adds this class
-                    // on every handoff, which is what restarts the animation.
-                    "z-20 opacity-100 hero-dissolve"
-                  : dissolving
-                    ? "z-10 opacity-100" // holding underneath, still visible
-                    : "z-10 opacity-0" // parked
+              className={`hero-video absolute inset-0 w-full h-full object-cover scale-105 ${
+                !live
+                  ? "z-10 opacity-0" // poster still has the stage
+                  : i === active
+                    ? // On top. The dissolve is for LOOP handoffs only — the
+                      // first reveal is a straight cut from a poster showing
+                      // the very same frame, so there is nothing to fade.
+                      // React drops and re-adds this class on every handoff,
+                      // which is what restarts the animation.
+                      `z-20 opacity-100 ${loops > 0 ? "hero-dissolve" : ""}`
+                    : dissolving
+                      ? "z-10 opacity-100" // holding underneath, still visible
+                      : "z-10 opacity-0" // parked
               }`}
             />
           ))}

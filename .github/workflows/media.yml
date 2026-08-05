@@ -26,8 +26,14 @@ jobs:
             dl /tmp/src/gobi.mp4 "https://videos.pexels.com/video-files/8774553/8774553-hd_1920_1080_30fps.mp4"
             # The hero deserves the most bits.
             enc /tmp/src/gobi.mp4 client/public/videos/gobi-web.mp4 23 "scale=1920:-2"
-            # Poster straight from the clip's first frames — always matches.
-            ffmpeg -y -ss 0.5 -i client/public/videos/gobi-web.mp4 -frames:v 1 -q:v 3 client/public/images/gobi-poster.jpg
+            # Poster straight from the clip — and specifically from HERO_START_S
+            # in home.tsx, the point where playback actually begins. x264 spends
+            # its first ~1.5s settling after the opening keyframe (measurably:
+            # frame detail climbs ~6% from t=0 to t=2), so the hero skips that
+            # stretch. The poster must be the exact frame we cut to, or the
+            # handover from still to video is a visible jump. Keep the two in
+            # step if either changes.
+            ffmpeg -y -ss 1.5 -i client/public/videos/gobi-web.mp4 -frames:v 1 -q:v 3 client/public/images/gobi-poster.jpg
           fi
           if want kaz; then
             dl /tmp/src/kaz.mp4 "https://videos.pexels.com/video-files/28878868/12502190_3840_2160_60fps.mp4"
