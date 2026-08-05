@@ -75,45 +75,78 @@ function NameSection({ t }: { t: (key: string) => string }) {
   return (
     <section id="name" className="scroll-mt-28 px-6 pb-20 pt-16 md:pb-28 md:pt-24" data-testid="section-name">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-12 text-center">
+        {/* Same reveal grammar as every other section on this page: rise and
+            fade on entry, once, with the two definitions staggered the way the
+            founder cards are. This section used to be the only static one,
+            which made it read as a different page rather than the opening of
+            this one. Being above the fold, it simply fires on arrival. */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-center"
+        >
           <p className="mb-3 font-display text-xs uppercase tracking-[0.3em] text-primary">{t("name.kicker")}</p>
           {/* Opening the page, so this is its h1 — the About page had none at
               all before, which left it headless to a screen reader and to a
               crawler. */}
           <h1 className="font-display text-4xl font-bold text-foreground md:text-5xl">ASKYAN</h1>
           <p className="mt-2 font-mono text-xs tracking-[0.3em] text-muted-foreground">{t("name.pron")}</p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-md border border-primary/25 bg-card p-6" data-testid="name-aska">
-            <p className="font-display text-2xl font-bold text-foreground">
-              aska <span className="font-body text-base font-normal text-muted-foreground">(аска)</span>
-            </p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-primary">{t("name.aska.lang")}</p>
-            <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">{t("name.aska.def")}</p>
-          </div>
-          <div className="rounded-md border border-primary/25 bg-card p-6" data-testid="name-ayan">
-            <p className="font-display text-2xl font-bold text-foreground">
-              ayan <span className="font-body text-base font-normal text-muted-foreground">(аян)</span>
-            </p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-primary">{t("name.ayan.lang")}</p>
-            <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">{t("name.ayan.def")}</p>
-          </div>
+          {[
+            { key: "aska", cyr: "аска", lang: "name.aska.lang", def: "name.aska.def" },
+            { key: "ayan", cyr: "аян", lang: "name.ayan.lang", def: "name.ayan.def" },
+          ].map((word, index) => (
+            <motion.div
+              key={word.key}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              className="rounded-md border border-primary/25 bg-card p-6"
+              data-testid={`name-${word.key}`}
+            >
+              <p className="font-display text-2xl font-bold text-foreground">
+                {word.key} <span className="font-body text-base font-normal text-muted-foreground">({word.cyr})</span>
+              </p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.25em] text-primary">{t(word.lang)}</p>
+              <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">{t(word.def)}</p>
+            </motion.div>
+          ))}
         </div>
 
-        <p className="mt-10 text-center font-mono text-xs tracking-[0.2em] text-foreground/70 sm:text-sm">
-          aska + ayan&ensp;&rarr;&ensp;ask(a)yan&ensp;&rarr;&ensp;<span className="text-primary">ASKYAN</span>
-        </p>
-        <p className="mx-auto mt-3 max-w-xl text-center font-body text-sm leading-relaxed text-muted-foreground">
-          {t("name.join")}
-        </p>
+        {/* The weld, then what it means — held back a beat so the two words
+            have landed before they are joined. */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <p className="mt-10 text-center font-mono text-xs tracking-[0.2em] text-foreground/70 sm:text-sm">
+            aska + ayan&ensp;&rarr;&ensp;ask(a)yan&ensp;&rarr;&ensp;<span className="text-primary">ASKYAN</span>
+          </p>
+          <p className="mx-auto mt-3 max-w-xl text-center font-body text-sm leading-relaxed text-muted-foreground">
+            {t("name.join")}
+          </p>
+        </motion.div>
 
-        <p className="mx-auto mt-10 max-w-2xl text-center font-body text-lg italic leading-relaxed text-foreground md:text-xl">
-          {t("name.meaning")}
-        </p>
-        <p className="mx-auto mt-8 max-w-xl text-center font-body text-xs italic leading-relaxed text-muted-foreground">
-          {t("name.note")}
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.7, delay: 0.55 }}
+        >
+          <p className="mx-auto mt-10 max-w-2xl text-center font-body text-lg italic leading-relaxed text-foreground md:text-xl">
+            {t("name.meaning")}
+          </p>
+          <p className="mx-auto mt-8 max-w-xl text-center font-body text-xs italic leading-relaxed text-muted-foreground">
+            {t("name.note")}
+          </p>
+        </motion.div>
       </div>
     </section>
   );
