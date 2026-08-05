@@ -7,7 +7,7 @@ import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
-import { MEDIA, VIDEO_POSTERS } from "@/lib/media";
+import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
 const expeditionsHeroVideo = MEDIA["expeditions-hero-web.mp4"];
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
@@ -151,7 +151,7 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
               playsInline
               preload="metadata"
               poster={VIDEO_POSTERS[expedition.videoUrl]}
-              src={expedition.videoUrl}
+              src={videoSrc(expedition.videoUrl)}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
@@ -255,7 +255,7 @@ export default function Expeditions() {
             poster={VIDEO_POSTERS[expeditionsHeroVideo]}
             className="hero-video w-full h-full object-cover"
           >
-            <source src={expeditionsHeroVideo} type="video/mp4" />
+            <source src={videoSrc(expeditionsHeroVideo)} type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
         </div>

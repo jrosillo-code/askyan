@@ -60,8 +60,28 @@ export const MEDIA: Record<string, string> = {
   "14862479-hd_1920_1080_60fps_1765009387935.mp4": "/videos/nepal-web.mp4", // self-hosted
 };
 
+// ── Phone-sized encodes ─────────────────────────────────────────────────────
+// Every clip ships twice. The originals are 1080p at roughly 2 Mbps, which is
+// right for a desktop hero and absurd on a 390px-wide screen — where
+// object-cover discards most of each frame before anyone sees it. The `-m`
+// variants are 720p at crf 28 and land between a tenth and a fifth of the
+// bytes: the difference between a hero that is simply there and one that keeps
+// you waiting on cellular.
+//
+// Decided once, at module load, deliberately. A visitor is not going to change
+// device mid-session, and re-deciding per render would risk swapping the src
+// out from under an element that is already playing.
+export const COMPACT_MEDIA =
+  typeof window !== "undefined" && window.matchMedia("(max-width: 700px)").matches;
+
+/** The right encode of `src` for this device — untouched on desktop. */
+export function videoSrc(src: string): string {
+  return COMPACT_MEDIA && src.endsWith(".mp4") ? src.replace(/\.mp4$/, "-m.mp4") : src;
+}
+
 // Matching first-frame stills (CI-extracted) so every ambient video fades in
-// from its own scene instead of a black rectangle while it buffers.
+// from its own scene instead of a black rectangle while it buffers. Keyed by
+// the DESKTOP path, so look posters up before calling videoSrc().
 export const VIDEO_POSTERS: Record<string, string> = {
   "/videos/gobi-web.mp4": "/images/gobi-poster.jpg",
   "/videos/kazakhstan-web.mp4": "/images/kazakhstan-web-poster.jpg",

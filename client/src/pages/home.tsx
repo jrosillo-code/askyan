@@ -12,7 +12,7 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
-import { MEDIA, VIDEO_POSTERS } from "@/lib/media";
+import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
 import { RoadPath } from "@/components/road-path";
 import { SiteFooter } from "@/components/site-footer";
 import { lazy, Suspense } from "react";
@@ -226,43 +226,69 @@ function HeroSection() {
     }
   };
 
-  // First play. Nothing is shown until the video can genuinely run: seek past
-  // the soft opening, then wait for a real cushion of decoded frames beyond
-  // the playhead. The poster is that same frame, so this wait is invisible —
-  // whereas playing the instant `canplay` fires means starting on a nearly
-  // empty buffer, which is the stutter.
+  // First play, in two distinct steps — and the order matters more than it
+  // looks.
+  //
+  // ASK TO PLAY EARLY, even though nothing is visible yet. iOS ignores
+  // preload="auto" and behaves as though it were "metadata": the buffer does
+  // not fill until something asks the video to play. Waiting for a buffer
+  // before calling play() therefore deadlocks on every iPhone — the hero sits
+  // on the poster until the give-up timer fires, which is exactly the "very
+  // slow to load" you get on a phone and never on a desktop.
+  //
+  // REVEAL LATE, once it is demonstrably running: not merely `canplay`, but
+  // actually unpaused, past the start point, and with a cushion of decoded
+  // frames ahead. The video plays behind the poster in the meantime, so the
+  // wait costs nothing to look at — the poster is that very frame.
   useEffect(() => {
     if (staticHero) return;
     const el = playersRef.current[0];
     if (!el) return;
-    let started = false;
+    let asked = false;
+    let revealed = false;
 
-    const attempt = (force = false) => {
-      if (started || !el.duration || !isFinite(el.duration)) return;
+    const ask = () => {
+      if (asked || el.readyState < 1) return;
       // Arriving mid-page (a restored scroll position, a #hash link) means the
       // hero may never have been on screen. Don't start it behind their back.
       if (!onScreenRef.current || document.visibilityState !== "visible") return;
+      asked = true;
       if (el.currentTime < HERO_START_S - 0.05) {
         try {
           el.currentTime = HERO_START_S;
         } catch {
-          /* metadata not ready yet; a later event will retry */
+          /* the seam handler will correct it later */
         }
-        if (!force) return;
       }
-      if (!force && el.readyState < 4 && bufferedAhead(el) < HERO_WARMUP_S) return;
-      started = true;
-      void el.play().catch(() => {});
+      void el.play().catch(() => {
+        // Autoplay refused (rare when muted). Let the poster carry the hero.
+        asked = false;
+      });
+    };
+
+    const reveal = (force = false) => {
+      if (revealed) return;
+      if (!force) {
+        if (el.paused || el.readyState < 3) return;
+        if (el.currentTime < HERO_START_S + 0.08) return; // frames really moving
+        if (bufferedAhead(el) < HERO_WARMUP_S) return;
+      }
+      revealed = true;
       setLive(true);
     };
 
-    const events = ["loadedmetadata", "seeked", "progress", "canplay", "canplaythrough"];
-    const onEvent = () => attempt();
+    const onEvent = () => {
+      ask();
+      reveal();
+    };
+    const events = ["loadedmetadata", "seeked", "progress", "canplay", "canplaythrough", "playing", "timeupdate"];
     events.forEach((e) => el.addEventListener(e, onEvent));
-    // buffered ranges grow without firing an event on every browser.
+    // Buffered ranges grow without firing an event on every browser.
     const poll = window.setInterval(onEvent, 150);
-    const giveUp = window.setTimeout(() => attempt(true), HERO_WARMUP_TIMEOUT_MS);
-    attempt();
+    // A network too slow to build the cushion must not mean a hero that never
+    // moves. By this point it has been playing for a while regardless.
+    const giveUp = window.setTimeout(() => reveal(true), HERO_WARMUP_TIMEOUT_MS);
+    onEvent();
 
     return () => {
       events.forEach((e) => el.removeEventListener(e, onEvent));
@@ -358,8 +384,19 @@ function HeroSection() {
               muted
               playsInline
               preload={i === 0 ? "auto" : "none"}
-              src={GOBI_VIDEO}
+              src={videoSrc(GOBI_VIDEO)}
               onTimeUpdate={() => handleTimeUpdate(i)}
+              onError={(e) => {
+                // Same fallback the ambient controller applies: if the phone
+                // encode is missing, use the full-size file rather than
+                // leaving the hero on its poster forever.
+                const v = e.currentTarget;
+                const src = v.currentSrc || v.src;
+                if (src.includes("-m.mp4")) {
+                  v.src = src.replace("-m.mp4", ".mp4");
+                  v.load();
+                }
+              }}
               className={`hero-video absolute inset-0 w-full h-full object-cover scale-105 ${
                 !live
                   ? "z-10 opacity-0" // poster still has the stage
@@ -842,7 +879,7 @@ function SpotlightSection() {
                           playsInline
                           preload="metadata"
                           poster={VIDEO_POSTERS[currentAdventure.video]}
-                          src={currentAdventure.video}
+                          src={videoSrc(currentAdventure.video)}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       ) : (
@@ -1147,7 +1184,7 @@ function AdventureFeatureSection() {
           playsInline
           preload="metadata"
           poster={VIDEO_POSTERS[adventureVideo]}
-          src={adventureVideo}
+          src={videoSrc(adventureVideo)}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />

@@ -10,7 +10,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { useLanguage } from "@/contexts/language-context";
 import { expeditionDetailsEs } from "@/lib/expedition-content-es";
-import { MEDIA, VIDEO_POSTERS } from "@/lib/media";
+import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
 const mongoliaVideo = MEDIA["mongolia-web.mp4"];
@@ -632,7 +632,7 @@ export default function ExpeditionDetail() {
               playsInline
               preload="auto"
               poster={VIDEO_POSTERS[expedition.videoUrl]}
-              src={expedition.videoUrl}
+              src={videoSrc(expedition.videoUrl)}
               className="hero-video w-full h-full object-cover"
             />
           ) : (

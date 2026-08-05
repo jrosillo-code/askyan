@@ -8,6 +8,7 @@ import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
+import { videoSrc } from "@/lib/media";
 
 interface VideoItem {
   id: string;
@@ -96,7 +97,7 @@ function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void 
         data-testid="modal-video-container"
       >
         <video
-          src="/films-popup-video.mp4"
+          src={videoSrc("/films-popup-video.mp4")}
           autoPlay
           controls
           className="w-full h-full object-contain"
@@ -263,7 +264,7 @@ export default function Films() {
               the first thing on the page, so it keeps its head start. */}
           <video
             data-ambient=""
-            src="/films-hero-video.mp4"
+            src={videoSrc("/films-hero-video.mp4")}
             poster="/images/films-hero-poster.jpg"
             muted
             loop

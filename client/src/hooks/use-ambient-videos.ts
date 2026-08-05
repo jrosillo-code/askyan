@@ -60,10 +60,23 @@ export function useAmbientVideos() {
       { rootMargin: "200px 0px" }
     );
 
+    // Phones are served a "-m" encode of each clip (lib/media.ts). If one is
+    // ever missing from a deploy, fall back to the full-size file rather than
+    // showing a broken player — a slow hero beats no hero.
+    const onError = (event: Event) => {
+      const v = event.currentTarget as HTMLVideoElement;
+      const src = v.currentSrc || v.src;
+      if (!src.includes("-m.mp4")) return;
+      v.src = src.replace("-m.mp4", ".mp4");
+      v.load();
+      sync(v);
+    };
+
     const adopt = (v: HTMLVideoElement) => {
       if (tracked.has(v)) return;
       tracked.add(v);
       if (v.preload !== "auto") v.preload = "none";
+      v.addEventListener("error", onError);
       io.observe(v);
     };
 
@@ -91,6 +104,7 @@ export function useAmbientVideos() {
     return () => {
       io.disconnect();
       mo.disconnect();
+      tracked.forEach((v) => v.removeEventListener("error", onError));
       document.removeEventListener("visibilitychange", resync);
       reduced.removeEventListener("change", resync);
     };

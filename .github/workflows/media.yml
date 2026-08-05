@@ -68,6 +68,27 @@ jobs:
             enc client/public/films-hero-video.mp4 /tmp/fhero.mp4 26 "scale=1600:-2"
             mv /tmp/fhero.mp4 client/public/films-hero-video.mp4
           fi
+          # ── Phone encodes ────────────────────────────────────────────────
+          # Every clip gets a "-m" twin at 720p/crf 28, which lib/media.ts
+          # serves to anything under 700px wide. The full-size files are 1080p
+          # at ~2 Mbps: correct for a desktop hero, and roughly ten times more
+          # data than a phone screen can show. Run this AFTER any re-encode
+          # above, or the twins go stale against their sources.
+          # himalaya is the outlier — nearly a minute long — so it gets a
+          # smaller frame and a looser crf to land near the others.
+          mob() {
+            local src="$1" out="${1%.mp4}-m.mp4" w="${2:-1280}" crf="${3:-28}"
+            ffmpeg -y -v error -i "$src" -vf "scale='min($w,iw)':-2" \
+              -c:v libx264 -preset slow -crf "$crf" -profile:v main -pix_fmt yuv420p \
+              -an -movflags +faststart "$out"
+            ls -la "$out"
+          }
+          for v in client/public/videos/*.mp4; do
+            case "$v" in *-m.mp4) continue;; esac
+            case "$v" in *himalaya-web.mp4) mob "$v" 960 30;; *) mob "$v";; esac
+          done
+          mob client/public/films-hero-video.mp4
+          mob client/public/films-popup-video.mp4
           du -sh client/public/videos client/public/*.mp4
       - name: Commit media
         run: |
