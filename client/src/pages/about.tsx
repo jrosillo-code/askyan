@@ -7,50 +7,60 @@ import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 
-function PhilosophySection({ t }: { t: (key: string) => string }) {
+// The creed. This was two sections — a hardcoded manifesto ("The Line We
+// Hold") and a separate "Our Philosophy" — making the same argument twice at
+// different volumes: one said a tour bus can't photograph our route, the other
+// that we sit beyond the reach of conventional travel. Same claim, weaker the
+// second time. Merged here, keeping the sharpest sentence from each and
+// dropping the flattery ("intellectually curious individuals") and the vague
+// promise to transform your understanding of your place in the world.
+//
+// It also runs through i18n now. The manifesto never did — it was English
+// hardcoded into the page while every other word on the site had a Spanish
+// twin, so a Spanish reader hit a wall of English at the loudest moment.
+function CreedSection({ t }: { t: (key: string) => string }) {
   return (
     <section
-      id="philosophy"
-      className="py-24 md:py-32 px-6"
-      data-testid="section-philosophy"
+      id="creed"
+      className="scroll-mt-28 border-y border-primary/15 px-6 py-24 md:py-32"
+      data-testid="section-creed"
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
         >
-          <p className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-3">
-            {t("about.philosophy.subtitle")}
+          <p className="font-display text-xs uppercase tracking-[0.3em] text-primary">
+            {t("about.creed.kicker")}
           </p>
-          <h2 className="font-display font-bold text-2xl md:text-3xl text-foreground mb-4">
-            {t("about.philosophy.title")}
-          </h2>
-          <p className="font-display text-sm text-primary uppercase tracking-wide">
-            {t("about.philosophy.protocol")}
+          <blockquote
+            className="mx-auto mt-8 max-w-3xl font-display text-3xl font-semibold leading-snug text-foreground md:text-5xl md:leading-tight"
+            data-testid="text-creed-quote"
+          >
+            {t("about.creed.quote")}
+          </blockquote>
+          <p className="mx-auto mt-10 max-w-2xl font-body text-lg leading-relaxed text-foreground md:text-xl">
+            {t("about.creed.statement")}
           </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="border-l-2 border-primary pl-6 md:pl-8 max-w-3xl mx-auto"
+          transition={{ duration: 0.6, delay: 0.15 }}
         >
-          <p
-            className="font-body text-lg md:text-xl text-foreground leading-relaxed mb-6"
-            data-testid="text-philosophy-statement"
-          >
-            {t("about.philosophy.statement")}
+          <p className="mt-14 font-display text-xs uppercase tracking-[0.3em] text-primary">
+            {t("about.creed.protocol")}
           </p>
-          <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
-            {t("about.philosophy.mission1")}
+          <p className="mx-auto mt-4 max-w-2xl font-body text-base leading-relaxed text-muted-foreground md:text-lg">
+            {t("about.creed.seeing")}
           </p>
-          <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed">
-            {t("about.philosophy.mission2")}
+          {/* The most valuable paragraph on the page: what we don't have yet. */}
+          <p className="mx-auto mt-14 max-w-2xl border-t border-primary/15 pt-10 font-body text-base italic leading-relaxed text-muted-foreground md:text-lg">
+            {t("about.creed.honesty")}
           </p>
         </motion.div>
       </div>
@@ -63,11 +73,14 @@ function PhilosophySection({ t }: { t: (key: string) => string }) {
 // the founders built — chosen, not inherited.
 function NameSection({ t }: { t: (key: string) => string }) {
   return (
-    <section id="name" className="scroll-mt-28 px-6 py-20 md:py-28" data-testid="section-name">
+    <section id="name" className="scroll-mt-28 px-6 pb-20 pt-16 md:pb-28 md:pt-24" data-testid="section-name">
       <div className="mx-auto max-w-3xl">
         <div className="mb-12 text-center">
           <p className="mb-3 font-display text-xs uppercase tracking-[0.3em] text-primary">{t("name.kicker")}</p>
-          <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">ASKYAN</h2>
+          {/* Opening the page, so this is its h1 — the About page had none at
+              all before, which left it headless to a screen reader and to a
+              crawler. */}
+          <h1 className="font-display text-4xl font-bold text-foreground md:text-5xl">ASKYAN</h1>
           <p className="mt-2 font-mono text-xs tracking-[0.3em] text-muted-foreground">{t("name.pron")}</p>
         </div>
 
@@ -227,32 +240,13 @@ export default function About() {
     <div className="min-h-screen bg-background">
       <SharedHeader variant="solid" activePage="about" />
       <main className="pt-20">
-        {/* The manifesto — the standard, said once, at full volume */}
-        <section className="border-y border-primary/15 px-6 py-24 md:py-32">
-          <div className="mx-auto max-w-4xl text-center">
-            <p className="font-display text-xs uppercase tracking-[0.3em] text-primary">The Line We Hold</p>
-            <blockquote className="mx-auto mt-8 font-display text-3xl font-semibold leading-snug text-foreground md:text-5xl md:leading-tight">
-              “If a tour bus can photograph it,<br className="hidden md:block" /> it isn’t on our route.”
-            </blockquote>
-            <p className="mx-auto mt-10 max-w-2xl font-body text-base italic leading-relaxed text-muted-foreground md:text-lg">
-              ASKYAN is new, and we would rather say so than pretend otherwise. There are no
-              client stories yet, no awards, no press wall — there is a slate of six journeys,
-              a network of Cultural Scribes being built one handshake at a time, and two founders
-              reading every application personally. The first cohort won’t join a travel brand.
-              They’ll help set its standard.
-            </p>
-          </div>
-        </section>
-
+        {/* The name opens the page. It is the most particular thing here —
+            two languages welded at a shared vowel — and it earns attention in
+            a way a mission statement cannot. The creed follows, then the
+            people, then the ask. */}
         <NameSection t={t} />
-        <div className="max-w-4xl mx-auto px-6">
-          <hr className="border-t border-white/20" />
-        </div>
+        <CreedSection t={t} />
         <FoundersSection t={t} />
-        <div className="max-w-4xl mx-auto px-6">
-          <hr className="border-t border-white/20" />
-        </div>
-        <PhilosophySection t={t} />
         <div className="max-w-4xl mx-auto px-6">
           <hr className="border-t border-white/20" />
         </div>

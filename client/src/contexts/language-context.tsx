@@ -362,13 +362,15 @@ const translations: Record<Language, Record<string, string>> = {
     "films.cta.title": "Experience More Than a Film",
     "films.cta.desc": "These documentaries are glimpses into the expeditions we lead. Ready to step into the frame and become part of the story?",
     
-    // About Page
-    "about.philosophy.subtitle": "How We Think",
-    "about.philosophy.title": "Our Philosophy",
-    "about.philosophy.protocol": "The Cultural Scribe Protocol",
-    "about.philosophy.statement": "We are not a travel agency. We are a private media collective that grants access to the unseen world.",
-    "about.philosophy.mission1": "Our mission is to provide more than a journey; we provide an education in the art of seeing. We connect intellectually curious individuals with the authentic stories and cultures that exist beyond the reach of conventional travel.",
-    "about.philosophy.mission2": "Every expedition is designed to transform your understanding of the world and your place in it. We believe that true luxury is access, not opulence.",
+    // About Page — the creed. Formerly two sections ("The Line We Hold" and
+    // "Our Philosophy") making the same argument twice; merged, and translated
+    // for the first time. The manifesto used to be hardcoded English.
+    "about.creed.kicker": "The Line We Hold",
+    "about.creed.quote": "“If a tour bus can photograph it, it isn’t on our route.”",
+    "about.creed.statement": "We are not a travel agency. We are a private media collective that grants access to the unseen world.",
+    "about.creed.protocol": "The Cultural Scribe Protocol",
+    "about.creed.seeing": "We offer more than a journey: an education in the art of seeing — the stories and cultures that sit beyond the reach of conventional travel. True luxury is access, not opulence.",
+    "about.creed.honesty": "ASKYAN is new, and we would rather say so than pretend otherwise. There are no client stories yet, no awards, no press wall — there is a slate of six journeys, a network of Cultural Scribes being built one handshake at a time, and two founders reading every application personally. The first cohort won’t join a travel brand. They’ll help set its standard.",
     
     "about.founders.subtitle": "Meet The Team",
     "about.founders.title": "The Founders",
@@ -895,13 +897,13 @@ const translations: Record<Language, Record<string, string>> = {
     "films.cta.title": "Experimenta Más Que Una Película",
     "films.cta.desc": "Estos documentales son vistazos a las expediciones que lideramos. ¿Listo para entrar en el cuadro y ser parte de la historia?",
     
-    // About Page
-    "about.philosophy.subtitle": "Cómo Pensamos",
-    "about.philosophy.title": "Nuestra Filosofía",
-    "about.philosophy.protocol": "El Protocolo del Escriba Cultural",
-    "about.philosophy.statement": "No somos una agencia de viajes. Somos un colectivo de medios privado que otorga acceso al mundo desconocido.",
-    "about.philosophy.mission1": "Nuestra misión es proporcionar más que un viaje; proporcionamos una educación en el arte de ver. Conectamos a individuos intelectualmente curiosos con las historias y culturas auténticas que existen más allá del alcance del turismo convencional.",
-    "about.philosophy.mission2": "Cada expedición está diseñada para transformar tu comprensión del mundo y tu lugar en él. Creemos que el verdadero lujo es el acceso, no la opulencia.",
+    // About Page — el credo. Antes eran dos secciones que decían lo mismo.
+    "about.creed.kicker": "La Línea Que Mantenemos",
+    "about.creed.quote": "«Si un autobús turístico puede fotografiarlo, no está en nuestra ruta.»",
+    "about.creed.statement": "No somos una agencia de viajes. Somos un colectivo de medios privado que otorga acceso al mundo desconocido.",
+    "about.creed.protocol": "El Protocolo del Escriba Cultural",
+    "about.creed.seeing": "Ofrecemos más que un viaje: una educación en el arte de ver — las historias y culturas que quedan fuera del alcance del turismo convencional. El verdadero lujo es el acceso, no la opulencia.",
+    "about.creed.honesty": "ASKYAN es nuevo, y preferimos decirlo a fingir lo contrario. Todavía no hay historias de clientes, ni premios, ni un muro de prensa — hay seis viajes, una red de Escribas Culturales que se construye un apretón de manos a la vez, y dos fundadores que leen personalmente cada solicitud. La primera cohorte no se unirá a una marca de viajes. Ayudará a fijar su estándar.",
     
     "about.founders.subtitle": "Conoce al Equipo",
     "about.founders.title": "Los Fundadores",
