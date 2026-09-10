@@ -1,0 +1,52 @@
+name: key-art
+# Fetch generated key art (Higgsfield renders on a CDN the dev sandbox can't
+# reach) and self-host it in the sizes the site actually serves:
+#   client/public/art/<id>.jpg      1920w hero/dossier art
+#   client/public/art/<id>-m.jpg     960w phone twin
+#   client/public/og/<id>.jpg       1200x630 share card
+#   client/public/art/review/<id>.jpg 640w proof for review
+# Videos: 1080p + 720p twins, a poster, and a 6-frame contact sheet.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg imagemagick jq
+      - name: Fetch and encode
+        run: |
+          set -e
+          M=scripts/art-manifest.json
+          BASE=$(jq -r .base $M)
+          mkdir -p client/public/art/review client/public/og client/public/videos /tmp/src
+          for id in $(jq -r '.images | keys[]' $M); do
+            f=$(jq -r ".images[\"$id\"]" $M)
+            curl -sSL --retry 3 -o /tmp/src/$id.png "$BASE$f"
+            convert /tmp/src/$id.png -resize 1920x -quality 82 -strip client/public/art/$id.jpg
+            convert /tmp/src/$id.png -resize 960x  -quality 78 -strip client/public/art/$id-m.jpg
+            convert /tmp/src/$id.png -resize 1200x630^ -gravity center -extent 1200x630 -quality 80 -strip client/public/og/$id.jpg
+            convert /tmp/src/$id.png -resize 640x -quality 70 -strip client/public/art/review/$id.jpg
+            ls -la client/public/art/$id.jpg client/public/og/$id.jpg
+          done
+          for id in $(jq -r '.videos | keys[]' $M); do
+            f=$(jq -r ".videos[\"$id\"]" $M)
+            curl -sSL --retry 3 -o /tmp/src/$id.mp4 "$BASE$f"
+            ffprobe -v error -show_entries stream=width,height,r_frame_rate,duration -of default=nw=1 /tmp/src/$id.mp4
+            ffmpeg -y -i /tmp/src/$id.mp4 -c:v libx264 -preset slow -crf 22 -vf "scale=1920:-2" -an -movflags +faststart client/public/videos/$id.mp4
+            ffmpeg -y -i /tmp/src/$id.mp4 -c:v libx264 -preset slow -crf 28 -vf "scale=1280:-2" -an -movflags +faststart client/public/videos/$id-m.mp4
+            ffmpeg -y -i client/public/videos/$id.mp4 -frames:v 1 -q:v 3 client/public/art/$id-poster.jpg
+            ffmpeg -y -i /tmp/src/$id.mp4 -vf "select='not(mod(n\,24))',scale=480:-2,tile=3x2" -frames:v 1 -q:v 5 client/public/art/review/$id-frames.jpg
+            ls -la client/public/videos/$id.mp4 client/public/videos/$id-m.mp4
+          done
+          du -sh client/public/art client/public/og
+      - name: Commit art
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add client/public
+          git diff --cached --quiet && echo "nothing new" || git commit -m "Key art: fetched and encoded generated expedition art (CI)"
+          git push
