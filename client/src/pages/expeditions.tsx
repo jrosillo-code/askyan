@@ -8,7 +8,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
-const expeditionsHeroVideo = MEDIA["expeditions-hero-web.mp4"];
+import { artSrc, hasArt, ART_LABEL, MASTER_CHART, MASTER_CHART_MOBILE } from "@/lib/art";
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
 const mongoliaVideo = MEDIA["mongolia-web.mp4"];
@@ -143,7 +143,15 @@ function ExpeditionCard({ expedition, index, t }: { expedition: Expedition; inde
           data-testid={`card-expedition-${expedition.id}`}
         >
         <div className="relative h-64 md:h-80 overflow-hidden rounded-t-md">
-          {expedition.videoUrl ? (
+          {hasArt(expedition.id) ? (
+            <img
+              loading="lazy"
+              decoding="async"
+              src={artSrc(expedition.id)}
+              alt={`${translatedTitle} — ${ART_LABEL}`}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          ) : expedition.videoUrl ? (
             <video
               data-ambient=""
               loop
@@ -246,18 +254,19 @@ export default function Expeditions() {
           {/* preload="auto" marks this EAGER to the ambient controller: it is
               on screen the moment the page opens, so it keeps its head start
               instead of waiting on an observer callback. */}
-          <video
-            data-ambient=""
-            loop
-            muted
-            playsInline
-            preload="auto"
-            poster={VIDEO_POSTERS[expeditionsHeroVideo]}
-            className="hero-video w-full h-full object-cover"
-          >
-            <source src={videoSrc(expeditionsHeroVideo)} type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
+          {/* The master chart: every founding territory drawn as one
+              continuous painted map. Illustration, not footage — labelled. */}
+          <picture>
+            <source media="(max-width: 700px)" srcSet={MASTER_CHART_MOBILE} />
+            <img
+              src={MASTER_CHART}
+              alt={`The founding territories — ${ART_LABEL}`}
+              fetchPriority="high"
+              decoding="async"
+              className="art-drift w-full h-full object-cover"
+            />
+          </picture>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
         </div>
 
         <motion.div

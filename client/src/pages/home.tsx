@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/language-context";
 import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
+import { artSrc, hasArt, ART_LABEL } from "@/lib/art";
 import { RoadPath } from "@/components/road-path";
 import { SiteFooter } from "@/components/site-footer";
 import { lazy, Suspense } from "react";
@@ -871,7 +872,15 @@ function SpotlightSection() {
                 <Card className="overflow-visible bg-card border-border hover-elevate cursor-pointer">
                   <div className="grid md:grid-cols-2 gap-0">
                     <div className="relative h-64 md:h-80 overflow-hidden rounded-t-md md:rounded-l-md md:rounded-tr-none">
-                      {'video' in currentAdventure && currentAdventure.video ? (
+                      {hasArt(currentAdventure.id) ? (
+                        <img
+                          loading="lazy"
+                          decoding="async"
+                          src={artSrc(currentAdventure.id)}
+                          alt={`${title} — ${ART_LABEL}`}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : 'video' in currentAdventure && currentAdventure.video ? (
                         <video
                           data-ambient=""
                           loop

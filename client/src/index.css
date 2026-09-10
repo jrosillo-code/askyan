@@ -482,3 +482,18 @@ img.object-cover {
     }
   }
 }
+
+/* Key art heroes: a very slow drift so a still illustration reads as alive
+   rather than static — 1.0 → 1.06 over 40s, ping-pong. Off under
+   reduced-motion; the art simply holds. */
+.art-drift {
+  transform-origin: 50% 40%;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .art-drift { animation: art-drift 40s ease-in-out infinite alternate; }
+  @keyframes art-drift {
+    from { transform: scale(1); }
+    to   { transform: scale(1.06); }
+  }
+}

@@ -11,6 +11,7 @@ import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { useLanguage } from "@/contexts/language-context";
 import { expeditionDetailsEs } from "@/lib/expedition-content-es";
 import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
+import { artSrc, hasArt, ART_LABEL } from "@/lib/art";
 const kazakhstanVideo = MEDIA["kazakhstan-web.mp4"];
 const kyrgyzstanVideo = MEDIA["kyrgyzstan-web.mp4"];
 const mongoliaVideo = MEDIA["mongolia-web.mp4"];
@@ -623,7 +624,15 @@ export default function ExpeditionDetail() {
 
       <section className="relative min-h-[80vh] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {expedition.videoUrl ? (
+          {hasArt(expedition.id) ? (
+            <img
+              src={artSrc(expedition.id)}
+              alt={`${expedition.title} — ${ART_LABEL}`}
+              fetchPriority="high"
+              decoding="async"
+              className="art-drift w-full h-full object-cover"
+            />
+          ) : expedition.videoUrl ? (
             /* preload="auto" marks this EAGER to the ambient controller. */
             <video
               data-ambient=""
@@ -642,7 +651,7 @@ export default function ExpeditionDetail() {
               className="w-full h-full object-cover"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-black/50 to-black/30" />
+          <div className={`absolute inset-0 bg-gradient-to-t from-background ${hasArt(expedition.id) ? "via-black/35 to-black/15" : "via-black/50 to-black/30"}`} />
         </div>
 
         <motion.div
@@ -665,6 +674,11 @@ export default function ExpeditionDetail() {
               {`EXPEDITION ${CODES[expedition.id] ?? "000"} — ${expedition.country.toUpperCase()}`}
             </Badge>
             <span className="font-mono text-[11px] tracking-[0.15em] text-primary/80">{COORDS[expedition.id]}</span>
+            {hasArt(expedition.id) && (
+              <span className="font-mono text-[10px] tracking-[0.15em] text-white/45 uppercase" data-testid="label-key-art">
+                {ART_LABEL}
+              </span>
+            )}
           </div>
 
           <h1
