@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
-import { chronicleArtSrc, CONCEPT_LABEL } from "@/lib/art";
 
 interface Story {
   id: string;
@@ -92,28 +91,10 @@ function StoryCard({ story, index, t }: { story: Story; index: number; t: (key: 
       className="scroll-mt-24"
     >
       <Card
-        className="group overflow-hidden bg-card border-border hover-elevate cursor-pointer"
+        className="group p-6 md:p-8 bg-card border-border hover-elevate cursor-pointer"
         data-testid={`card-story-${story.id}`}
       >
-        {chronicleArtSrc(story.id) && (
-          <div className="relative aspect-[21/9] overflow-hidden">
-            <img
-              loading={index === 0 ? "eager" : "lazy"}
-              decoding="async"
-              src={chronicleArtSrc(story.id) ?? undefined}
-              alt={`${story.title} — ${CONCEPT_LABEL}`}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
-            <span
-              className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70"
-              data-testid={`label-concept-art-${story.id}`}
-            >
-              {CONCEPT_LABEL}
-            </span>
-          </div>
-        )}
-        <div className="flex flex-col gap-4 p-6 md:p-8">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <span
               className="font-display text-primary tracking-wide"

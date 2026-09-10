@@ -46,13 +46,6 @@ const translations: Record<Language, Record<string, string>> = {
     "impact.sustainable.desc": "We minimize our footprint through responsible travel practices and carbon offsetting.",
     "impact.learnMore": "Learn More",
     
-    // The Route (pinned chart)
-    "route.kicker": "The Route",
-    "route.title": "Six territories, one chart",
-    "route.description": "Every founding season, plotted where it belongs. Scroll the chart and the territories surface in order.",
-    "route.scrollHint": "Scroll to travel",
-    "route.open": "Open the dossier",
-
     // Seasonal Guide
     "seasonal.subtitle": "Seasonal Guide",
     "seasonal.kicker": "The Calendar",
@@ -590,11 +583,6 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Seasonal Guide
     "seasonal.subtitle": "Guía Estacional",
-    "route.kicker": "La Ruta",
-    "route.title": "Seis territorios, una carta",
-    "route.description": "Cada temporada fundadora, trazada donde le corresponde. Recorre la carta y los territorios emergen en orden.",
-    "route.scrollHint": "Desplázate para viajar",
-    "route.open": "Abrir el dossier",
     "seasonal.kicker": "El Calendario",
     "seasonal.title": "Cuándo Ir",
     "seasonal.description": "Cada viaje tiene su ventana. Estas son las temporadas fundadoras — cuando cada paisaje es más él mismo.",
