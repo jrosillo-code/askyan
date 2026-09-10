@@ -7,8 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SharedHeader } from "@/components/shared-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage } from "@/contexts/language-context";
-import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { videoSrc } from "@/lib/media";
+import { filmArtSrc, artSrc, CONCEPT_LABEL } from "@/lib/art";
 
 interface VideoItem {
   id: string;
@@ -142,11 +142,19 @@ function VideoCard({ video, onClick, index, t }: { video: VideoItem; onClick: ()
       >
         <div className="relative aspect-video overflow-hidden rounded-t-md">
           <img loading="lazy" decoding="async"
-            src={video.thumbnailUrl}
-            alt={t(`film.${filmKey}.title`)}
+            src={filmArtSrc(video.id) ?? video.thumbnailUrl}
+            alt={`${t(`film.${filmKey}.title`)} — ${CONCEPT_LABEL}`}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          {filmArtSrc(video.id) && (
+            <span
+              className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70"
+              data-testid={`label-concept-art-${video.id}`}
+            >
+              {CONCEPT_LABEL}
+            </span>
+          )}
           
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center transform transition-transform duration-300 group-hover:scale-110">
@@ -238,7 +246,6 @@ function PremiereNotify() {
 }
 
 export default function Films() {
-  useAmbientVideos();
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const searchString = useSearch();
   const { t } = useLanguage();
@@ -260,19 +267,16 @@ export default function Films() {
 
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
-          {/* preload="auto" marks this EAGER to the ambient controller — it is
-              the first thing on the page, so it keeps its head start. */}
-          <video
-            data-ambient=""
-            src={videoSrc("/films-hero-video.mp4")}
-            poster="/images/films-hero-poster.jpg"
-            muted
-            loop
-            playsInline
-            preload="auto"
-            className="hero-video w-full h-full object-cover"
+          {/* Concept art from the film series, not footage: nothing here has
+              been shot yet, and the page says so. */}
+          <img
+            src={artSrc("film-mongolia-nomads")}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            className="art-drift w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
         </div>
 
         <motion.div

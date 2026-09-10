@@ -15,6 +15,7 @@ import { useAmbientVideos } from "@/hooks/use-ambient-videos";
 import { MEDIA, VIDEO_POSTERS, videoSrc } from "@/lib/media";
 import { artSrc, hasArt, ART_LABEL } from "@/lib/art";
 import { RoadPath } from "@/components/road-path";
+import { ChartJourney } from "@/components/chart-journey";
 import { SiteFooter } from "@/components/site-footer";
 import { lazy, Suspense } from "react";
 
@@ -1482,6 +1483,7 @@ export default function Home() {
         {/* The Road: the mark's winding path, drawn by your scroll */}
         <div className="relative">
           <RoadPath />
+          <ChartJourney stops={FOUNDING_SEASONS} />
           <SpotlightSection />
           <AdventureFeatureSection />
           <PositiveImpactSection />

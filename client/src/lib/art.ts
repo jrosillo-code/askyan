@@ -15,6 +15,26 @@ export const ART_IDS = [
   "indonesia-flores",
 ] as const;
 
+// Films and Chronicles carry the same painted series: concept art for work
+// that is still in production, never a frame passed off as footage.
+export const FILM_ART_IDS = [
+  "mongolia-nomads",
+  "bhutan-monastery",
+  "kyrgyzstan-eagles",
+  "nepal-trails",
+  "indonesia-komodo",
+  "kazakhstan-steppe",
+] as const;
+
+export const CHRONICLE_ART_IDS = [
+  "silent-monks-bhutan",
+  "salt-caravans-ethiopia",
+  "night-fishermen-maldives",
+  "forgotten-kingdom-mustang",
+  "whale-singers-tonga",
+  "shadow-puppets-java",
+] as const;
+
 export const MASTER_CHART = "/art/master-chart.jpg";
 export const MASTER_CHART_MOBILE = "/art/master-chart-m.jpg";
 
@@ -27,4 +47,23 @@ export function hasArt(id: string): boolean {
   return (ART_IDS as readonly string[]).includes(id);
 }
 
+export function filmArtSrc(id: string): string | null {
+  return (FILM_ART_IDS as readonly string[]).includes(id) ? artSrc(`film-${id}`) : null;
+}
+
+export function chronicleArtSrc(id: string): string | null {
+  return (CHRONICLE_ART_IDS as readonly string[]).includes(id) ? artSrc(`chronicle-${id}`) : null;
+}
+
+/** Where each territory sits, for the chart's waypoints. */
+export const ART_COORDS: Record<(typeof ART_IDS)[number], string> = {
+  "kazakhstan-steppe": "43.3510° N, 79.0794° E",
+  "kyrgyzstan-heights": "41.8397° N, 75.1338° E",
+  "mongolia-gobi": "43.5000° N, 103.5000° E",
+  "nepal-mustang": "29.1892° N, 83.9531° E",
+  "bhutan-sacred": "27.4916° N, 89.3639° E",
+  "indonesia-flores": "8.5500° S, 119.4890° E",
+};
+
 export const ART_LABEL = "Illustrated key art";
+export const CONCEPT_LABEL = "Concept art · in production";
